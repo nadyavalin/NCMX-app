@@ -12,6 +12,7 @@ export const Inconsistencies = () => {
           <select>
             <option value="orderNumber">фильтр по порядковому номеру</option>
             <option value="requirements">фильтр по требованиям НД</option>
+            <option value="requirements">фильтр по подразделению</option>
             <option value="responsibleForCorrection">
               фильтр по ответственному лицу за коррекцию
             </option>
@@ -23,6 +24,7 @@ export const Inconsistencies = () => {
           <select>
             <option value="">порядковые номера из базы</option>
             <option value="">НД из базы</option>
+            <option value="">аббревиатура подразделения из базы</option>
             <option value="">ФИО из базы</option>
             <option value="">ФИО из базы</option>
           </select>
