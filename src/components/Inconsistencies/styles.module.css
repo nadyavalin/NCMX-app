@@ -1,0 +1,26 @@
+.filterSection {
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.inconsistenciesActions {
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.inconsistenciesActions a {
+  font-size: 11px;
+}
+
+.addButton {
+  margin: 20px 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

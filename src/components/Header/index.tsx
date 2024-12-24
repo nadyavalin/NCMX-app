@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 export const Header = () => {
   return (
     <>
-      <main>
+      <header>
         <nav className={styles.navMenu}>
           <Link href={`/`} className={styles.menuButton}>
             Главная
@@ -19,7 +19,7 @@ export const Header = () => {
             Возможности для улучшения
           </Link>
         </nav>
-      </main>
+      </header>
     </>
   );
 };

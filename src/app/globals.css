@@ -15,6 +15,7 @@ body {
   --text-button-color: #f5f5f5;
   --accent-color-hover: #9681ff;
   --text-color: #000000;
+  --table-color: #c1c1bf;
 
   display: flex;
   flex-direction: column;
@@ -30,19 +31,71 @@ body {
 }
 
 main {
+  margin: 0 30px;
   flex-grow: 1;
   font-size: 16px;
+  text-align: left;
 }
 
 a {
+  font-size: 12px;
   font-weight: 500;
-  color: var(--text-color);
-  text-decoration: inherit;
+  color: var(--accent-color);
   transition: all 0.3s ease;
+}
+
+button {
+  height: 35px;
+  padding: 7px 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--accent-color);
+  color: var(--text-button-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input {
+  height: 25px;
+  width: 400px;
+  padding: 5px;
+  border: 1px solid var(--table-color);
+  border-radius: 8px;
+}
+
+select {
+  height: 35px;
+  width: 400px;
+  padding: 5px;
+  border: 1px solid var(--table-color);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border: 2px solid var(--table-color);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+table thead tr th {
+  text-align: center;
+}
+
+table thead tr th,
+table tbody tr td {
+  border: 1px solid var(--table-color);
+  border-radius: 5px;
+  padding: 3px;
 }
 
 @media (hover: hover) {
   a:hover {
-    color: var(--accent-color);
+    color: var(--text-color);
+  }
+
+  button:hover {
+    color: var(--text-button-color);
+    background-color: var(--accent-color-hover);
   }
 }

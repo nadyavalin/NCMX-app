@@ -3,9 +3,9 @@ import styles from "./styles.module.css";
 export const Footer = () => {
   return (
     <>
-      <main>
+      <footer>
         <div className={styles.text}>2024</div>
-      </main>
+      </footer>
     </>
   );
 };
