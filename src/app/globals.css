@@ -8,6 +8,7 @@
 
   --accent-color: #421df9;
   --border-shadow-color: rgba(255, 255, 255, 0.5);
+  --modal-shadow: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -35,6 +36,15 @@ main {
   flex-grow: 1;
   font-size: 16px;
   text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }
 
 a {

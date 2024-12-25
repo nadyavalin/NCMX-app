@@ -1,6 +1,20 @@
+"use client";
+
+import { InconsistenciesModal } from "../modals/InconsistenciesAdder";
 import styles from "./styles.module.css";
+import { useState } from "react";
 
 export const Inconsistencies = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <main>
@@ -89,7 +103,8 @@ export const Inconsistencies = () => {
         </section>
 
         <section className={styles.addButton}>
-          <button>Добавить несоответствие</button>
+          <button onClick={openModal}>Добавить несоответствие</button>
+          <InconsistenciesModal isOpen={isModalOpen} onClose={closeModal} />
         </section>
       </main>
     </>
