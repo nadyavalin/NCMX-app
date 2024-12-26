@@ -5,6 +5,11 @@
   justify-content: space-between;
 }
 
+.filterSection select,
+.filterSection input {
+  width: 400px;
+}
+
 .inconsistenciesActions {
   width: 100%;
   margin: 20px 0;

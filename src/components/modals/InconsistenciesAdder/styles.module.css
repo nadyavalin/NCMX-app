@@ -11,10 +11,49 @@
 }
 
 .modalContent {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
   height: 80%;
-  width: 60%;
+  width: 65%;
   background-color: var(--bg-color);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px var(--modal-shadow);
+  overflow-y: auto;
+}
+
+.modalForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.modalInternalBlocks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 45%;
+  background-color: var(--bg-color);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 3px var(--modal-shadow);
+}
+
+.oneLineText {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.analysisDateBlock {
+  width: 45%;
+}
+
+.buttonsBlock {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
