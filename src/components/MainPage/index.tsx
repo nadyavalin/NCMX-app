@@ -4,10 +4,10 @@ export const MainPage = () => {
   return (
     <>
       <main>
-        <h3>Из реестра внутренних аудитов</h3>
+        <h3>Из реестра несоответствий внутренних аудитов</h3>
         <div className={styles.cards}>
           <div className={styles.card}>
-            <h4>Несоответствия</h4>
+            <h4>Несоответствия (открытые)</h4>
             <div className={styles.innerCardText}>
               <p className={styles.innerCardTitles}>Общее количество:</p>
               <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
@@ -22,7 +22,7 @@ export const MainPage = () => {
             </div>
           </div>
           <div className={styles.card}>
-            <h4>Наблюдения</h4>
+            <h4>Наблюдения (открытые)</h4>
             <p className={styles.innerCardTitles}>Общее количество:</p>
             <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
             <div className={styles.innerCardDepartments}>
@@ -35,7 +35,7 @@ export const MainPage = () => {
             </div>
           </div>
           <div className={styles.card}>
-            <h4>Возможности для улучшения</h4>
+            <h4>Возможности для улучшения (открытые)</h4>
             <p className={styles.innerCardTitles}>Общее количество:</p>
             <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
             <div className={styles.innerCardDepartments}>

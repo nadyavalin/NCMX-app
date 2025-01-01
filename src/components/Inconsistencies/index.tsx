@@ -1,18 +1,43 @@
 "use client";
 
+import { InconsistenciesCommentsModal } from "../modals/commentsAdder";
+import { InconsistenciesEstimateResultModal } from "../modals/estimateResult";
+import { InconsistenciesHistoryCommentsModal } from "../modals/historyCommentsList";
 import { InconsistenciesModal } from "../modals/InconsistenciesAdder";
 import styles from "./styles.module.css";
 import { useState } from "react";
 
 export const Inconsistencies = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   const openModal = () => {
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const [isModalCommentsOpen, setIsModalCommentsOpen] = useState<boolean>(false);
+  const openModalComments = () => {
+    setIsModalCommentsOpen(true);
+  };
+  const closeModalComments = () => {
+    setIsModalCommentsOpen(false);
+  };
+
+  const [isModalHistoryCommentsOpen, setIsModalHistoryCommentsOpen] = useState<boolean>(false);
+  const openModalHistoryComments = () => {
+    setIsModalHistoryCommentsOpen(true);
+  };
+  const closeModalHistoryComments = () => {
+    setIsModalHistoryCommentsOpen(false);
+  };
+
+  const [isModalEstimateResultOpen, setIsModalEstimateResultOpen] = useState<boolean>(false);
+  const openModalEstimateResult = () => {
+    setIsModalEstimateResultOpen(true);
+  };
+  const closeModalEstimateResult = () => {
+    setIsModalEstimateResultOpen(false);
   };
 
   return (
@@ -92,9 +117,29 @@ export const Inconsistencies = () => {
                 <td>...</td>
                 <td>
                   <div className={styles.inconsistenciesActions}>
-                    <a href="#">Добавить комментарий</a>
-                    <a href="#">Посмотреть историю комментариев к несоответствию</a>
-                    <a href="#">Провести оценку результативности для закрытия несоответствия</a>
+                    <a href="#" onClick={openModalComments}>
+                      Добавить комментарий
+                    </a>
+                    <InconsistenciesCommentsModal
+                      isOpen={isModalCommentsOpen}
+                      onClose={closeModalComments}
+                    />
+
+                    <a href="#" onClick={openModalHistoryComments}>
+                      Посмотреть историю комментариев к несоответствию
+                    </a>
+                    <InconsistenciesHistoryCommentsModal
+                      isOpen={isModalHistoryCommentsOpen}
+                      onClose={closeModalHistoryComments}
+                    />
+
+                    <a href="#" onClick={openModalEstimateResult}>
+                      Провести оценку результативности для закрытия несоответствия
+                    </a>
+                    <InconsistenciesEstimateResultModal
+                      isOpen={isModalEstimateResultOpen}
+                      onClose={closeModalEstimateResult}
+                    />
                   </div>
                 </td>
               </tr>
