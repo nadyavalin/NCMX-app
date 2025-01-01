@@ -1,0 +1,35 @@
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.card {
+  width: 25%;
+  height: 180px;
+  border: 1px solid var(--border-shadow-color);
+  border-radius: 10px;
+  padding: 10px;
+  background-color: var(--card-color);
+  transition: background-color 0.5s ease;
+  cursor: pointer;
+}
+
+.innerCardText {
+  text-align: left;
+}
+
+.innerCardTitles {
+  font-weight: 500;
+}
+
+.innerCardDepartments {
+  margin-left: 10px;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    background-color: var(--card-hover-color);
+  }
+}
