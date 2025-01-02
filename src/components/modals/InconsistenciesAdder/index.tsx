@@ -1,9 +1,18 @@
+// import { createSvgElement } from "../../elements";
+// import { cross } from "../../../components/svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+// const closeButton = createSvgElement(cross, "cross", {
+//   width: "22px",
+//   height: "22px",
+//   viewBox: "0 0 19 19",
+//   fill: "none",
+// });
 
 export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   if (!isOpen) {
@@ -13,14 +22,14 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <h4>Заполните форму для внесения несоответствия в Реестр</h4>
-        <p>
-          Номер несоответствия: <b>1169</b>
-        </p>
-        <form className={styles.modalForm}>
+        <form className={styles.modalForm} method="post">
+          <h4>Заполните форму для внесения несоответствия в Реестр</h4>
+          <label htmlFor="num_nonconf">Номер несоответствия:</label>
+          <input type="text" name="num_nonconf" id="num_nonconf" required></input>
+
           <div className={styles.modalInternalBlocks}>
             <p>1. Основная информация о несоответствии</p>
-            <select>
+            <select name="norm_doc" id="norm_doc">
               <option value="">...выбрать нормативный документ из базы</option>
               <option value="">А1</option>
               <option value="">А2 </option>
@@ -30,25 +39,58 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               <option value="">А14</option>
             </select>
             <a href="#">Добавить НД</a>
-            <input type="text" placeholder="...номер пункта нормативного документа|" name="point" />
-            <textarea placeholder="Описание несоответствия|" rows={10} />
-            <input type="text" placeholder="Источник информации о несоответствии|" name="point" />
-            <input type="date" title="Выберите дату утверждения источника" />
+            <input
+              name="point"
+              type="text"
+              placeholder="...номер пункта нормативного документа|"
+              required
+            />
+            <textarea
+              name="nonconf"
+              id="nonconf"
+              placeholder="Описание несоответствия|"
+              rows={10}
+              required
+            />
+            <input
+              name="report"
+              id="report"
+              type="text"
+              placeholder="Источник информации о несоответствии|"
+              required
+            />
+            <input
+              type="date"
+              name="report_date"
+              id="report_date"
+              title="Выберите дату утверждения источника"
+              required
+            />
           </div>
 
           <div className={styles.modalInternalBlocks}>
             <p>2. Анализ причин несоответствия</p>
             <div className={styles.oneLineText}>
-              <input type="date" title="Выберите дату начала проведения анализа" />
-              <input type="date" title="Выберите дату окончания проведения анализа" />
+              <input
+                type="date"
+                name="analysis_start_date"
+                id="analysis_start_date"
+                title="Выберите дату начала проведения анализа"
+              />
+              <input
+                type="date"
+                name="analysis_finish_date"
+                id="analysis_finish_date"
+                title="Выберите дату окончания проведения анализа"
+              />
             </div>
 
-            <select>
+            <select name="head_auditor" id="head_auditor">
               <option value="">...выбрать главного аудитора из базы</option>
               <option value="">Разумнева Н.П.</option>
             </select>
 
-            <select>
+            <select name="auditor" id="auditor">
               <option value="">...выбрать аудитора из базы</option>
               <option value="">Алтаева О.Ю.</option>
               <option value="">Ткачук Н.С.</option>
@@ -57,6 +99,8 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             </select>
             <a href="#">Добавить аудитора</a>
             <textarea
+              name="reason"
+              id="reason"
               placeholder="Причины несоответствия, определенные по результатам анализа|"
               rows={10}
             />
@@ -67,13 +111,23 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               <p>3. Коррекция</p>
               <a href="#">Добавить коррекцию</a>
             </div>
-            <textarea placeholder="Описание коррекции|" rows={10} />
+            <textarea
+              name="correction"
+              id="correction"
+              placeholder="Описание коррекции|"
+              rows={10}
+            />
             <div className={styles.oneLineText}>
-              <input type="date" title="Выберите дату внедрения коррекции" />
+              <input
+                type="date"
+                name="correction_date"
+                id="correction_date"
+                title="Выберите дату внедрения коррекции"
+              />
               <a href="#">Сменить на текстовое поле</a>
             </div>
 
-            <select>
+            <select name="resp_person_correction" id="resp_person_correction">
               <option value="">...выбрать ответственное лицо из базы</option>
               <option value="">Матвеева М.А.</option>
               <option value="">Семенов К.С.</option>
@@ -82,7 +136,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             </select>
             <a href="#">Добавить ответственное лицо</a>
 
-            <select>
+            <select name="department" id="department" required>
               <option value="">...выбрать ответственное подразделение из базы</option>
               <option value="">НПО</option>
               <option value="">НПГС</option>
@@ -97,13 +151,23 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               <p>4. Корректирующее действие</p>
               <a href="#">Добавить кор. действие</a>
             </div>
-            <textarea placeholder="Описание корректирующего действия||" rows={10} />
+            <textarea
+              name="corrective_action"
+              id="corrective_action"
+              placeholder="Описание корректирующего действия||"
+              rows={10}
+            />
             <div className={styles.oneLineText}>
-              <input type="date" title="Выберите дату внедрения корректирующего действия" />
+              <input
+                type="date"
+                name="corrective_action_date"
+                id="corrective_action_date"
+                title="Выберите дату внедрения корректирующего действия"
+              />
               <a href="#">Сменить на текстовое поле</a>
             </div>
 
-            <select>
+            <select name="resp_person_corrective_action" id="resp_person_corrective_action">
               <option value="">...выбрать ответственное лицо из базы</option>
               <option value="">Матвеева М.А.</option>
               <option value="">Семенов К.С.</option>
@@ -112,7 +176,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             </select>
             <a href="#">Добавить ответственное лицо</a>
 
-            <select>
+            <select name="department" id="department" required>
               <option value="">...выбрать ответственное подразделение из базы</option>
               <option value="">НПО</option>
               <option value="">НПГС</option>
@@ -122,8 +186,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             <a href="#">Добавить ответственное подразделение</a>
           </div>
           <div className={styles.buttonsBlock}>
-            <button onClick={onClose}>Сохранить</button>
-            <button onClick={onClose}>Закрыть</button>
+            <button onClick={onClose}>Сохранить и закрыть</button>
           </div>
         </form>
       </div>

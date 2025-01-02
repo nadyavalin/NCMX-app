@@ -18,6 +18,9 @@ export const Header = () => {
           <Link href={`/Improvements`} className={styles.menuButton}>
             Возможности для улучшения
           </Link>
+          <Link href={`/Archive`} className={styles.menuButton}>
+            Архив
+          </Link>
         </nav>
       </header>
     </>

@@ -14,14 +14,19 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <form className={styles.modalForm}>
-          <select>
+          <select name="estimate" id="estimate">
             <option value="">удовлетворительно</option>
             <option value="">неудовлетворительно</option>
           </select>
 
-          <input type="date" title="Дата закрытия несоответствия" />
+          <input
+            type="date"
+            name="nonconf_closure_date"
+            id="nonconf_closure_date"
+            title="Дата закрытия несоответствия"
+          />
 
-          <select>
+          <select name="resp_person_nonconf_closure" id="resp_person_nonconf_closure">
             <option value="">...выбрать ответственное лицо</option>
             <option value="">Разумнева Н.П.</option>
           </select>
