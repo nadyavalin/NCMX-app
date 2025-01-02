@@ -1,5 +1,22 @@
-.text {
+.filterSection {
+  width: 100%;
+  margin: 20px 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+}
+
+.observationActions {
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.addButton {
+  margin: 20px 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
