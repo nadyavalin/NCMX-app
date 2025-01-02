@@ -1,13 +1,16 @@
 "use client";
 
-import { InconsistenciesCommentsModal } from "../modals/commentsAdder";
-import { InconsistenciesEstimateResultModal } from "../modals/estimateResult";
-import { InconsistenciesHistoryCommentsModal } from "../modals/historyCommentsList";
-import { InconsistenciesModal } from "../modals/InconsistenciesAdder";
+import { useFetchItems } from "@api/api";
+import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
+import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
+import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
+import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import styles from "./styles.module.css";
 import { useState } from "react";
 
 export const Inconsistencies = () => {
+  const { items, loading, error } = useFetchItems();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const openModal = () => {
     setIsModalOpen(true);
@@ -39,6 +42,14 @@ export const Inconsistencies = () => {
   const closeModalEstimateResult = () => {
     setIsModalEstimateResultOpen(false);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>
@@ -77,7 +88,11 @@ export const Inconsistencies = () => {
           <table className="inconsistenciesTable">
             <thead>
               <tr>
-                <th rowSpan={2}>ID</th>
+                {items.map((item, index) => (
+                  <th key={item.id} rowSpan={2}>
+                    {index + 1}
+                  </th>
+                ))}
                 <th rowSpan={2}>№</th>
                 <th rowSpan={2}>Ссылки на пункты ISO 9001 / 80079-34 / НД</th>
                 <th rowSpan={2}>Описание несоответствия</th>

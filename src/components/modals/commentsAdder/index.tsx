@@ -1,4 +1,4 @@
-import { CloseButton } from "../../svg";
+import { CloseButton } from "@components/svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {

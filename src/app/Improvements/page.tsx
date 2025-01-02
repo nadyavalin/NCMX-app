@@ -1,4 +1,4 @@
-import { Improvements } from "../../components/Improvements";
+import { Improvements } from "@components/Improvements";
 
 export default function ImprovementsPage() {
   return <Improvements />;

@@ -1,4 +1,4 @@
-import { CloseButton } from "../../../components/svg";
+import { CloseButton } from "@components/svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
@@ -18,9 +18,9 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <CloseButton />
         </div>
         <form className={styles.modalForm} method="post">
-          <div className={styles.nonconfNumberBlock}>
+          <div className={styles.nonConfNumberBlock}>
             <h4>Заполните форму для внесения несоответствия в Реестр</h4>
-            <div className={styles.nonconfNumberInputBlock}>
+            <div className={styles.nonConfNumberInputBlock}>
               <label htmlFor="num_nonconf">Номер несоответствия:</label>
               <input type="text" name="num_nonconf" id="num_nonconf" required />
             </div>
