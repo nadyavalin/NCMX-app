@@ -1,3 +1,4 @@
+import "@/globals.css";
 import styles from "./styles.module.css";
 
 export const Improvements = () => {

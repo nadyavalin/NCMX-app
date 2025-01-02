@@ -25,6 +25,7 @@ body {
   --card-color: #dedede;
   --card-hover-color: #b2caff;
   --scrollbar-color: #97b8ff;
+  --errors: #ff0000;
 
   display: flex;
   flex-direction: column;
@@ -142,6 +143,13 @@ table tbody tr td {
 ::-webkit-scrollbar-track {
   background-color: var(--table-color);
   border-radius: 6px;
+}
+
+.error {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--errors);
+  text-align: center;
 }
 
 @media (hover: hover) {

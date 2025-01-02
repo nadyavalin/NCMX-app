@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Item } from "@components/types";
 
@@ -10,11 +9,12 @@ export const useFetchItems = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const result = await axios.get<Item[]>("http://localhost:8000/api/items/");
+      const response = await fetch("http://178.66.48.32:8000/api/");
+      const result = await response.json();
       setItems(result.data);
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setError("Failed to fetch data.");
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        setError("Failed to fetch data.");
     } finally {
       setLoading(false);
     }

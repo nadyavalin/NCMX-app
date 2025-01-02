@@ -1,5 +1,7 @@
-import { CloseButton } from "@components/svg";
+import { FormEvent, useState } from "react";
+import "@/globals.css";
 import styles from "./styles.module.css";
+import { CloseButton } from "@components/svg";
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,9 +9,33 @@ interface ModalProps {
 }
 
 export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
+  const [inputData, setInputData] = useState("");
+
   if (!isOpen) {
     return null;
   }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://178.66.48.32:8000/api/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: inputData }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      const result = await response.json();
+      console.log("Response data:", result);
+    } catch (error) {
+      console.error("Ошибка при отправке данных:", error);
+    }
+  };
 
   return (
     <div className={styles.modalOverlay}>
@@ -17,12 +43,19 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
         <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
           <CloseButton />
         </div>
-        <form className={styles.modalForm} method="post">
+        <form className={styles.modalForm} method="post" onSubmit={handleSubmit}>
           <div className={styles.nonConfNumberBlock}>
             <h4>Заполните форму для внесения несоответствия в Реестр</h4>
             <div className={styles.nonConfNumberInputBlock}>
               <label htmlFor="num_nonconf">Номер несоответствия:</label>
-              <input type="text" name="num_nonconf" id="num_nonconf" required />
+              <input
+                type="text"
+                name="num_nonconf"
+                id="num_nonconf"
+                value={inputData}
+                onChange={(e) => setInputData(e.target.value)}
+                required
+              />
             </div>
           </div>
 
@@ -185,7 +218,9 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             <a href="#">Добавить ответственное подразделение</a>
           </div>
           <div className={styles.buttonsBlock}>
-            <button onClick={onClose}>Сохранить и закрыть</button>
+            <button type="submit" onClick={onClose}>
+              Сохранить и закрыть
+            </button>
           </div>
         </form>
       </div>
