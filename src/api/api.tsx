@@ -12,9 +12,9 @@ export const useFetchItems = () => {
       const response = await fetch("http://178.66.48.32:8000/api/");
       const result = await response.json();
       setItems(result.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setError("Failed to fetch data.");
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      setError("Failed to fetch data.");
     } finally {
       setLoading(false);
     }

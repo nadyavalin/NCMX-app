@@ -19,7 +19,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://178.66.48.32:8000/api/", {
+      const response = await fetch("http://178.66.48.32:8000/ncmx_app/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
