@@ -1,18 +1,10 @@
-// import { createSvgElement } from "../../elements";
-// import { cross } from "../../../components/svg";
+import { CloseButton } from "../../../components/svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-// const closeButton = createSvgElement(cross, "cross", {
-//   width: "22px",
-//   height: "22px",
-//   viewBox: "0 0 19 19",
-//   fill: "none",
-// });
 
 export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   if (!isOpen) {
@@ -22,10 +14,17 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
+          <CloseButton />
+        </div>
         <form className={styles.modalForm} method="post">
-          <h4>Заполните форму для внесения несоответствия в Реестр</h4>
-          <label htmlFor="num_nonconf">Номер несоответствия:</label>
-          <input type="text" name="num_nonconf" id="num_nonconf" required></input>
+          <div className={styles.nonconfNumberBlock}>
+            <h4>Заполните форму для внесения несоответствия в Реестр</h4>
+            <div className={styles.nonconfNumberInputBlock}>
+              <label htmlFor="num_nonconf">Номер несоответствия:</label>
+              <input type="text" name="num_nonconf" id="num_nonconf" required />
+            </div>
+          </div>
 
           <div className={styles.modalInternalBlocks}>
             <p>1. Основная информация о несоответствии</p>

@@ -1,3 +1,4 @@
+import { CloseButton } from "../../svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
@@ -13,19 +14,22 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <form className={styles.modalForm}>
-          <select name="estimate" id="estimate">
-            <option value="">удовлетворительно</option>
-            <option value="">неудовлетворительно</option>
-          </select>
+        <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
+          <CloseButton />
+        </div>
 
+        <form className={styles.modalForm}>
+          <h3>Заполните форму для оценки результативности и закрытия несоответствия</h3>
           <input
             type="date"
             name="nonconf_closure_date"
             id="nonconf_closure_date"
             title="Дата закрытия несоответствия"
           />
-
+          <select name="estimate" id="estimate">
+            <option value="">удовлетворительно</option>
+            <option value="">неудовлетворительно</option>
+          </select>
           <select name="resp_person_nonconf_closure" id="resp_person_nonconf_closure">
             <option value="">...выбрать ответственное лицо</option>
             <option value="">Разумнева Н.П.</option>

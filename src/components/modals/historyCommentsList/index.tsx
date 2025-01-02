@@ -1,3 +1,4 @@
+import { CloseButton } from "../../svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
@@ -13,6 +14,10 @@ export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalPr
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
+          <CloseButton />
+        </div>
+        <h3>История комментариев к несоответствию num_nonconf</h3>
         <div className={styles.commentCard}>
           <div className={styles.authorAndDate}>
             <p>

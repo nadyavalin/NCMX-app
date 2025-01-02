@@ -1,3 +1,4 @@
+import { CloseButton } from "../../svg";
 import styles from "./styles.module.css";
 
 interface ModalProps {
@@ -13,7 +14,11 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+        <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
+          <CloseButton />
+        </div>
         <form className={styles.modalForm}>
+          <h3>Заполните форму для внесения комментария к несоответствию</h3>
           <input type="date" name="comment_date" id="comment_date" />
 
           <select name="comment_author" id="comment_author">
@@ -30,7 +35,7 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
           />
 
           <div className={styles.buttonsBlock}>
-            <button onClick={onClose}>Сохранить</button>
+            <button onClick={onClose}>Сохранить и закрыть</button>
           </div>
         </form>
       </div>
