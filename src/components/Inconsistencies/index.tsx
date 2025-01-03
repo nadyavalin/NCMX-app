@@ -4,45 +4,30 @@ import { useState } from "react";
 import "@/globals.css";
 import styles from "./styles.module.css";
 import { useFetchItems } from "@api/api";
+import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
-import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 
 export const Inconsistencies = () => {
   const { items, loading, error } = useFetchItems();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   const [isModalCommentsOpen, setIsModalCommentsOpen] = useState<boolean>(false);
-  const openModalComments = () => {
-    setIsModalCommentsOpen(true);
-  };
-  const closeModalComments = () => {
-    setIsModalCommentsOpen(false);
-  };
-
   const [isModalHistoryCommentsOpen, setIsModalHistoryCommentsOpen] = useState<boolean>(false);
-  const openModalHistoryComments = () => {
-    setIsModalHistoryCommentsOpen(true);
-  };
-  const closeModalHistoryComments = () => {
-    setIsModalHistoryCommentsOpen(false);
-  };
-
   const [isModalEstimateResultOpen, setIsModalEstimateResultOpen] = useState<boolean>(false);
-  const openModalEstimateResult = () => {
-    setIsModalEstimateResultOpen(true);
-  };
-  const closeModalEstimateResult = () => {
-    setIsModalEstimateResultOpen(false);
-  };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const openModalComments = () => setIsModalCommentsOpen(true);
+  const closeModalComments = () => setIsModalCommentsOpen(false);
+
+  const openModalHistoryComments = () => setIsModalHistoryCommentsOpen(true);
+  const closeModalHistoryComments = () => setIsModalHistoryCommentsOpen(false);
+
+  const openModalEstimateResult = () => setIsModalEstimateResultOpen(true);
+  const closeModalEstimateResult = () => setIsModalEstimateResultOpen(false);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -51,10 +36,6 @@ export const Inconsistencies = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
-  // if (!items.length) {
-  //   return <div>Данных нет. Пожалуйста, добавьте элементы.</div>;
-  // }
 
   return (
     <>
@@ -116,54 +97,57 @@ export const Inconsistencies = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan={15} className="error">
-                  Нет данных для отображения.
-                </td>
-              </tr>
-              {items.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>
-                    <div className={styles.inconsistenciesActions}>
-                      <a href="#" onClick={openModalComments}>
-                        Добавить комментарий
-                      </a>
-                      <InconsistenciesCommentsModal
-                        isOpen={isModalCommentsOpen}
-                        onClose={closeModalComments}
-                      />
-                      <a href="#" onClick={openModalHistoryComments}>
-                        Посмотреть историю комментариев к несоответствию
-                      </a>
-                      <InconsistenciesHistoryCommentsModal
-                        isOpen={isModalHistoryCommentsOpen}
-                        onClose={closeModalHistoryComments}
-                      />
-                      <a href="#" onClick={openModalEstimateResult}>
-                        Провести оценку результативности для закрытия несоответствия
-                      </a>
-                      <InconsistenciesEstimateResultModal
-                        isOpen={isModalEstimateResultOpen}
-                        onClose={closeModalEstimateResult}
-                      />
-                    </div>
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan={15} className="error">
+                    Нет данных для отображения.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                items.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>{item.num_nonconf}</td>
+                    <td>{item.norm_doc}</td>
+                    <td>{item.nonconf}</td>
+                    <td>{item.report}</td>
+                    <td>{item.analysis_start_date}</td>
+                    <td>{item.head_auditor}</td>
+                    <td>{item.reason}</td>
+                    <td>{item.correction}</td>
+                    <td>{item.correction_date}</td>
+                    <td>{item.resp_person_correction}</td>
+                    <td>{item.corrective_action}</td>
+                    <td>{item.corrective_action_date}</td>
+                    <td>{item.resp_person_corrective_action}</td>
+                    <td>
+                      <div className={styles.inconsistenciesActions}>
+                        <a href="#" onClick={openModalComments}>
+                          Добавить комментарий
+                        </a>
+                        <InconsistenciesCommentsModal
+                          isOpen={isModalCommentsOpen}
+                          onClose={closeModalComments}
+                        />
+                        <a href="#" onClick={openModalHistoryComments}>
+                          Посмотреть историю комментариев к несоответствию
+                        </a>
+                        <InconsistenciesHistoryCommentsModal
+                          isOpen={isModalHistoryCommentsOpen}
+                          onClose={closeModalHistoryComments}
+                        />
+                        <a href="#" onClick={openModalEstimateResult}>
+                          Провести оценку результативности для закрытия несоответствия
+                        </a>
+                        <InconsistenciesEstimateResultModal
+                          isOpen={isModalEstimateResultOpen}
+                          onClose={closeModalEstimateResult}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </section>

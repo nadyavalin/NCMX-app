@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import "@/globals.css";
 import styles from "./styles.module.css";
 import { CloseButton } from "@components/svg";
+import { Item } from "@components/types";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,31 +10,53 @@ interface ModalProps {
 }
 
 export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
-  const [inputData, setInputData] = useState("");
+  const [formData, setFormData] = useState<Item>({
+    id: 1,
+    num_nonconf: "",
+    norm_doc: "",
+    nonconf: "",
+    report: "",
+    analysis_start_date: "",
+    head_auditor: "",
+    reason: "",
+    correction: "",
+    correction_date: "",
+    resp_person_correction: "",
+    corrective_action: "",
+    corrective_action_date: "",
+    resp_person_corrective_action: "",
+  });
 
   if (!isOpen) {
     return null;
   }
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     try {
-      const response = await fetch("http://178.66.48.32:8000/ncmx_app/", {
+      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ data: inputData }),
+        body: JSON.stringify(formData),
       });
-
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log("Response data:", result);
+      console.log(result);
+      onClose();
     } catch (error) {
-      console.error("Ошибка при отправке данных:", error);
+      console.error("Error submitting form: ", error);
     }
   };
 
@@ -43,7 +66,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
         <div className={styles.closeButton} onClick={onClose} role="button" tabIndex={0}>
           <CloseButton />
         </div>
-        <form className={styles.modalForm} method="post" onSubmit={handleSubmit}>
+        <form className={styles.modalForm} onSubmit={handleSubmit}>
           <div className={styles.nonConfNumberBlock}>
             <h4>Заполните форму для внесения несоответствия в Реестр</h4>
             <div className={styles.nonConfNumberInputBlock}>
@@ -52,8 +75,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
                 type="text"
                 name="num_nonconf"
                 id="num_nonconf"
-                value={inputData}
-                onChange={(e) => setInputData(e.target.value)}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -61,7 +83,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
 
           <div className={styles.modalInternalBlocks}>
             <p>1. Основная информация о несоответствии</p>
-            <select name="norm_doc" id="norm_doc">
+            <select name="norm_doc" id="norm_doc" onChange={handleChange} required>
               <option value="">...выбрать нормативный документ из базы</option>
               <option value="">А1</option>
               <option value="">А2 </option>
@@ -75,6 +97,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               name="point"
               type="text"
               placeholder="...номер пункта нормативного документа|"
+              onChange={handleChange}
               required
             />
             <textarea
@@ -82,6 +105,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="nonconf"
               placeholder="Описание несоответствия|"
               rows={10}
+              onChange={handleChange}
               required
             />
             <input
@@ -89,6 +113,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="report"
               type="text"
               placeholder="Источник информации о несоответствии|"
+              onChange={handleChange}
               required
             />
             <input
@@ -96,6 +121,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               name="report_date"
               id="report_date"
               title="Выберите дату утверждения источника"
+              onChange={handleChange}
               required
             />
           </div>
@@ -108,21 +134,25 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
                 name="analysis_start_date"
                 id="analysis_start_date"
                 title="Выберите дату начала проведения анализа"
+                onChange={handleChange}
+                required
               />
               <input
                 type="date"
                 name="analysis_finish_date"
                 id="analysis_finish_date"
                 title="Выберите дату окончания проведения анализа"
+                onChange={handleChange}
+                required
               />
             </div>
 
-            <select name="head_auditor" id="head_auditor">
+            <select name="head_auditor" id="head_auditor" onChange={handleChange} required>
               <option value="">...выбрать главного аудитора из базы</option>
               <option value="">Разумнева Н.П.</option>
             </select>
 
-            <select name="auditor" id="auditor">
+            <select name="auditor" id="auditor" onChange={handleChange} required>
               <option value="">...выбрать аудитора из базы</option>
               <option value="">Алтаева О.Ю.</option>
               <option value="">Ткачук Н.С.</option>
@@ -135,6 +165,8 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="reason"
               placeholder="Причины несоответствия, определенные по результатам анализа|"
               rows={10}
+              onChange={handleChange}
+              required
             />
           </div>
 
@@ -148,6 +180,8 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="correction"
               placeholder="Описание коррекции|"
               rows={10}
+              onChange={handleChange}
+              required
             />
             <div className={styles.oneLineText}>
               <input
@@ -155,20 +189,27 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
                 name="correction_date"
                 id="correction_date"
                 title="Выберите дату внедрения коррекции"
+                onChange={handleChange}
+                required
               />
               <a href="#">Сменить на текстовое поле</a>
             </div>
 
-            <select name="resp_person_correction" id="resp_person_correction">
+            <select
+              name="resp_person_correction"
+              id="resp_person_correction"
+              onChange={handleChange}
+              required
+            >
               <option value="">...выбрать ответственное лицо из базы</option>
-              <option value="">Матвеева М.А.</option>
+              <option value="">Матвеева М.A.</option>
               <option value="">Семенов К.С.</option>
               <option value="">...</option>
               <option value="">Курженков С.А.</option>
             </select>
             <a href="#">Добавить ответственное лицо</a>
 
-            <select name="department" id="department" required>
+            <select name="department" id="department" onChange={handleChange} required>
               <option value="">...выбрать ответственное подразделение из базы</option>
               <option value="">НПО</option>
               <option value="">НПГС</option>
@@ -188,6 +229,8 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="corrective_action"
               placeholder="Описание корректирующего действия||"
               rows={10}
+              onChange={handleChange}
+              required
             />
             <div className={styles.oneLineText}>
               <input
@@ -195,11 +238,18 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
                 name="corrective_action_date"
                 id="corrective_action_date"
                 title="Выберите дату внедрения корректирующего действия"
+                onChange={handleChange}
+                required
               />
               <a href="#">Сменить на текстовое поле</a>
             </div>
 
-            <select name="resp_person_corrective_action" id="resp_person_corrective_action">
+            <select
+              name="resp_person_corrective_action"
+              id="resp_person_corrective_action"
+              onChange={handleChange}
+              required
+            >
               <option value="">...выбрать ответственное лицо из базы</option>
               <option value="">Матвеева М.А.</option>
               <option value="">Семенов К.С.</option>
@@ -208,7 +258,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             </select>
             <a href="#">Добавить ответственное лицо</a>
 
-            <select name="department" id="department" required>
+            <select name="department" id="department" onChange={handleChange} required>
               <option value="">...выбрать ответственное подразделение из базы</option>
               <option value="">НПО</option>
               <option value="">НПГС</option>
@@ -218,9 +268,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             <a href="#">Добавить ответственное подразделение</a>
           </div>
           <div className={styles.buttonsBlock}>
-            <button type="submit" onClick={onClose}>
-              Сохранить и закрыть
-            </button>
+            <button type="submit">Сохранить и закрыть</button>
           </div>
         </form>
       </div>
