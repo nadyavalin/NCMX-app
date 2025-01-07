@@ -1,4 +1,4 @@
-export const CloseButton = () => (
+export const CrossCloseButton = () => (
   <svg width="22px" height="22px" viewBox="0 0 19 19" fill="none">
     <g id="close_btn">
       <path

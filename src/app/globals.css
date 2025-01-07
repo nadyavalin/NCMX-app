@@ -114,7 +114,7 @@ select {
 
 table {
   width: 100%;
-  border: 2px solid var(--table-color);
+  border: none;
   border-radius: 8px;
   font-size: 13px;
 }
