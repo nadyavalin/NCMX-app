@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { ItemRequestPOST } from "@components/types";
+import { sendInconsistencyRequest } from "@api/api";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 
@@ -40,37 +41,13 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formatDate = (dateString: string): string | null => {
-      if (!dateString) return null;
-      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-      return datePattern.test(dateString) ? dateString : null;
-    };
-
-    const validatedFormData = {
-      ...formData,
-      analysis_start_date: formatDate(formData.analysis_start_date),
-      correction_date: formatDate(formData.correction_date),
-      corrective_action_date: formatDate(formData.corrective_action_date),
-    };
-
-    console.log("Request data:", validatedFormData);
-
     try {
-      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validatedFormData),
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
+      const result = await sendInconsistencyRequest(formData);
       console.log("Success: ", result);
       onClose();
+      window.location.reload();
     } catch (error) {
-      console.error("Error submitting form: ", error);
+      console.error("Error during API call: ", error);
     }
   };
 
