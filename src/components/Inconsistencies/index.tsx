@@ -8,6 +8,7 @@ import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
+import { ItemResponseGET } from "@components/types";
 
 export const Inconsistencies = () => {
   const { items, loading, error } = useFetchItems();
@@ -104,7 +105,7 @@ export const Inconsistencies = () => {
                   </td>
                 </tr>
               ) : (
-                items.map((item) => (
+                items.map((item: ItemResponseGET) => (
                   <tr key={item.id}>
                     <td>{item.id}</td>
                     <td>{item.num_nonconf}</td>

@@ -1,7 +1,6 @@
 import { FormEvent, useState } from "react";
-
+import { ItemRequestPOST } from "@components/types";
 import styles from "./styles.module.css";
-import { Item } from "@components/types";
 import { ModalComponent } from "../modalComponent";
 
 interface ModalProps {
@@ -10,22 +9,23 @@ interface ModalProps {
 }
 
 export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
-  const [formData, setFormData] = useState<Item>({
-    id: 1,
-    num_nonconf: "",
+  const [formData, setFormData] = useState<ItemRequestPOST>({
+    num_nonconf: 0,
     norm_doc: "",
     nonconf: "",
     report: "",
-    analysis_start_date: "",
+    analysis_start_date: "0000-00-00",
     head_auditor: "",
     reason: "",
     correction: "",
-    correction_date: "",
+    correction_date: "0000-00-00",
     resp_person_correction: "",
     corrective_action: "",
-    corrective_action_date: "",
+    corrective_action_date: "0000-00-00",
     resp_person_corrective_action: "",
   });
+
+  const csrfToken = "8XLlxfUJYA2Cxqjok08FXeLpahsY6Il8ecoELILWg61afrkA9sRvqnyyVYstOTev";
 
   if (!isOpen) {
     return null;
@@ -35,25 +35,42 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    const updatedValue = name === "num_nonconf" ? parseInt(value, 10) : value;
+    setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const formatDate = (dateString: string): string | null => {
+      if (!dateString) return null;
+      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+      return datePattern.test(dateString) ? dateString : null;
+    };
+
+    const validatedFormData = {
+      ...formData,
+      analysis_start_date: formatDate(formData.analysis_start_date),
+      correction_date: formatDate(formData.correction_date),
+      corrective_action_date: formatDate(formData.corrective_action_date),
+    };
+
+    console.log("Request data:", validatedFormData);
+
     try {
-      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/", {
+      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/?format=api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(validatedFormData),
       });
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log(result);
+      console.log("Success: ", result);
       onClose();
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -67,26 +84,19 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <h4>Заполните форму для внесения несоответствия в Реестр</h4>
           <div className={styles.nonConfNumberInputBlock}>
             <label htmlFor="num_nonconf">Номер несоответствия:</label>
-            <input
-              type="text"
-              name="num_nonconf"
-              id="num_nonconf"
-              onChange={handleChange}
-              required
-            />
+            <input type="number" name="num_nonconf" id="num_nonconf" onChange={handleChange} />
           </div>
         </div>
 
         <div className={styles.modalInternalBlocks}>
           <p>1. Основная информация о несоответствии</p>
-          <select name="norm_doc" id="norm_doc" onChange={handleChange} required>
+          <select name="norm_doc" id="norm_doc" onChange={handleChange}>
             <option value="">...выбрать нормативный документ из базы</option>
-            <option value="">А1</option>
-            <option value="">А2 </option>
-            <option value="">А3</option>
-            <option value="">А4</option>
-            <option value="">...</option>
-            <option value="">А14</option>
+            <option value="А1">А1</option>
+            <option value="А2">А2</option>
+            <option value="А3">А3</option>
+            <option value="А4">А4</option>
+            <option value="А14">А14</option>
           </select>
           <a href="#">Добавить НД</a>
           <input
@@ -94,7 +104,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             type="text"
             placeholder="...номер пункта нормативного документа|"
             onChange={handleChange}
-            required
           />
           <textarea
             name="nonconf"
@@ -102,7 +111,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             placeholder="Описание несоответствия|"
             rows={10}
             onChange={handleChange}
-            required
           />
           <input
             name="report"
@@ -110,7 +118,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             type="text"
             placeholder="Источник информации о несоответствии|"
             onChange={handleChange}
-            required
           />
           <input
             type="date"
@@ -118,7 +125,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             id="report_date"
             title="Выберите дату утверждения источника"
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -131,7 +137,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="analysis_start_date"
               title="Выберите дату начала проведения анализа"
               onChange={handleChange}
-              required
             />
             <input
               type="date"
@@ -139,21 +144,20 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="analysis_finish_date"
               title="Выберите дату окончания проведения анализа"
               onChange={handleChange}
-              required
             />
           </div>
 
-          <select name="head_auditor" id="head_auditor" onChange={handleChange} required>
+          <select name="head_auditor" id="head_auditor" onChange={handleChange}>
             <option value="">...выбрать главного аудитора из базы</option>
-            <option value="">Разумнева Н.П.</option>
+            <option value="Разумнева Н.П.">Разумнева Н.П.</option>
           </select>
 
-          <select name="auditor" id="auditor" onChange={handleChange} required>
+          <select name="auditor" id="auditor" onChange={handleChange}>
             <option value="">...выбрать аудитора из базы</option>
-            <option value="">Алтаева О.Ю.</option>
-            <option value="">Ткачук Н.С.</option>
-            <option value="">Морозова Е.</option>
-            <option value="">Зюзева Е.</option>
+            <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
+            <option value="Ткачук Н.С.">Ткачук Н.С.</option>
+            <option value="Морозова Е.">Морозова Е.</option>
+            <option value="Зюзева Е.">Зюзева Е.</option>
           </select>
           <a href="#">Добавить аудитора</a>
           <textarea
@@ -162,7 +166,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             placeholder="Причины несоответствия, определенные по результатам анализа|"
             rows={10}
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -177,7 +180,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             placeholder="Описание коррекции|"
             rows={10}
             onChange={handleChange}
-            required
           />
           <div className={styles.oneLineText}>
             <input
@@ -186,31 +188,24 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="correction_date"
               title="Выберите дату внедрения коррекции"
               onChange={handleChange}
-              required
             />
             <a href="#">Сменить на текстовое поле</a>
           </div>
 
-          <select
-            name="resp_person_correction"
-            id="resp_person_correction"
-            onChange={handleChange}
-            required
-          >
+          <select name="resp_person_correction" id="resp_person_correction" onChange={handleChange}>
             <option value="">...выбрать ответственное лицо из базы</option>
-            <option value="">Матвеева М.A.</option>
-            <option value="">Семенов К.С.</option>
-            <option value="">...</option>
-            <option value="">Курженков С.А.</option>
+            <option value="Матвеева М.A.">Матвеева М.A.</option>
+            <option value="Семенов К.С.">Семенов К.С.</option>
+            <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
           <a href="#">Добавить ответственное лицо</a>
 
-          <select name="department" id="department" onChange={handleChange} required>
+          <select name="department" id="department" onChange={handleChange}>
             <option value="">...выбрать ответственное подразделение из базы</option>
-            <option value="">НПО</option>
-            <option value="">НПГС</option>
-            <option value="">...</option>
-            <option value="">ПП ФЭИС</option>
+            <option value="НПО">НПО</option>
+            <option value="НПГС">НПГС</option>
+            <option value="ПП СОК">ПП СОК</option>
+            <option value="ПП ФЭИС">ПП ФЭИС</option>
           </select>
           <a href="#">Добавить ответственное подразделение</a>
         </div>
@@ -226,7 +221,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             placeholder="Описание корректирующего действия||"
             rows={10}
             onChange={handleChange}
-            required
           />
           <div className={styles.oneLineText}>
             <input
@@ -235,7 +229,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="corrective_action_date"
               title="Выберите дату внедрения корректирующего действия"
               onChange={handleChange}
-              required
             />
             <a href="#">Сменить на текстовое поле</a>
           </div>
@@ -244,22 +237,20 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             name="resp_person_corrective_action"
             id="resp_person_corrective_action"
             onChange={handleChange}
-            required
           >
             <option value="">...выбрать ответственное лицо из базы</option>
-            <option value="">Матвеева М.А.</option>
-            <option value="">Семенов К.С.</option>
-            <option value="">...</option>
-            <option value="">Курженков С.А.</option>
+            <option value="Матвеева М.А.">Матвеева М.А.</option>
+            <option value="Семенов К.С.">Семенов К.С.</option>
+            <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
           <a href="#">Добавить ответственное лицо</a>
 
-          <select name="department" id="department" onChange={handleChange} required>
+          <select name="department" id="department" onChange={handleChange}>
             <option value="">...выбрать ответственное подразделение из базы</option>
-            <option value="">НПО</option>
-            <option value="">НПГС</option>
-            <option value="">...</option>
-            <option value="">ПП ФЭИС</option>
+            <option value="НПО">НПО</option>
+            <option value="НПГС">НПГС</option>
+            <option value="ПП СОК">ПП СОК</option>
+            <option value="ПП ФЭИС">ПП ФЭИС</option>
           </select>
           <a href="#">Добавить ответственное подразделение</a>
         </div>
