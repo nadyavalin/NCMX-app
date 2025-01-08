@@ -1,5 +1,6 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
+import { useFetchItems } from "@api/api";
 
 interface ModalProps {
   isOpen: boolean;
@@ -7,44 +8,38 @@ interface ModalProps {
 }
 
 export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalProps) => {
+  const { items, loading, error } = useFetchItems();
+
   if (!isOpen) {
     return null;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <h3>История комментариев к несоответствию num_nonconf</h3>
-      <div className={styles.commentCard}>
-        <div className={styles.authorAndDate}>
-          <p>
-            Автор: <b>Ткачук Н.С.</b>
-          </p>
-          <p>
-            Дата: <b>ЧЧ.ММ.ГГГГ</b>
-          </p>
-        </div>
-        <p>
-          Регистрация сводных результатов операционного контроля по критериям, связанным с браком
-          поставщика, осуществляется в Реестре партий до и после ВК. Технологи НПГС ознакомлены с
-          требованиями регламента процесса А9.5 по электронной почте.
-        </p>
-      </div>
-
-      <div className={styles.commentCard}>
-        <div className={styles.authorAndDate}>
-          <p>
-            Автор: <b>Ткачук Н.С.</b>
-          </p>
-          <p>
-            Дата: <b>ЧЧ.ММ.ГГГГ</b>
-          </p>
-        </div>
-        <p>
-          Регистрация сводных результатов операционного контроля по критериям, связанным с браком
-          поставщика, осуществляется в Реестре партий до и после ВК. Технологи НПГС ознакомлены с
-          требованиями регламента процесса А9.5 по электронной почте.
-        </p>
-      </div>
+      {items.map((item) => (
+        <>
+          <div className={styles.commentCard} key={item.id}>
+            <div className={styles.authorAndDate}>
+              <p>
+                Автор: <b>{item.comment_author}</b>
+              </p>
+              <p>
+                Дата: <b>{item.comment_date}</b>
+              </p>
+            </div>
+            <p>{item.comment_text}</p>
+          </div>
+        </>
+      ))}
       <button onClick={onClose}>Закрыть</button>
     </ModalComponent>
   );

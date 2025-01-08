@@ -15,6 +15,9 @@ export interface ItemResponseGET {
   corrective_action: string;
   corrective_action_date: DateString;
   resp_person_corrective_action: string;
+  comment_date: DateString;
+  comment_author: string;
+  comment_text: string;
 }
 
 export interface ItemRequestPOST {
@@ -31,4 +34,11 @@ export interface ItemRequestPOST {
   corrective_action: string;
   corrective_action_date: string;
   resp_person_corrective_action: string;
+}
+
+export interface ItemCommentRequestPOST {
+  id: number;
+  comment_date: string;
+  comment_author: string;
+  comment_text: string;
 }

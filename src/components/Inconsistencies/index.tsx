@@ -127,6 +127,7 @@ export const Inconsistencies = () => {
                           Добавить комментарий
                         </a>
                         <InconsistenciesCommentsModal
+                          currentID={item.id}
                           isOpen={isModalCommentsOpen}
                           onClose={closeModalComments}
                         />
