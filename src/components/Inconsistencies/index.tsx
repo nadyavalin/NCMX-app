@@ -68,7 +68,7 @@ export const Inconsistencies = () => {
 
           <input type="text" placeholder="Поиск..." />
 
-          <button>Получить данные</button>
+          <button onClick={() => window.location.reload()}>Получить данные</button>
         </section>
 
         <section className="inconsistenciesTableSection">

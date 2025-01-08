@@ -25,8 +25,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     resp_person_corrective_action: "",
   });
 
-  const csrfToken = "8XLlxfUJYA2Cxqjok08FXeLpahsY6Il8ecoELILWg61afrkA9sRvqnyyVYstOTev";
-
   if (!isOpen) {
     return null;
   }
@@ -58,11 +56,10 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     console.log("Request data:", validatedFormData);
 
     try {
-      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/?format=api", {
+      const response = await fetch("http://178.66.48.32:8000/ncmx_app/api/ncmx/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
         },
         body: JSON.stringify(validatedFormData),
       });
