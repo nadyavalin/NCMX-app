@@ -115,7 +115,6 @@ select {
 table {
   width: 100%;
   border: none;
-  border-radius: 8px;
   font-size: 13px;
 }
 
@@ -126,7 +125,7 @@ table thead tr th {
 table thead tr th,
 table tbody tr td {
   border: 1px solid var(--table-color);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 3px;
 }
 
