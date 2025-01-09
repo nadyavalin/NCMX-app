@@ -1,3 +1,11 @@
+export interface IdState {
+  currentID: number | null;
+}
+
+export interface RootState {
+  id: IdState;
+}
+
 type DateString = `${number}-${number}-${number}`;
 
 export interface ItemResponseGET {
@@ -37,7 +45,7 @@ export interface ItemRequestPOST {
 }
 
 export interface ItemCommentRequestPOST {
-  id: number;
+  id: number | null;
   comment_date: string;
   comment_author: string;
   comment_text: string;

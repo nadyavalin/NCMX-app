@@ -3,6 +3,7 @@ import { ModalComponent } from "../modalComponent";
 import { FormEvent, useState } from "react";
 import { ItemCommentRequestPOST } from "@components/types";
 import { sendCommentInconsistencyRequest } from "@api/api";
+// import { useSelector } from "react-redux";
 
 interface ModalProps {
   currentID: number | null;
@@ -11,16 +12,23 @@ interface ModalProps {
 }
 
 export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) => {
+  // const currentID = useSelector((state: RootState) => state.id.currentID);
+
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
-    id: 1,
+    id: 1, // currentID
     comment_date: "0000-00-00",
     comment_author: "",
     comment_text: "",
   });
 
-  if (!isOpen) {
-    return null;
-  }
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       id: currentID,
+  //     }));
+  //   }
+  // }, [isOpen, currentID]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -31,6 +39,11 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (formData.id === null) {
+      console.error("ID cannot be null");
+      return;
+    }
 
     try {
       const result = await sendCommentInconsistencyRequest(formData);
