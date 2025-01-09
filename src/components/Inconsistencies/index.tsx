@@ -8,10 +8,10 @@ import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
-import { ItemResponseGET } from "@components/types";
 
 export const Inconsistencies = () => {
   const { items, loading, error } = useFetchItems();
+  const [currentInconsistencyId, setCurrentInconsistencyId] = useState<number | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isModalCommentsOpen, setIsModalCommentsOpen] = useState<boolean>(false);
@@ -21,7 +21,10 @@ export const Inconsistencies = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const openModalComments = () => setIsModalCommentsOpen(true);
+  const openModalComments = (id: number) => {
+    setCurrentInconsistencyId(id);
+    setIsModalCommentsOpen(true);
+  };
   const closeModalComments = () => setIsModalCommentsOpen(false);
 
   const openModalHistoryComments = () => setIsModalHistoryCommentsOpen(true);
@@ -105,7 +108,7 @@ export const Inconsistencies = () => {
                   </td>
                 </tr>
               ) : (
-                items.map((item: ItemResponseGET) => (
+                items.map((item) => (
                   <tr key={item.id}>
                     <td>{item.id}</td>
                     <td>{item.num_nonconf}</td>
@@ -123,11 +126,11 @@ export const Inconsistencies = () => {
                     <td>{item.resp_person_corrective_action}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
-                        <a href="#" onClick={openModalComments}>
+                        <a href="#" onClick={() => openModalComments(item.id)}>
                           Добавить комментарий
                         </a>
                         <InconsistenciesCommentsModal
-                          currentID={item.id}
+                          currentID={currentInconsistencyId}
                           isOpen={isModalCommentsOpen}
                           onClose={closeModalComments}
                         />

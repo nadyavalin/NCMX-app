@@ -5,14 +5,14 @@ import { ItemCommentRequestPOST } from "@components/types";
 import { sendCommentInconsistencyRequest } from "@api/api";
 
 interface ModalProps {
-  currentID: number;
+  currentID: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const InconsistenciesCommentsModal = ({ currentID, isOpen, onClose }: ModalProps) => {
+export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) => {
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
-    id: currentID,
+    id: 1,
     comment_date: "0000-00-00",
     comment_author: "",
     comment_text: "",
@@ -46,9 +46,20 @@ export const InconsistenciesCommentsModal = ({ currentID, isOpen, onClose }: Mod
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <h3>Заполните форму для внесения комментария к несоответствию</h3>
-        <input type="date" name="comment_date" id="comment_date" onChange={handleChange} />
+        <input
+          type="date"
+          name="comment_date"
+          id="comment_date"
+          value={formData.comment_date}
+          onChange={handleChange}
+        />
 
-        <select name="comment_author" id="comment_author" onChange={handleChange}>
+        <select
+          name="comment_author"
+          id="comment_author"
+          value={formData.comment_author}
+          onChange={handleChange}
+        >
           <option value="">...выбрать автора комментария из базы</option>
           <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
           <option value="Ткачук Н.С.">Ткачук Н.С.</option>
@@ -59,6 +70,7 @@ export const InconsistenciesCommentsModal = ({ currentID, isOpen, onClose }: Mod
           id="comment_text"
           placeholder="Оставить комментарий|"
           rows={10}
+          value={formData.comment_text}
           onChange={handleChange}
         />
 

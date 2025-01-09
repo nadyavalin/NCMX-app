@@ -26,19 +26,17 @@ export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalPr
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <h3>История комментариев к несоответствию num_nonconf</h3>
       {items.map((item) => (
-        <>
-          <div className={styles.commentCard} key={item.id}>
-            <div className={styles.authorAndDate}>
-              <p>
-                Автор: <b>{item.comment_author}</b>
-              </p>
-              <p>
-                Дата: <b>{item.comment_date}</b>
-              </p>
-            </div>
-            <p>{item.comment_text}</p>
+        <div className={styles.commentCard} key={item.id}>
+          <div className={styles.authorAndDate}>
+            <p>
+              Автор: <b>{item.comment_author}</b>
+            </p>
+            <p>
+              Дата: <b>{item.comment_date}</b>
+            </p>
           </div>
-        </>
+          <p>{item.comment_text}</p>
+        </div>
       ))}
       <button onClick={onClose}>Закрыть</button>
     </ModalComponent>
