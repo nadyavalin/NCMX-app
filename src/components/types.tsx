@@ -23,6 +23,10 @@ export interface ItemResponseGET {
   corrective_action: string;
   corrective_action_date: DateString;
   resp_person_corrective_action: string;
+}
+
+export interface ItemCommentResponseGET {
+  id: number;
   comment_date: DateString;
   comment_author: string;
   comment_text: string;

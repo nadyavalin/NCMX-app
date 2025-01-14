@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
-import { useFetchItems } from "@api/api";
+import { useFetchCommentsItems } from "@api/api";
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,7 +8,7 @@ interface ModalProps {
 }
 
 export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalProps) => {
-  const { items, loading, error } = useFetchItems();
+  const { items, loading, error } = useFetchCommentsItems();
 
   if (!isOpen) {
     return null;
