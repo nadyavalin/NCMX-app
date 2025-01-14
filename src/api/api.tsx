@@ -34,7 +34,7 @@ export const useFetchItems = () => {
 
 export const sendInconsistencyRequest = async (formData: ItemRequestPOST): Promise<void> => {
   try {
-    const response = await axios.post("http://178.66.48.32:8000/ncmx_app/api/ncmx/", formData, {
+    const response = await axios.post("http://192.168.44.122:8000/ncmx_app/api/ncmx-table/", formData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -55,7 +55,7 @@ export const sendCommentInconsistencyRequest = async (
   formData: ItemCommentRequestPOST,
 ): Promise<void> => {
   try {
-    const response = await axios.post("http://178.66.48.32:8000/ncmx_app/api/ncmx/", formData, {
+    const response = await axios.post("http://192.168.44.122:8000/ncmx_app/api/ncmx-comments/", formData, {
       headers: {
         "Content-Type": "application/json",
       },
