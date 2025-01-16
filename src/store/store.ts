@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import idReducer from "./idSlice";
+import numReducer from "./numSlice";
 import { RootState } from "@components/types";
 
 export const store = configureStore({
   reducer: {
-    id: idReducer,
+    num: numReducer,
   },
 });
 

@@ -1,34 +1,33 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useState } from "react";
-import { ItemCommentRequestPOST } from "@components/types";
+import { ItemCommentRequestPOST, RootState } from "@components/types";
 import { sendCommentInconsistencyRequest } from "@api/api";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 interface ModalProps {
-  currentID: number | null;
+  currentNumNonConf: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) => {
-  // const currentID = useSelector((state: RootState) => state.id.currentID);
+  const currentNumNonConf = useSelector((state: RootState) => state.num.currentNumNonConf);
 
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
-    id: 1, // currentID
-    comment_date: "0000-00-00",
     comment_author: "",
     comment_text: "",
+    auto_data: "0000-00-00",
+    num_nonconf: currentNumNonConf,
   });
-
   // useEffect(() => {
   //   if (isOpen) {
   //     setFormData((prevData) => ({
   //       ...prevData,
-  //       id: currentID,
+  //       id: currentNumNonConf,
   //     }));
   //   }
-  // }, [isOpen, currentID]);
+  // }, [isOpen, currentNumNonConf]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -40,8 +39,8 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (formData.id === null) {
-      console.error("ID cannot be null");
+    if (formData.num_nonconf === null) {
+      console.error("Inconsistency number should not be null");
       return;
     }
 
@@ -49,7 +48,6 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
       const result = await sendCommentInconsistencyRequest(formData);
       console.log("Success: ", result);
       onClose();
-      window.location.reload();
     } catch (error) {
       console.error("Error during API call: ", error);
     }
@@ -59,14 +57,6 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <h3>Заполните форму для внесения комментария к несоответствию</h3>
-        <input
-          type="date"
-          name="comment_date"
-          id="comment_date"
-          value={formData.comment_date}
-          onChange={handleChange}
-        />
-
         <select
           name="comment_author"
           id="comment_author"

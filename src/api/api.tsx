@@ -37,17 +37,17 @@ export const useFetchItems = () => {
   return { items, loading, error };
 };
 
-export const useFetchCommentsItems = () => {
-  const src = "http://192.168.44.122:8000/ncmx_app/api/ncmx-comments/";
-  const [items, setItems] = useState<ItemCommentResponseGET[]>([]);
+export const useFetchCommentsItems = (num_nonconf: number | null) => {
+  const src = `http://178.66.48.32:8000/ncmx_app/api/ncmx-comments/?num_nonconf=${num_nonconf}`;
+  const [comments, setComments] = useState<ItemCommentResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchItems = async () => {
+    const fetchComments = async () => {
       try {
         const response = await axios.get<ItemCommentResponseGET[]>(src);
-        setItems(response.data);
+        setComments(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setError(error.message || "An error occurred while fetching items");
@@ -61,13 +61,15 @@ export const useFetchCommentsItems = () => {
       }
     };
 
-    fetchItems();
-  }, []);
+    fetchComments();
+  }, [src]);
 
-  return { items, loading, error };
+  return { comments, loading, error };
 };
 
-export const sendInconsistencyRequest = async (formData: ItemRequestPOST): Promise<void> => {
+export const sendInconsistencyRequest = async (
+  formData: ItemRequestPOST,
+): Promise<ItemResponseGET> => {
   try {
     const response = await axios.post(
       "http://178.66.48.32:8000/ncmx_app/api/ncmx-table/",
@@ -92,10 +94,10 @@ export const sendInconsistencyRequest = async (formData: ItemRequestPOST): Promi
 
 export const sendCommentInconsistencyRequest = async (
   formData: ItemCommentRequestPOST,
-): Promise<void> => {
+): Promise<ItemCommentResponseGET> => {
   try {
     const response = await axios.post(
-      "http://192.168.44.122:8000/ncmx_app/api/ncmx-comments/",
+      "http://178.66.48.32:8000/ncmx_app/api/ncmx-comments/",
       formData,
       {
         headers: {

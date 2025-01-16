@@ -1,9 +1,9 @@
-export interface IdState {
-  currentID: number | null;
+export interface NumNonConfState {
+  currentNumNonConf: number | null;
 }
 
 export interface RootState {
-  id: IdState;
+  num: NumNonConfState;
 }
 
 type DateString = `${number}-${number}-${number}`;
@@ -27,9 +27,10 @@ export interface ItemResponseGET {
 
 export interface ItemCommentResponseGET {
   id: number;
-  comment_date: DateString;
   comment_author: string;
   comment_text: string;
+  auto_data: DateString;
+  num_nonconf: number;
 }
 
 export interface ItemRequestPOST {
@@ -49,8 +50,8 @@ export interface ItemRequestPOST {
 }
 
 export interface ItemCommentRequestPOST {
-  id: number | null;
-  comment_date: string;
   comment_author: string;
   comment_text: string;
+  auto_data: DateString;
+  num_nonconf: number | null;
 }

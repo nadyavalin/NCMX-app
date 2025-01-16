@@ -3,12 +3,17 @@ import { ModalComponent } from "../modalComponent";
 import { useFetchCommentsItems } from "@api/api";
 
 interface ModalProps {
+  currentNumConf: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalProps) => {
-  const { items, loading, error } = useFetchCommentsItems();
+export const InconsistenciesHistoryCommentsModal = ({
+  currentNumConf,
+  isOpen,
+  onClose,
+}: ModalProps) => {
+  const { comments, loading, error } = useFetchCommentsItems(currentNumConf);
 
   if (!isOpen) {
     return null;
@@ -25,17 +30,17 @@ export const InconsistenciesHistoryCommentsModal = ({ isOpen, onClose }: ModalPr
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <h3>История комментариев к несоответствию num_nonconf</h3>
-      {items.map((item) => (
-        <div className={styles.commentCard} key={item.id}>
+      {comments.map((comment) => (
+        <div className={styles.commentCard} key={comment.id}>
           <div className={styles.authorAndDate}>
             <p>
-              Автор: <b>{item.comment_author}</b>
+              Автор: <b>{comment.comment_author}</b>
             </p>
             <p>
-              Дата: <b>{item.comment_date}</b>
+              Дата: <b>{comment.auto_data}</b>
             </p>
           </div>
-          <p>{item.comment_text}</p>
+          <p>{comment.comment_text}</p>
         </div>
       ))}
       <button onClick={onClose}>Закрыть</button>
