@@ -8,7 +8,7 @@ import {
 } from "@components/types";
 
 export const useFetchItems = () => {
-  const src = "http://192.168.44.122:8000/ncmx_app/api/ncmx-table/";
+  const src = "http://178.66.48.32:8000/ncmx_app/api/ncmx-table/";
   const [items, setItems] = useState<ItemResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ export const useFetchItems = () => {
 };
 
 export const useFetchCommentsItems = () => {
-  const src = "http://192.168.44.122:8000/ncmx_app/api/ncmx-table/";
+  const src = "http://192.168.44.122:8000/ncmx_app/api/ncmx-comments/";
   const [items, setItems] = useState<ItemCommentResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export const useFetchCommentsItems = () => {
 export const sendInconsistencyRequest = async (formData: ItemRequestPOST): Promise<void> => {
   try {
     const response = await axios.post(
-      "http://192.168.44.122:8000/ncmx_app/api/ncmx-table/",
+      "http://178.66.48.32:8000/ncmx_app/api/ncmx-table/",
       formData,
       {
         headers: {
