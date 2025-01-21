@@ -1,19 +1,42 @@
-import { NumNonConfState } from "@components/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: NumNonConfState = {
-  currentNum: null,
+interface InconsistencyNumberState {
+  currentInconsistencyNumber: number | null;
+  isModalCommentsOpen: boolean;
+  isModalHistoryCommentsOpen: boolean;
+  isModalEstimateResultOpen: boolean;
+}
+
+const initialState: InconsistencyNumberState = {
+  currentInconsistencyNumber: null,
+  isModalCommentsOpen: false,
+  isModalHistoryCommentsOpen: false,
+  isModalEstimateResultOpen: false,
 };
 
 const numSlice = createSlice({
   name: "num",
   initialState,
   reducers: {
-    setCurrentNumNonConf(state, action: PayloadAction<number | null>) {
-      state.currentNum = action.payload;
+    setCurrentInconsistencyNumber(state, action: PayloadAction<number | null>) {
+      state.currentInconsistencyNumber = action.payload;
+    },
+    toggleModalComments(state, action: PayloadAction<boolean>) {
+      state.isModalCommentsOpen = action.payload;
+    },
+    toggleModalHistoryComments(state, action: PayloadAction<boolean>) {
+      state.isModalHistoryCommentsOpen = action.payload;
+    },
+    toggleModalEstimateResult(state, action: PayloadAction<boolean>) {
+      state.isModalEstimateResultOpen = action.payload;
     },
   },
 });
 
-export const { setCurrentNumNonConf } = numSlice.actions;
+export const {
+  setCurrentInconsistencyNumber,
+  toggleModalComments,
+  toggleModalHistoryComments,
+  toggleModalEstimateResult,
+} = numSlice.actions;
 export default numSlice.reducer;

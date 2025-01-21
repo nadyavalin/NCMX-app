@@ -8,37 +8,74 @@ import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCurrentInconsistencyNumber,
+  toggleModalComments,
+  toggleModalEstimateResult,
+  toggleModalHistoryComments,
+} from "../../store/numSlice";
+import { RootState } from "@components/types";
 
 export const Inconsistencies = () => {
+  const dispatch = useDispatch();
+  const {
+    currentInconsistencyNumber,
+    isModalCommentsOpen,
+    isModalHistoryCommentsOpen,
+    isModalEstimateResultOpen,
+  } = useSelector((state: RootState) => state.num);
+
   const { items, loading, error } = useFetchItems();
-  const [currentInconsistencyId, setCurrentInconsistencyId] = useState<number | null>(null);
-
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isModalCommentsOpen, setIsModalCommentsOpen] = useState<boolean>(false);
-  const [isModalHistoryCommentsOpen, setIsModalHistoryCommentsOpen] = useState<boolean>(false);
-  const [isModalEstimateResultOpen, setIsModalEstimateResultOpen] = useState<boolean>(false);
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const openModalComments = (id: number) => {
-    setCurrentInconsistencyId(id);
-    setIsModalCommentsOpen(true);
+  const handleOpenModal = (
+    modalType: "comments" | "historyComments" | "estimateResult",
+    num: number | null = null,
+  ) => {
+    if (num !== null) {
+      dispatch(setCurrentInconsistencyNumber(num));
+    }
+
+    switch (modalType) {
+      case "comments":
+        dispatch(toggleModalComments(true));
+        break;
+      case "historyComments":
+        dispatch(toggleModalHistoryComments(true));
+        break;
+      case "estimateResult":
+        dispatch(toggleModalEstimateResult(true));
+        break;
+      default:
+        break;
+    }
   };
-  const closeModalComments = () => setIsModalCommentsOpen(false);
 
-  const openModalHistoryComments = () => setIsModalHistoryCommentsOpen(true);
-  const closeModalHistoryComments = () => setIsModalHistoryCommentsOpen(false);
-
-  const openModalEstimateResult = () => setIsModalEstimateResultOpen(true);
-  const closeModalEstimateResult = () => setIsModalEstimateResultOpen(false);
+  const handleCloseModal = (modalType: "comments" | "historyComments" | "estimateResult") => {
+    switch (modalType) {
+      case "comments":
+        dispatch(toggleModalComments(false));
+        break;
+      case "historyComments":
+        dispatch(toggleModalHistoryComments(false));
+        break;
+      case "estimateResult":
+        dispatch(toggleModalEstimateResult(false));
+        break;
+      default:
+        break;
+    }
+  };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Загрузка таблицы несоответствий...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>Ошибка: {error}</div>;
   }
 
   return (
@@ -52,7 +89,7 @@ export const Inconsistencies = () => {
           <select>
             <option value="orderNumber">фильтр по порядковому номеру</option>
             <option value="requirements">фильтр по требованиям НД</option>
-            <option value="requirements">фильтр по подразделению</option>
+            <option value="departments">фильтр по подразделению</option>
             <option value="responsibleForCorrection">
               фильтр по ответственному лицу за коррекцию
             </option>
@@ -60,7 +97,6 @@ export const Inconsistencies = () => {
               фильтр по ответственному лицу за кор.действие
             </option>
           </select>
-
           <select>
             <option value="">порядковые номера из базы</option>
             <option value="">НД из базы</option>
@@ -68,9 +104,7 @@ export const Inconsistencies = () => {
             <option value="">ФИО из базы</option>
             <option value="">ФИО из базы</option>
           </select>
-
           <input type="text" placeholder="Поиск..." />
-
           <button onClick={() => window.location.reload()}>Получить данные</button>
         </section>
 
@@ -78,7 +112,6 @@ export const Inconsistencies = () => {
           <table className="inconsistenciesTable">
             <thead>
               <tr>
-                <th rowSpan={2}>ID</th>
                 <th rowSpan={2}>№</th>
                 <th rowSpan={2}>Ссылки на пункты ISO 9001 / 80079-34 / НД</th>
                 <th rowSpan={2}>Описание несоответствия</th>
@@ -109,13 +142,12 @@ export const Inconsistencies = () => {
                 </tr>
               ) : (
                 items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
+                  <tr key={item.num_nonconf}>
                     <td>{item.num_nonconf}</td>
                     <td>{item.norm_doc}</td>
                     <td>{item.nonconf}</td>
                     <td>{item.report}</td>
-                    <td>{item.analysis_start_date}</td>
+                    <td>{item.analysis_finish_date}</td>
                     <td>{item.head_auditor}</td>
                     <td>{item.reason}</td>
                     <td>{item.correction}</td>
@@ -126,27 +158,34 @@ export const Inconsistencies = () => {
                     <td>{item.resp_person_corrective_action}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
-                        <a href="#" onClick={() => openModalComments(item.id)}>
+                        <a href="#" onClick={() => handleOpenModal("comments", item.num_nonconf)}>
                           Добавить комментарий
                         </a>
                         <InconsistenciesCommentsModal
-                          currentID={currentInconsistencyId}
+                          currentInconsistencyNumber={currentInconsistencyNumber}
                           isOpen={isModalCommentsOpen}
-                          onClose={closeModalComments}
+                          onClose={() => handleCloseModal("comments")}
                         />
-                        <a href="#" onClick={openModalHistoryComments}>
+                        <a
+                          href="#"
+                          onClick={() => handleOpenModal("historyComments", item.num_nonconf)}
+                        >
                           Посмотреть историю комментариев к несоответствию
                         </a>
                         <InconsistenciesHistoryCommentsModal
+                          currentInconsistencyNumber={currentInconsistencyNumber}
                           isOpen={isModalHistoryCommentsOpen}
-                          onClose={closeModalHistoryComments}
+                          onClose={() => handleCloseModal("historyComments")}
                         />
-                        <a href="#" onClick={openModalEstimateResult}>
+                        <a
+                          href="#"
+                          onClick={() => handleOpenModal("estimateResult", item.num_nonconf)}
+                        >
                           Провести оценку результативности для закрытия несоответствия
                         </a>
                         <InconsistenciesEstimateResultModal
                           isOpen={isModalEstimateResultOpen}
-                          onClose={closeModalEstimateResult}
+                          onClose={() => handleCloseModal("estimateResult")}
                         />
                       </div>
                     </td>

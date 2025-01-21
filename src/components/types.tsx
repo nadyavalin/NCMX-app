@@ -1,20 +1,23 @@
-export interface NumNonConfState {
-  currentNumNonConf: number | null;
+export interface InconsistencyNumberState {
+  currentInconsistencyNumber: number | null;
+  isModalCommentsOpen: boolean;
+  isModalHistoryCommentsOpen: boolean;
+  isModalEstimateResultOpen: boolean;
 }
 
 export interface RootState {
-  num: NumNonConfState;
+  num: InconsistencyNumberState;
 }
 
 type DateString = `${number}-${number}-${number}`;
 
 export interface ItemResponseGET {
-  id: number;
   num_nonconf: number;
   norm_doc: string;
   nonconf: string;
   report: string;
   analysis_start_date: DateString;
+  analysis_finish_date: DateString;
   head_auditor: string;
   reason: string;
   correction: string;
@@ -25,12 +28,20 @@ export interface ItemResponseGET {
   resp_person_corrective_action: string;
 }
 
+export interface APIResponse {
+  results: ItemResponseGET[];
+}
+
 export interface ItemCommentResponseGET {
   id: number;
+  num_nonconf: number;
   comment_author: string;
   comment_text: string;
   auto_data: DateString;
-  num_nonconf: number;
+}
+
+export interface APICommentsResponse {
+  results: ItemCommentResponseGET[];
 }
 
 export interface ItemRequestPOST {
@@ -50,8 +61,7 @@ export interface ItemRequestPOST {
 }
 
 export interface ItemCommentRequestPOST {
+  num_nonconf: number | null;
   comment_author: string;
   comment_text: string;
-  auto_data: DateString;
-  num_nonconf: number | null;
 }

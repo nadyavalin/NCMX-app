@@ -1,33 +1,34 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
-import { FormEvent, useState } from "react";
-import { ItemCommentRequestPOST, RootState } from "@components/types";
+import { FormEvent, useEffect, useState } from "react";
+import { ItemCommentRequestPOST } from "@components/types";
 import { sendCommentInconsistencyRequest } from "@api/api";
-import { useSelector } from "react-redux";
 
 interface ModalProps {
-  currentNumNonConf: number | null;
+  currentInconsistencyNumber: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) => {
-  const currentNumNonConf = useSelector((state: RootState) => state.num.currentNumNonConf);
-
+export const InconsistenciesCommentsModal = ({
+  currentInconsistencyNumber,
+  isOpen,
+  onClose,
+}: ModalProps) => {
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
+    num_nonconf: null,
     comment_author: "",
     comment_text: "",
-    auto_data: "0000-00-00",
-    num_nonconf: currentNumNonConf,
   });
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       id: currentNumNonConf,
-  //     }));
-  //   }
-  // }, [isOpen, currentNumNonConf]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prevData) => ({
+        ...prevData,
+        num_nonconf: currentInconsistencyNumber,
+      }));
+    }
+  }, [isOpen, currentInconsistencyNumber]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -48,6 +49,7 @@ export const InconsistenciesCommentsModal = ({ isOpen, onClose }: ModalProps) =>
       const result = await sendCommentInconsistencyRequest(formData);
       console.log("Success: ", result);
       onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Error during API call: ", error);
     }
