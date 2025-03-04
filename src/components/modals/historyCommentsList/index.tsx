@@ -14,11 +14,6 @@ export const InconsistenciesHistoryCommentsModal = ({
   onClose,
 }: ModalProps) => {
   const { comments, loading, error } = useFetchCommentsItems(currentInconsistencyNumber);
-
-  if (!isOpen) {
-    return null;
-  }
-
   if (loading) {
     return (
       <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>

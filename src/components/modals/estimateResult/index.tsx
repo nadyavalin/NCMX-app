@@ -7,10 +7,6 @@ interface ModalProps {
 }
 
 export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
-  if (!isOpen) {
-    return null;
-  }
-
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm}>
