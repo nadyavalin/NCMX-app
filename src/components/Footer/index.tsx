@@ -6,7 +6,7 @@ export const Footer = () => {
   return (
     <>
       <footer>
-        <div className={styles.text}>2024</div>
+        <div className={styles.text}>2025</div>
       </footer>
     </>
   );
