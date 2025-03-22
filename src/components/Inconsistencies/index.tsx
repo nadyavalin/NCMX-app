@@ -3,7 +3,7 @@
 import { useState } from "react";
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { useFetchItems } from "@api/api";
+import { useFetchItems } from "@/api/route";
 import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";

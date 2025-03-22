@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { ItemRequestPOST } from "@components/types";
-import { sendInconsistencyRequest } from "@api/api";
+import { sendInconsistencyRequest } from "@/api/route";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 

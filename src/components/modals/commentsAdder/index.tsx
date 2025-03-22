@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useEffect, useState } from "react";
 import { ItemCommentRequestPOST } from "@components/types";
-import { sendCommentInconsistencyRequest } from "@api/api";
+import { sendCommentInconsistencyRequest } from "@/api/route";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

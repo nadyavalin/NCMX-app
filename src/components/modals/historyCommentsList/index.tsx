@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
-import { useFetchCommentsItems } from "@api/api";
+import { useFetchCommentsItems } from "@/api/route";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

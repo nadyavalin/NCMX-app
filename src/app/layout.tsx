@@ -1,13 +1,9 @@
-"use client";
-
-// import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import ClientWrapper from "../components/ClientWrapper";
 import { Header } from "@components/Header";
 import { Footer } from "@components/Footer";
-import { Provider } from "react-redux";
-import { store } from "../store/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +15,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata: Metadata = {
-//   title: "NCMX App",
-//   description:
-//     "Non-Conformity Management Exchange (Обмен информацией об управлении несоответствиями)",
-// };
+export const metadata: Metadata = {
+  title: "NCMX App",
+  description:
+    "Non-Conformity Management Exchange (Обмен информацией об управлении несоответствиями)",
+};
 
 export default function RootLayout({
   children,
@@ -33,11 +29,9 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Provider store={store}>
-          <Header />
-          {children}
-          <Footer />
-        </Provider>
+        <Header />
+        <ClientWrapper>{children}</ClientWrapper>
+        <Footer />
       </body>
     </html>
   );

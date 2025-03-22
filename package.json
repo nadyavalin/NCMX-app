@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
-    "axios": "1.7.9",
+    "axios": "^1.8.4",
     "next": "^15.1.6",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1"
   },
