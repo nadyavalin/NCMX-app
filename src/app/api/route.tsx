@@ -9,8 +9,11 @@ import {
   ItemResponseGET,
 } from "@components/types";
 
+// const URL = "http://178.66.48.32:8000/"
+const URL = "http://127.0.0.1:8000/";
+
 export const useFetchItems = () => {
-  const src = "http://178.66.48.32:8000/ncmx_app/api/ncmx-table/";
+  const src = `${URL}ncmx_app/api/ncmx-table/`;
   const [items, setItems] = useState<ItemResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export const useFetchItems = () => {
     };
 
     fetchItems();
-  }, []);
+  }, [src]);
 
   return { items, loading, error };
 };
@@ -43,16 +46,13 @@ export const useFetchItems = () => {
 export const sendInconsistencyRequest = async (
   formData: ItemRequestPOST,
 ): Promise<ItemResponseGET> => {
+  const src = `${URL}ncmx_app/api/ncmx-table/`;
   try {
-    const response = await axios.post(
-      "http://178.66.48.32:8000/ncmx_app/api/ncmx-table/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const response = await axios.post(src, formData, {
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
     console.log("Success: ", response.data);
     return response.data;
   } catch (error) {
@@ -72,9 +72,9 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
 
   useEffect(() => {
     const fetchComments = async () => {
-      if (currentInconsistencyNumber === null) return;
+      const src = `${URL}ncmx_app/api/ncmx-comments/`;
 
-      const src = `http://178.66.48.32:8000/ncmx_app/api/ncmx-comments/`;
+      if (currentInconsistencyNumber === null) return;
       setLoading(true);
 
       try {
@@ -105,16 +105,13 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
 export const sendCommentInconsistencyRequest = async (
   formData: ItemCommentRequestPOST,
 ): Promise<ItemCommentResponseGET> => {
+  const src = `${URL}ncmx_app/api/ncmx-comments/`;
   try {
-    const response = await axios.post(
-      "http://178.66.48.32:8000/ncmx_app/api/ncmx-comments/",
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const response = await axios.post(src, formData, {
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
     console.log("Success: ", response.data);
     return response.data;
   } catch (error) {
