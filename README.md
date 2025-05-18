@@ -22,7 +22,7 @@
 - написать юнит-тесты для Django;
 - настроить логирование действий пользователей
 
-Подробная дорожная карта развития проекта доступна в [ROADMAP.md](./ROADMAP.md).
+Подробная дорожная карта развития проекта доступна в [ROADMAP.md](https://github.com/nadyavalin/NCMX-app/blob/develop/ROADMAP.md).
 
 Серверная часть построена на Django с PostgreSQL, а фронтенд — на Next.js. API доступен по адресу `http://localhost:8000/ncmx_app/api`.
 
