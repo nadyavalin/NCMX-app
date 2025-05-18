@@ -25,6 +25,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     corrective_action_date: "0000-00-00",
     resp_person_corrective_action: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   if (!isOpen) {
     return null;
@@ -34,12 +35,27 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
-    const updatedValue = name === "num_nonconf" ? parseInt(value, 10) : value;
+    const updatedValue = name === "num_nonconf" ? parseInt(value, 10) || 0 : value;
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (formData.num_nonconf <= 0) {
+      newErrors.num_nonconf = "Номер несоответствия должен быть больше 0";
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     try {
       const result = await sendInconsistencyRequest(formData);
@@ -48,17 +64,26 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
       window.location.reload();
     } catch (error) {
       console.error("Error during API call: ", error);
+      setErrors({ submit: "Ошибка при добавлении несоответствия. Попробуйте снова." });
     }
   };
 
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
+        {errors.submit && <p className={styles.error}>{errors.submit}</p>}
         <div className={styles.nonConfNumberBlock}>
           <h4>Заполните форму для внесения несоответствия в Реестр</h4>
           <div className={styles.nonConfNumberInputBlock}>
             <label htmlFor="num_nonconf">Номер несоответствия:</label>
-            <input type="number" name="num_nonconf" id="num_nonconf" onChange={handleChange} />
+            <input
+              type="number"
+              name="num_nonconf"
+              id="num_nonconf"
+              value={formData.num_nonconf || ""}
+              onChange={handleChange}
+            />
+            {errors.num_nonconf && <p className={styles.error}>{errors.num_nonconf}</p>}
           </div>
         </div>
 
@@ -174,7 +199,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           </select>
           <a href="#">Добавить ответственное лицо</a>
 
-          <select name="department" id="department" onChange={handleChange}>
+          <select name="department_correction" id="department_correction" onChange={handleChange}>
             <option value="">...выбрать ответственное подразделение из базы</option>
             <option value="НПО">НПО</option>
             <option value="НПГС">НПГС</option>
@@ -219,7 +244,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           </select>
           <a href="#">Добавить ответственное лицо</a>
 
-          <select name="department" id="department" onChange={handleChange}>
+          <select name="department_corrective_action" id="department_corrective_action" onChange={handleChange}>
             <option value="">...выбрать ответственное подразделение из базы</option>
             <option value="НПО">НПО</option>
             <option value="НПГС">НПГС</option>

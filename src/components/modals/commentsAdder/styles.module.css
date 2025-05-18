@@ -13,3 +13,14 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.submitError {
+  font-size: 12px;
+  color: var(--errors);
+  text-align: start;
+}
+
+/* временная мера */
+.div_area {
+  width: 97%;
+}

@@ -20,6 +20,7 @@ export const InconsistenciesCommentsModal = ({
     comment_author: "",
     comment_text: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (isOpen) {
@@ -27,6 +28,7 @@ export const InconsistenciesCommentsModal = ({
         ...prevData,
         num_nonconf: currentInconsistencyNumber,
       }));
+      setErrors({});
     }
   }, [isOpen, currentInconsistencyNumber]);
 
@@ -35,13 +37,29 @@ export const InconsistenciesCommentsModal = ({
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.comment_author) {
+      newErrors.comment_author = "Выберите автора комментария";
+    }
+    if (!formData.comment_text.trim()) {
+      newErrors.comment_text = "Введите текст комментария";
+    }
+    if (formData.num_nonconf === null) {
+      newErrors.num_nonconf = "Номер несоответствия обязателен";
+    }
+    return newErrors;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (formData.num_nonconf === null) {
-      console.error("Inconsistency number should not be null");
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
@@ -52,6 +70,7 @@ export const InconsistenciesCommentsModal = ({
       window.location.reload();
     } catch (error) {
       console.error("Error during API call: ", error);
+      setErrors({ submit: "Ошибка при отправке комментария. Попробуйте снова." });
     }
   };
 
@@ -59,6 +78,7 @@ export const InconsistenciesCommentsModal = ({
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <h3>Заполните форму для внесения комментария к несоответствию</h3>
+        {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         <select
           name="comment_author"
           id="comment_author"
@@ -69,7 +89,7 @@ export const InconsistenciesCommentsModal = ({
           <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
           <option value="Ткачук Н.С.">Ткачук Н.С.</option>
         </select>
-
+        {errors.comment_author && <p className={styles.submitError}>{errors.comment_author}</p>}
         <textarea
           name="comment_text"
           id="comment_text"
@@ -77,8 +97,9 @@ export const InconsistenciesCommentsModal = ({
           rows={10}
           value={formData.comment_text}
           onChange={handleChange}
+          className={styles.div_area}
         />
-
+        {errors.comment_text && <p className={styles.submitError}>{errors.comment_text}</p>}
         <div className={styles.buttonsBlock}>
           <button type="submit">Сохранить и закрыть</button>
         </div>

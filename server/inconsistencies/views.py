@@ -4,6 +4,7 @@ from rest_framework import status
 from .models import NCMXInconsistencies, NCMXInconsistencyComments
 from .serializers import NCMXInconsistenciesSerializer, NCMXInconsistencyCommentsSerializer
 
+
 class Inconsistencies(APIView):
     def get(self, request):
         inconsistencies = NCMXInconsistencies.objects.all()
@@ -26,6 +27,14 @@ class InconsistenciesComments(APIView):
         serializer = NCMXInconsistencyCommentsSerializer(comments, many=True)
         return Response({"results": serializer.data})
 
+    def post(self, request):
+        serializer = NCMXInconsistencyCommentsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CommentCreateAPIView(APIView):
     def post(self, request):
         serializer = NCMXInconsistencyCommentsSerializer(data=request.data)
         if serializer.is_valid():

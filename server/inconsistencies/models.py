@@ -5,6 +5,7 @@ class NCMXInconsistencies(models.Model):
     num_nonconf = models.IntegerField(primary_key=True)
     department = models.CharField(max_length=10, blank=True, null=True, db_comment='Ответственное подразделение')
     norm_doc = models.CharField(max_length=100, blank=True, null=True, db_comment='Нормативный документ')
+    point = models.CharField(max_length=50, blank=True, null=True, db_comment='Номер пункта нормативного документа')
     nonconf = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание несоответствия')
     report = models.CharField(max_length=100, blank=True, null=True, db_comment='Источник информации о несоответствии')
     report_date = models.DateField(blank=True, null=True, db_comment='Дата утверждения источника')
