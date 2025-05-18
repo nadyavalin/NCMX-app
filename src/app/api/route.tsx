@@ -8,7 +8,7 @@ import {
   ItemRequestPOST,
   ItemCommentRequestPOST,
 } from "../../components/types";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 
 export const useFetchItems = () => {
   const [items, setItems] = useState<ItemResponseGET[]>([]);
@@ -23,7 +23,7 @@ export const useFetchItems = () => {
         setItems(results.map((item) => ({ ...item, key: item.num_nonconf })));
       } catch (error: unknown) {
         let errorMessage = "An error occurred while fetching items";
-        if (error instanceof AxiosError) {
+        if (isAxiosError(error)) {
           errorMessage = error.response?.data?.message || error.message;
         } else if (error instanceof Error) {
           errorMessage = error.message;
@@ -49,12 +49,29 @@ export const sendInconsistencyRequest = async (
     return response.data;
   } catch (error: unknown) {
     let errorMessage = "An error occurred while submitting the form";
-    if (error instanceof AxiosError) {
+    if (isAxiosError(error)) {
       errorMessage = error.response?.data?.message || error.message;
     } else if (error instanceof Error) {
       errorMessage = error.message;
     }
     console.error("Error submitting form: ", error);
+    throw new Error(errorMessage);
+  }
+};
+
+// TODO доделать backend, чтобы удалить в UI
+export const deleteInconsistencyRequest = async (num_nonconf: number): Promise<void> => {
+  try {
+    await api.delete(`/ncmx-table/${num_nonconf}/`);
+    console.log(`Successfully deleted inconsistency with num_nonconf: ${num_nonconf}`);
+  } catch (error: unknown) {
+    let errorMessage = "An error occurred while deleting the inconsistency";
+    if (isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.error("Error deleting inconsistency: ", error);
     throw new Error(errorMessage);
   }
 };
@@ -81,7 +98,7 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
         setComments(results.map((item) => ({ ...item, key: item.num_nonconf })));
       } catch (error: unknown) {
         let errorMessage = "An unexpected error occurred";
-        if (error instanceof AxiosError) {
+        if (isAxiosError(error)) {
           errorMessage = error.response?.data?.message || error.message;
         } else if (error instanceof Error) {
           errorMessage = error.message;
@@ -107,7 +124,7 @@ export const sendCommentInconsistencyRequest = async (
     return response.data;
   } catch (error: unknown) {
     let errorMessage = "An error occurred while submitting the form";
-    if (error instanceof AxiosError) {
+    if (isAxiosError(error)) {
       errorMessage = error.response?.data?.message || error.message;
     } else if (error instanceof Error) {
       errorMessage = error.message;

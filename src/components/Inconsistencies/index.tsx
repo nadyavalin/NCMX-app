@@ -28,6 +28,8 @@ export const Inconsistencies = () => {
 
   const { items, loading, error } = useFetchItems();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // const [deleteError, setDeleteError] = useState<string | null>(null);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -70,6 +72,24 @@ export const Inconsistencies = () => {
     }
   };
 
+  // TODO
+  // const handleDelete = async (num_nonconf: number) => {
+  //   if (!window.confirm(`Вы уверены, что хотите удалить несоответствие №${num_nonconf}?`)) {
+  //     return;
+  //   }
+
+  //   try {
+  //     await deleteInconsistencyRequest(num_nonconf);
+  //     window.location.reload();
+  //   } catch (error: unknown) {
+  //     let errorMessage = "Ошибка при удалении несоответствия";
+  //     if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     }
+  //     setDeleteError(errorMessage);
+  //   }
+  // };
+
   if (loading) {
     return <div>Загрузка таблицы несоответствий...</div>;
   }
@@ -85,6 +105,7 @@ export const Inconsistencies = () => {
           Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических
           аудитов
         </h3>
+        {/* {deleteError && <div className={styles.errorMessage}>{deleteError}</div>} */}
         <section className={styles.filterSection}>
           <select>
             <option value="orderNumber">фильтр по порядковому номеру</option>
@@ -158,13 +179,13 @@ export const Inconsistencies = () => {
                     <td>{item.resp_person_corrective_action}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
-                        <a
+                        {/* <a
                           href="#"
                           title="Изменить несоответствие может только администратор"
                           className={styles.redText}
                         >
                           Изменить несоответствие
-                        </a>
+                        </a> */}
                         <a href="#" onClick={() => handleOpenModal("comments", item.num_nonconf)}>
                           Добавить комментарий
                         </a>
@@ -193,18 +214,17 @@ export const Inconsistencies = () => {
                           Провести оценку результативности для закрытия несоответствия и переноса в
                           архив
                         </a>
-
-                        <a
-                          href="#"
-                          title="Удалить несоответствие может только администратор"
-                          className={styles.redText}
-                        >
-                          Удалить несоответствие
-                        </a>
                         <InconsistenciesEstimateResultModal
                           isOpen={isModalEstimateResultOpen}
                           onClose={() => handleCloseModal("estimateResult")}
                         />
+                        {/* <a href="#"
+                          title="Удалить несоответствие может только администратор"
+                          className={styles.redText}
+                          onClick={() => handleDelete(item.num_nonconf)}
+                        >
+                          Удалить несоответствие
+                        </a> */}
                       </div>
                     </td>
                   </tr>
