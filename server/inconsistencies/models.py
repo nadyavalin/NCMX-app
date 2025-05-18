@@ -3,7 +3,6 @@ from django.db import models
 
 class NCMXInconsistencies(models.Model):
     num_nonconf = models.IntegerField(primary_key=True)
-    department = models.CharField(max_length=10, blank=True, null=True, db_comment='Ответственное подразделение')
     norm_doc = models.CharField(max_length=100, blank=True, null=True, db_comment='Нормативный документ')
     point = models.CharField(max_length=50, blank=True, null=True, db_comment='Номер пункта нормативного документа')
     nonconf = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание несоответствия')
@@ -17,14 +16,16 @@ class NCMXInconsistencies(models.Model):
     correction = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание коррекции')
     correction_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения коррекции')
     resp_person_correction = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
+    department_correction = models.CharField(max_length=10, blank=True, null=True, db_comment='Подразделение для коррекции')
     corrective_action = models.CharField(max_length=1000, blank=True, null=True, db_comment='Корректирующее действие')
     corrective_action_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения кор. действия')
     resp_person_corrective_action = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
+    department_corrective_action = models.CharField(max_length=10, blank=True, null=True, db_comment='Подразделение для корректирующего действия')
     estimate = models.IntegerField(blank=True, null=True, db_comment='Оценка')
     nonconf_closure_date = models.DateField(blank=True, null=True, db_comment='Дата закрытия несоответствия')
     resp_person_nonconf_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
     auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
-
+    
     class Meta:
         db_table = 'NCMX_inconsistencies'
 

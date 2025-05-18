@@ -33,6 +33,14 @@ class InconsistenciesComments(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class InconsistencyCreateAPIView(APIView):
+    def post(self, request):
+        serializer = NCMXInconsistenciesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class CommentCreateAPIView(APIView):
     def post(self, request):

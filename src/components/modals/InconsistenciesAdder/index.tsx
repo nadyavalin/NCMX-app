@@ -1,8 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { ItemRequestPOST } from "@components/types";
 import { sendInconsistencyRequest } from "@/api/route";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
+import { isAxiosError } from "axios";
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,19 +14,29 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
   const [formData, setFormData] = useState<ItemRequestPOST>({
     num_nonconf: 0,
     norm_doc: "",
+    point: "",
     nonconf: "",
     report: "",
-    analysis_start_date: "0000-00-00",
+    report_date: null,
+    analysis_start_date: null,
+    analysis_finish_date: null,
     head_auditor: "",
+    auditor: "",
     reason: "",
     correction: "",
-    correction_date: "0000-00-00",
+    correction_date: null,
     resp_person_correction: "",
+    department_correction: "",
     corrective_action: "",
-    corrective_action_date: "0000-00-00",
+    corrective_action_date: null,
     resp_person_corrective_action: "",
+    department_corrective_action: "",
+    estimate: null,
+    nonconf_closure_date: null,
+    resp_person_nonconf_closure: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const numNonconfRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) {
     return null;
@@ -35,15 +46,33 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
-    const updatedValue = name === "num_nonconf" ? parseInt(value, 10) || 0 : value;
+    let updatedValue: string | number | null = value;
+    if (name === "num_nonconf" || name === "estimate") {
+      updatedValue = value ? parseInt(value, 10) : null;
+    } else if (
+      [
+        "report_date",
+        "analysis_start_date",
+        "analysis_finish_date",
+        "correction_date",
+        "corrective_action_date",
+        "nonconf_closure_date",
+      ].includes(name)
+    ) {
+      updatedValue = value || null;
+    }
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    if (formData.num_nonconf <= 0) {
-      newErrors.num_nonconf = "Номер несоответствия должен быть больше 0";
+    if (!formData.num_nonconf || formData.num_nonconf <= 0) {
+      newErrors.num_nonconf = "Укажите номер несоответствия (положительное число)";
+      if (numNonconfRef.current) {
+        numNonconfRef.current.focus();
+        numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
     return newErrors;
   };
@@ -57,21 +86,36 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
       return;
     }
 
+    const payload = Object.fromEntries(
+      Object.entries(formData).map(([key, value]) => [
+        key,
+        value === "" || value === 0 ? null : value,
+      ]),
+    ) as ItemRequestPOST;
+
     try {
-      const result = await sendInconsistencyRequest(formData);
+      const result = await sendInconsistencyRequest(payload);
       console.log("Success: ", result);
       onClose();
       window.location.reload();
-    } catch (error) {
-      console.error("Error during API call: ", error);
-      setErrors({ submit: "Ошибка при добавлении несоответствия. Попробуйте снова." });
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        console.error("Error during API call: ", error);
+        const errorMessage = error.response?.data
+          ? JSON.stringify(error.response.data)
+          : "Ошибка при добавлении несоответствия. Попробуйте снова.";
+        setErrors({ submit: errorMessage });
+      } else {
+        console.error("Unexpected error: ", error);
+        setErrors({ submit: "Произошла непредвиденная ошибка. Попробуйте снова." });
+      }
     }
   };
 
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
-        {errors.submit && <p className={styles.error}>{errors.submit}</p>}
+        {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         <div className={styles.nonConfNumberBlock}>
           <h4>Заполните форму для внесения несоответствия в Реестр</h4>
           <div className={styles.nonConfNumberInputBlock}>
@@ -82,8 +126,11 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               id="num_nonconf"
               value={formData.num_nonconf || ""}
               onChange={handleChange}
+              required
+              ref={numNonconfRef}
+              className={errors.num_nonconf ? styles.inputError : ""}
             />
-            {errors.num_nonconf && <p className={styles.error}>{errors.num_nonconf}</p>}
+            {errors.num_nonconf && <p className={styles.submitError}>{errors.num_nonconf}</p>}
           </div>
         </div>
 
@@ -97,13 +144,13 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             <option value="А4">А4</option>
             <option value="А14">А14</option>
           </select>
-          <a href="#">Добавить НД</a>
           <input
             name="point"
             type="text"
             placeholder="Номер пункта нормативного документа"
             onChange={handleChange}
           />
+          <a href="#">Добавить НД</a>
           <textarea
             name="nonconf"
             id="nonconf"
@@ -188,7 +235,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               title="Выберите дату внедрения коррекции"
               onChange={handleChange}
             />
-            <a href="#">Сменить на текстовое поле</a>
           </div>
 
           <select name="resp_person_correction" id="resp_person_correction" onChange={handleChange}>
@@ -229,7 +275,6 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
               title="Выберите дату внедрения корректирующего действия"
               onChange={handleChange}
             />
-            <a href="#">Сменить на текстовое поле</a>
           </div>
 
           <select
@@ -244,7 +289,11 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           </select>
           <a href="#">Добавить ответственное лицо</a>
 
-          <select name="department_corrective_action" id="department_corrective_action" onChange={handleChange}>
+          <select
+            name="department_corrective_action"
+            id="department_corrective_action"
+            onChange={handleChange}
+          >
             <option value="">...выбрать ответственное подразделение из базы</option>
             <option value="НПО">НПО</option>
             <option value="НПГС">НПГС</option>
