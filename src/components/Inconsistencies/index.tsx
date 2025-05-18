@@ -158,6 +158,13 @@ export const Inconsistencies = () => {
                     <td>{item.resp_person_corrective_action}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
+                        <a
+                          href="#"
+                          title="Изменить несоответствие может только администратор"
+                          className={styles.redText}
+                        >
+                          Изменить несоответствие
+                        </a>
                         <a href="#" onClick={() => handleOpenModal("comments", item.num_nonconf)}>
                           Добавить комментарий
                         </a>
@@ -179,9 +186,20 @@ export const Inconsistencies = () => {
                         />
                         <a
                           href="#"
+                          title="Провести оценку результативности может только главный аудитор"
+                          className={styles.estimate}
                           onClick={() => handleOpenModal("estimateResult", item.num_nonconf)}
                         >
-                          Провести оценку результативности для закрытия несоответствия
+                          Провести оценку результативности для закрытия несоответствия и переноса в
+                          архив
+                        </a>
+
+                        <a
+                          href="#"
+                          title="Удалить несоответствие может только администратор"
+                          className={styles.redText}
+                        >
+                          Удалить несоответствие
                         </a>
                         <InconsistenciesEstimateResultModal
                           isOpen={isModalEstimateResultOpen}

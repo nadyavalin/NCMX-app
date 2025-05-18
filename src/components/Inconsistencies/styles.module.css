@@ -29,3 +29,11 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.redText {
+  color: var(--change);
+}
+
+.estimate {
+  color: var(--estimate);
+}
