@@ -27,18 +27,15 @@ class NCMXInconsistencies(models.Model):
     class Meta:
         db_table = 'NCMX_inconsistencies'
 
-    def __str__(self):
-      return self.nonconf
-
 
 class NCMXInconsistencyComments(models.Model):
-    num_nonconf = models.OneToOneField('NCMXInconsistencies', models.DO_NOTHING, db_column='num_nonconf', primary_key=True, db_comment='Номер несоответствия')
+    num_nonconf = models.ForeignKey('NCMXInconsistencies', on_delete=models.CASCADE, db_comment='Номер несоответствия')
     comment_author = models.CharField(max_length=50, db_comment='Автор комментария подтаблица\r\n')
     comment_text = models.CharField(max_length=1000, db_comment='Текс комментария подтаблица')
-    auto_data = models.DateTimeField(auto_now=True, db_comment='Дата создания комментария')
+    auto_data = models.DateTimeField(auto_now_add=True, db_comment='Дата создания комментария')
 
     class Meta:
         db_table = 'NCMX_inconsistency_comments'
 
     def __str__(self):
-      return self.comment_text
+      return f'{self.comment_author} {self.auto_data}'

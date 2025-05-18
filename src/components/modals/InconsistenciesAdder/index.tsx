@@ -76,13 +76,13 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <input
             name="point"
             type="text"
-            placeholder="...номер пункта нормативного документа|"
+            placeholder="Номер пункта нормативного документа"
             onChange={handleChange}
           />
           <textarea
             name="nonconf"
             id="nonconf"
-            placeholder="Описание несоответствия|"
+            placeholder="Описание несоответствия"
             rows={10}
             onChange={handleChange}
           />
@@ -90,7 +90,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
             name="report"
             id="report"
             type="text"
-            placeholder="Источник информации о несоответствии|"
+            placeholder="Источник информации о несоответствии"
             onChange={handleChange}
           />
           <input
@@ -137,7 +137,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <textarea
             name="reason"
             id="reason"
-            placeholder="Причины несоответствия, определенные по результатам анализа|"
+            placeholder="Причины несоответствия, определенные по результатам анализа"
             rows={10}
             onChange={handleChange}
           />
@@ -151,7 +151,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <textarea
             name="correction"
             id="correction"
-            placeholder="Описание коррекции|"
+            placeholder="Описание коррекции"
             rows={10}
             onChange={handleChange}
           />
@@ -192,7 +192,7 @@ export const InconsistenciesModal = ({ isOpen, onClose }: ModalProps) => {
           <textarea
             name="corrective_action"
             id="corrective_action"
-            placeholder="Описание корректирующего действия||"
+            placeholder="Описание корректирующего действия"
             rows={10}
             onChange={handleChange}
           />

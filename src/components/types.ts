@@ -40,7 +40,6 @@ export interface APIResponse {
 }
 
 export interface ItemCommentResponseGET {
-  id: number;
   num_nonconf: number;
   comment_author: string;
   comment_text: string;

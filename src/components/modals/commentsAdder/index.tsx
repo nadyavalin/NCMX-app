@@ -73,7 +73,7 @@ export const InconsistenciesCommentsModal = ({
         <textarea
           name="comment_text"
           id="comment_text"
-          placeholder="Оставить комментарий|"
+          placeholder="Оставить комментарий"
           rows={10}
           value={formData.comment_text}
           onChange={handleChange}
