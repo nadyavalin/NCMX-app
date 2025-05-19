@@ -1,0 +1,45 @@
+# Python и байт-код
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Виртуальное окружение
+venv/
+env/
+virtualenv/
+Scripts/
+bin/
+lib/
+
+# Локальные базы данных
+db.sqlite3
+*.sql
+*.dump
+
+# Чувствительные файлы
+.env
+local_settings.py
+
+# Логи и кэш
+*.log
+.cache/
+*.pid
+
+# Статические и медиа файлы
+staticfiles/
+media/
+
+# Файлы IDE и редакторов
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# Резервные копии и временные файлы
+*.bak
+*.swp
+
+# Миграции
+*/migrations/*
+!*/migrations/__init__.py
