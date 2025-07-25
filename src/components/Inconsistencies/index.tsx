@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { useFetchItems } from "@/api/route";
 import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
@@ -15,20 +14,36 @@ import {
   toggleModalEstimateResult,
   toggleModalHistoryComments,
 } from "../../store/numSlice";
-import { RootState } from "@components/types";
+import { RootState, AppDispatch } from "../../store/store";
+import { deleteInconsistencyRequest, fetchItems } from "@api/route";
 
 export const Inconsistencies = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     currentInconsistencyNumber,
     isModalCommentsOpen,
     isModalHistoryCommentsOpen,
     isModalEstimateResultOpen,
+    items,
+    itemsLoading,
+    itemsError,
   } = useSelector((state: RootState) => state.num);
 
-  const { items, loading, error } = useFetchItems();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  // const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        await dispatch(fetchItems()).unwrap();
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
+        setFetchError(errorMessage);
+      }
+    };
+    loadItems();
+  }, [dispatch]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -40,7 +55,6 @@ export const Inconsistencies = () => {
     if (num !== null) {
       dispatch(setCurrentInconsistencyNumber(num));
     }
-
     switch (modalType) {
       case "comments":
         dispatch(toggleModalComments(true));
@@ -50,8 +64,6 @@ export const Inconsistencies = () => {
         break;
       case "estimateResult":
         dispatch(toggleModalEstimateResult(true));
-        break;
-      default:
         break;
     }
   };
@@ -67,35 +79,27 @@ export const Inconsistencies = () => {
       case "estimateResult":
         dispatch(toggleModalEstimateResult(false));
         break;
-      default:
-        break;
     }
   };
 
-  // TODO
-  // const handleDelete = async (num_nonconf: number) => {
-  //   if (!window.confirm(`Вы уверены, что хотите удалить несоответствие №${num_nonconf}?`)) {
-  //     return;
-  //   }
+  const handleDelete = async (num_nonconf: number) => {
+    // if (!window.confirm(`Вы уверены, что хотите удалить несоответствие №${num_nonconf}?`)) return;
+    try {
+      await dispatch(deleteInconsistencyRequest(num_nonconf)).unwrap();
+      alert(`Несоответствие №${num_nonconf} успешно удалено`);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при удалении несоответствия";
+      setDeleteError(errorMessage);
+    }
+  };
 
-  //   try {
-  //     await deleteInconsistencyRequest(num_nonconf);
-  //     window.location.reload();
-  //   } catch (error: unknown) {
-  //     let errorMessage = "Ошибка при удалении несоответствия";
-  //     if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     }
-  //     setDeleteError(errorMessage);
-  //   }
-  // };
-
-  if (loading) {
+  if (itemsLoading) {
     return <div>Загрузка таблицы несоответствий...</div>;
   }
 
-  if (error) {
-    return <div>Ошибка: {error}</div>;
+  if (itemsError || fetchError) {
+    return <div>Ошибка: {itemsError || fetchError}</div>;
   }
 
   return (
@@ -105,7 +109,7 @@ export const Inconsistencies = () => {
           Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических
           аудитов
         </h3>
-        {/* {deleteError && <div className={styles.errorMessage}>{deleteError}</div>} */}
+        {deleteError && <div className={styles.errorMessage}>{deleteError}</div>}
         <section className={styles.filterSection}>
           <select>
             <option value="orderNumber">фильтр по порядковому номеру</option>
@@ -126,7 +130,7 @@ export const Inconsistencies = () => {
             <option value="">ФИО из базы</option>
           </select>
           <input type="text" placeholder="Поиск..." />
-          <button onClick={() => window.location.reload()}>Получить данные</button>
+          <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
         </section>
 
         <section className="inconsistenciesTableSection">
@@ -165,27 +169,27 @@ export const Inconsistencies = () => {
                 items.map((item) => (
                   <tr key={item.num_nonconf}>
                     <td>{item.num_nonconf}</td>
-                    <td>{item.norm_doc}</td>
-                    <td>{item.nonconf}</td>
-                    <td>{item.report}</td>
-                    <td>{item.analysis_finish_date}</td>
-                    <td>{item.head_auditor}</td>
-                    <td>{item.reason}</td>
-                    <td>{item.correction}</td>
-                    <td>{item.correction_date}</td>
-                    <td>{item.resp_person_correction}</td>
-                    <td>{item.corrective_action}</td>
-                    <td>{item.corrective_action_date}</td>
-                    <td>{item.resp_person_corrective_action}</td>
+                    <td>{item.norm_doc || "-"}</td>
+                    <td>{item.nonconf || "-"}</td>
+                    <td>{item.report || "-"}</td>
+                    <td>{item.analysis_finish_date || "-"}</td>
+                    <td>{item.head_auditor || "-"}</td>
+                    <td>{item.reason || "-"}</td>
+                    <td>{item.correction || "-"}</td>
+                    <td>{item.correction_date || "-"}</td>
+                    <td>{item.resp_person_correction || "-"}</td>
+                    <td>{item.corrective_action || "-"}</td>
+                    <td>{item.corrective_action_date || "-"}</td>
+                    <td>{item.resp_person_corrective_action || "-"}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
-                        {/* <a
+                        <a
                           href="#"
                           title="Изменить несоответствие может только администратор"
                           className={styles.redText}
                         >
                           Изменить несоответствие
-                        </a> */}
+                        </a>
                         <a href="#" onClick={() => handleOpenModal("comments", item.num_nonconf)}>
                           Добавить комментарий
                         </a>
@@ -218,13 +222,14 @@ export const Inconsistencies = () => {
                           isOpen={isModalEstimateResultOpen}
                           onClose={() => handleCloseModal("estimateResult")}
                         />
-                        {/* <a href="#"
+                        <a
+                          href="#"
                           title="Удалить несоответствие может только администратор"
                           className={styles.redText}
                           onClick={() => handleDelete(item.num_nonconf)}
                         >
                           Удалить несоответствие
-                        </a> */}
+                        </a>
                       </div>
                     </td>
                   </tr>
@@ -242,3 +247,5 @@ export const Inconsistencies = () => {
     </>
   );
 };
+
+export default Inconsistencies;

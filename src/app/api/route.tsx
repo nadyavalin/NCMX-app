@@ -1,3 +1,4 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { useEffect, useState } from "react";
 import {
@@ -8,74 +9,51 @@ import {
   ItemRequestPOST,
   ItemCommentRequestPOST,
 } from "../../components/types";
-import { isAxiosError } from "axios";
+import { handleApiError } from "../../utils/handleApiError";
+import { RootState } from "../../store/store";
 
-export const useFetchItems = () => {
-  const [items, setItems] = useState<ItemResponseGET[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+// Thunk для загрузки списка несоответствий
+export const fetchItems = createAsyncThunk<ItemResponseGET[], void, { state: RootState }>(
+  "num/fetchItems",
+  async () => {
+    try {
+      const response = await api.get<APIResponse>("/ncmx-table/");
+      return response.data.results || [];
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error, "Ошибка при получении списка несоответствий");
+      throw new Error(errorMessage);
+    }
+  },
+);
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await api.get<APIResponse>("/ncmx-table/");
-        const results = response.data.results || [];
-        setItems(results.map((item) => ({ ...item, key: item.num_nonconf })));
-      } catch (error: unknown) {
-        let errorMessage = "An error occurred while fetching items";
-        if (isAxiosError(error)) {
-          errorMessage = error.response?.data?.message || error.message;
-        } else if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+// Thunk для удаления несоответствия
+export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state: RootState }>(
+  "num/deleteInconsistency",
+  async (num_nonconf) => {
+    try {
+      await api.delete(`/ncmx-table/${num_nonconf}/`);
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error, "Ошибка при удалении несоответствия");
+      throw new Error(errorMessage);
+    }
+  },
+);
 
-    fetchItems();
-  }, []);
-
-  return { items, loading, error };
-};
-
+// Функция для отправки нового несоответствия
 export const sendInconsistencyRequest = async (
   formData: ItemRequestPOST,
 ): Promise<ItemResponseGET> => {
   try {
     const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
-    console.log("Success: ", response.data);
+    console.log(`Successfully created inconsistency: ${response.data.num_nonconf}`, response.data);
     return response.data;
   } catch (error: unknown) {
-    let errorMessage = "An error occurred while submitting the form";
-    if (isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    console.error("Error submitting form: ", error);
+    const errorMessage = handleApiError(error, "Ошибка при отправке формы");
     throw new Error(errorMessage);
   }
 };
 
-// TODO доделать backend, чтобы удалить в UI
-export const deleteInconsistencyRequest = async (num_nonconf: number): Promise<void> => {
-  try {
-    await api.delete(`/ncmx-table/${num_nonconf}/`);
-    console.log(`Successfully deleted inconsistency with num_nonconf: ${num_nonconf}`);
-  } catch (error: unknown) {
-    let errorMessage = "An error occurred while deleting the inconsistency";
-    if (isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    console.error("Error deleting inconsistency: ", error);
-    throw new Error(errorMessage);
-  }
-};
-
+// Хук для загрузки комментариев
 export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
   const [comments, setComments] = useState<ItemCommentResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -94,15 +72,9 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
         const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
           params: { num_nonconf: currentInconsistencyNumber },
         });
-        const results = response.data.results || [];
-        setComments(results.map((item) => ({ ...item, key: item.num_nonconf })));
+        setComments(response.data.results || []);
       } catch (error: unknown) {
-        let errorMessage = "An unexpected error occurred";
-        if (isAxiosError(error)) {
-          errorMessage = error.response?.data?.message || error.message;
-        } else if (error instanceof Error) {
-          errorMessage = error.message;
-        }
+        const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -115,6 +87,7 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
   return { comments, loading, error };
 };
 
+// Функция для отправки комментария
 export const sendCommentInconsistencyRequest = async (
   formData: ItemCommentRequestPOST,
 ): Promise<ItemCommentResponseGET> => {
@@ -123,13 +96,7 @@ export const sendCommentInconsistencyRequest = async (
     console.log("Success: ", response.data);
     return response.data;
   } catch (error: unknown) {
-    let errorMessage = "An error occurred while submitting the form";
-    if (isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    console.error("Error submitting form: ", error);
+    const errorMessage = handleApiError(error, "Ошибка при отправке комментария");
     throw new Error(errorMessage);
   }
 };

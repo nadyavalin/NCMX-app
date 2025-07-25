@@ -1,15 +1,14 @@
+export type DateString = string;
+
 export interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
+  items: ItemResponseGET[];
+  itemsLoading: boolean;
+  itemsError: string | null;
 }
-
-export interface RootState {
-  num: InconsistencyNumberState;
-}
-
-type DateString = `${number}-${number}-${number}`;
 
 export interface ItemResponseGET {
   num_nonconf: number;

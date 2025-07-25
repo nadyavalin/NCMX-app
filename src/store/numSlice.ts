@@ -1,10 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ItemResponseGET } from "@components/types";
+import { fetchItems, deleteInconsistencyRequest } from "@api/route";
 
 interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
+  items: ItemResponseGET[];
+  itemsLoading: boolean;
+  itemsError: string | null;
 }
 
 const initialState: InconsistencyNumberState = {
@@ -12,6 +17,9 @@ const initialState: InconsistencyNumberState = {
   isModalCommentsOpen: false,
   isModalHistoryCommentsOpen: false,
   isModalEstimateResultOpen: false,
+  items: [],
+  itemsLoading: false,
+  itemsError: null,
 };
 
 const numSlice = createSlice({
@@ -30,6 +38,33 @@ const numSlice = createSlice({
     toggleModalEstimateResult(state, action: PayloadAction<boolean>) {
       state.isModalEstimateResultOpen = action.payload;
     },
+    addItemSuccess(state, action: PayloadAction<ItemResponseGET>) {
+      state.items = [...state.items, action.payload];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchItems.pending, (state) => {
+        state.itemsLoading = true;
+        state.itemsError = null;
+      })
+      .addCase(fetchItems.fulfilled, (state, action: PayloadAction<ItemResponseGET[]>) => {
+        state.items = action.payload;
+        state.itemsLoading = false;
+      })
+      .addCase(fetchItems.rejected, (state, action) => {
+        state.itemsError = action.error.message || "Ошибка при загрузке данных";
+        state.itemsLoading = false;
+      })
+      .addCase(
+        deleteInconsistencyRequest.fulfilled,
+        (state, action: PayloadAction<void, string, { arg: number }>) => {
+          state.items = state.items.filter((item) => item.num_nonconf !== action.meta.arg);
+        },
+      )
+      .addCase(deleteInconsistencyRequest.rejected, (state, action) => {
+        state.itemsError = action.error.message || "Ошибка при удалении несоответствия";
+      });
   },
 });
 
@@ -38,5 +73,7 @@ export const {
   toggleModalComments,
   toggleModalHistoryComments,
   toggleModalEstimateResult,
+  addItemSuccess,
 } = numSlice.actions;
+
 export default numSlice.reducer;
