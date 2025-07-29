@@ -81,3 +81,8 @@ export interface ItemCommentRequestPOST {
   comment_author: string;
   comment_text: string;
 }
+
+export enum SnackbarType {
+  error = "error",
+  success = "success",
+}

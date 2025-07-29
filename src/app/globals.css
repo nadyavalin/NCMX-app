@@ -25,9 +25,15 @@ body {
   --card-color: #dedede;
   --card-hover-color: #b2caff;
   --scrollbar-color: #97b8ff;
-  --errors: #ff0000;
+  --error: #ff0000;
   --change: #ff6767;
-  --estimate: #00c628;
+  --success: #00b825;
+  --estimate: #00b825;
+
+  --snackbar-bg-color: #dedede;
+  --snackbar-border: #a3a3a3;
+  --snackbar-color: #000000;
+  --notifications-layer: 1;
 
   display: flex;
   flex-direction: column;
@@ -149,7 +155,7 @@ table tbody tr td {
 .error {
   font-size: 18px;
   font-weight: 500;
-  color: var(--errors);
+  color: var(--error);
   text-align: center;
 }
 

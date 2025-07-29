@@ -16,9 +16,13 @@ import {
 } from "../../store/numSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import { deleteInconsistencyRequest, fetchItems } from "@api/route";
+import { SnackbarType } from "@components/types";
+import { useSnackbar } from "@components/snackbar/snackbarContext";
+import { ConfirmDeleteModal } from "@components/modals/confirmDelete";
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const addSnackbar = useSnackbar();
   const {
     currentInconsistencyNumber,
     isModalCommentsOpen,
@@ -32,6 +36,8 @@ export const Inconsistencies = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
+  const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
 
   useEffect(() => {
     const loadItems = async () => {
@@ -40,10 +46,11 @@ export const Inconsistencies = () => {
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
         setFetchError(errorMessage);
+        addSnackbar(SnackbarType.error, errorMessage);
       }
     };
     loadItems();
-  }, [dispatch]);
+  }, [dispatch, addSnackbar]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -82,16 +89,31 @@ export const Inconsistencies = () => {
     }
   };
 
-  const handleDelete = async (num_nonconf: number) => {
-    // if (!window.confirm(`Вы уверены, что хотите удалить несоответствие №${num_nonconf}?`)) return;
+  const handleDelete = (num_nonconf: number) => {
+    setDeleteNumNonconf(num_nonconf);
+    setConfirmDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteNumNonconf === null) return;
     try {
-      await dispatch(deleteInconsistencyRequest(num_nonconf)).unwrap();
-      alert(`Несоответствие №${num_nonconf} успешно удалено`);
+      await dispatch(deleteInconsistencyRequest(deleteNumNonconf)).unwrap();
+      setConfirmDeleteOpen(false);
+      setDeleteNumNonconf(null);
+      addSnackbar(SnackbarType.success, `Несоответствие №${deleteNumNonconf} успешно удалено`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при удалении несоответствия";
       setDeleteError(errorMessage);
+      setConfirmDeleteOpen(false);
+      setDeleteNumNonconf(null);
+      addSnackbar(SnackbarType.error, errorMessage);
     }
+  };
+
+  const cancelDelete = () => {
+    setConfirmDeleteOpen(false);
+    setDeleteNumNonconf(null);
   };
 
   if (itemsLoading) {
@@ -243,6 +265,13 @@ export const Inconsistencies = () => {
           <button onClick={openModal}>Добавить несоответствие</button>
           <InconsistenciesModal isOpen={isModalOpen} onClose={closeModal} />
         </section>
+        <ConfirmDeleteModal
+          open={confirmDeleteOpen}
+          onClose={cancelDelete}
+          onConfirm={confirmDelete}
+          title="Подтверждение удаления"
+          message={`Вы уверены, что хотите удалить несоответствие №${deleteNumNonconf}?`}
+        />
       </main>
     </>
   );

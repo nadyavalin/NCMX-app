@@ -1,0 +1,19 @@
+.deleteContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.message {
+  color: var(--warnings);
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+}

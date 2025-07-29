@@ -9,7 +9,7 @@
 }
 
 .commentCard {
-  width: 390px;
+  width: 800px;
   border: 1px solid var(--table-color);
   border-radius: 10px;
   padding: 10px;
@@ -25,4 +25,8 @@
 .buttonsBlock {
   display: flex;
   justify-content: flex-end;
+}
+
+.closeButton {
+  width: 30%;
 }

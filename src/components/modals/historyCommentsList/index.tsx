@@ -54,9 +54,11 @@ export const InconsistenciesHistoryCommentsModal = ({
       ) : (
         <div>Нет комментариев для отображения.</div>
       )}
-      <button onClick={onClose} className={styles.closeButton}>
-        Закрыть
-      </button>
+      <div className={styles.buttonsBlock}>
+        <button onClick={onClose} className={styles.closeButton}>
+          Закрыть
+        </button>
+      </div>
     </ModalComponent>
   );
 };
