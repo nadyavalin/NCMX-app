@@ -14,6 +14,7 @@ export interface ItemResponseGET {
   num_nonconf: number;
   department?: string;
   norm_doc?: string;
+  point?: string;
   nonconf?: string;
   report?: string;
   report_date?: DateString;
@@ -25,9 +26,11 @@ export interface ItemResponseGET {
   correction?: string;
   correction_date?: DateString;
   resp_person_correction?: string;
+  department_correction?: string;
   corrective_action?: string;
   corrective_action_date?: DateString;
   resp_person_corrective_action?: string;
+  department_corrective_action?: string;
   estimate?: number;
   nonconf_closure_date?: DateString;
   resp_person_nonconf_closure?: string;

@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ItemResponseGET } from "@components/types";
-import { fetchItems, deleteInconsistencyRequest } from "@api/route";
+import { fetchItems, deleteInconsistencyRequest, updateInconsistencyRequest } from "@api/route";
 
 interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
+  isModalEditOpen: boolean;
   items: ItemResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
@@ -17,6 +18,7 @@ const initialState: InconsistencyNumberState = {
   isModalCommentsOpen: false,
   isModalHistoryCommentsOpen: false,
   isModalEstimateResultOpen: false,
+  isModalEditOpen: false,
   items: [],
   itemsLoading: false,
   itemsError: null,
@@ -37,6 +39,9 @@ const numSlice = createSlice({
     },
     toggleModalEstimateResult(state, action: PayloadAction<boolean>) {
       state.isModalEstimateResultOpen = action.payload;
+    },
+    toggleModalEdit(state, action: PayloadAction<boolean>) {
+      state.isModalEditOpen = action.payload;
     },
     addItemSuccess(state, action: PayloadAction<ItemResponseGET>) {
       state.items = [...state.items, action.payload];
@@ -64,6 +69,19 @@ const numSlice = createSlice({
       )
       .addCase(deleteInconsistencyRequest.rejected, (state, action) => {
         state.itemsError = action.error.message || "Ошибка при удалении несоответствия";
+      })
+      .addCase(
+        updateInconsistencyRequest.fulfilled,
+        (state, action: PayloadAction<ItemResponseGET>) => {
+          state.items = state.items.map((item) =>
+            item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+          );
+          state.itemsLoading = false;
+        },
+      )
+      .addCase(updateInconsistencyRequest.rejected, (state, action) => {
+        state.itemsError = action.error.message || "Ошибка при обновлении несоответствия";
+        state.itemsLoading = false;
       });
   },
 });
@@ -73,6 +91,7 @@ export const {
   toggleModalComments,
   toggleModalHistoryComments,
   toggleModalEstimateResult,
+  toggleModalEdit,
   addItemSuccess,
 } = numSlice.actions;
 

@@ -31,13 +31,28 @@ export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state
   "num/deleteInconsistency",
   async (num_nonconf) => {
     try {
-      await api.delete(`/ncmx-table/${num_nonconf}/`);
+      await api.delete(`/ncmx-table/${num_nonconf}/delete/`);
     } catch (error: unknown) {
       const errorMessage = handleApiError(error, "Ошибка при удалении несоответствия");
       throw new Error(errorMessage);
     }
   },
 );
+
+// Thunk для обновления несоответствия
+export const updateInconsistencyRequest = createAsyncThunk<
+  ItemResponseGET,
+  { num_nonconf: number; data: Partial<ItemRequestPOST> },
+  { state: RootState }
+>("num/updateInconsistency", async ({ num_nonconf, data }) => {
+  try {
+    const response = await api.patch<ItemResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
+    return response.data;
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при обновлении несоответствия");
+    throw new Error(errorMessage);
+  }
+});
 
 // Функция для отправки нового несоответствия
 export const sendInconsistencyRequest = async (

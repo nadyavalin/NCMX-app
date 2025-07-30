@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from .models import NCMXInconsistencies, NCMXInconsistencyComments
 from .serializers import NCMXInconsistenciesSerializer, NCMXInconsistencyCommentsSerializer
 
-
 class Inconsistencies(APIView):
     def get(self, request):
         inconsistencies = NCMXInconsistencies.objects.all()
@@ -19,14 +18,19 @@ class Inconsistencies(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def patch(self, request, num_nonconf):
+        inconsistency = get_object_or_404(NCMXInconsistencies, num_nonconf=num_nonconf)
+        serializer = NCMXInconsistenciesSerializer(inconsistency, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InconsistencyDelete(APIView):
     def delete(self, request, num_nonconf):
-        inconsistency = get_object_or_404(
-            NCMXInconsistencies, num_nonconf=num_nonconf)
+        inconsistency = get_object_or_404(NCMXInconsistencies, num_nonconf=num_nonconf)
         inconsistency.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class InconsistenciesComments(APIView):
     def get(self, request):
@@ -39,15 +43,6 @@ class InconsistenciesComments(APIView):
 
     def post(self, request):
         serializer = NCMXInconsistencyCommentsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class InconsistencyCreateAPIView(APIView):
-    def post(self, request):
-        serializer = NCMXInconsistenciesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

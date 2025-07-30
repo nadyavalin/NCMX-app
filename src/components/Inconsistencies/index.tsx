@@ -13,10 +13,11 @@ import {
   toggleModalComments,
   toggleModalEstimateResult,
   toggleModalHistoryComments,
+  toggleModalEdit,
 } from "../../store/numSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import { deleteInconsistencyRequest, fetchItems } from "@api/route";
-import { SnackbarType } from "@components/types";
+import { ItemResponseGET, SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ConfirmDeleteModal } from "@components/modals/confirmDelete";
 
@@ -28,16 +29,17 @@ export const Inconsistencies = () => {
     isModalCommentsOpen,
     isModalHistoryCommentsOpen,
     isModalEstimateResultOpen,
+    isModalEditOpen,
     items,
     itemsLoading,
     itemsError,
   } = useSelector((state: RootState) => state.num);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
+  const [editItem, setEditItem] = useState<ItemResponseGET | null>(null);
 
   useEffect(() => {
     const loadItems = async () => {
@@ -52,11 +54,21 @@ export const Inconsistencies = () => {
     loadItems();
   }, [dispatch, addSnackbar]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => {
+    setEditItem(null); // Режим создания
+    dispatch(toggleModalEdit(true));
+  };
+
+  const openEditModal = (num_nonconf: number) => {
+    const item = items.find((item) => item.num_nonconf === num_nonconf);
+    if (item) {
+      setEditItem(item);
+      dispatch(toggleModalEdit(true));
+    }
+  };
 
   const handleOpenModal = (
-    modalType: "comments" | "historyComments" | "estimateResult",
+    modalType: "comments" | "historyComments" | "estimateResult" | "edit",
     num: number | null = null,
   ) => {
     if (num !== null) {
@@ -72,10 +84,15 @@ export const Inconsistencies = () => {
       case "estimateResult":
         dispatch(toggleModalEstimateResult(true));
         break;
+      case "edit":
+        openEditModal(num!);
+        break;
     }
   };
 
-  const handleCloseModal = (modalType: "comments" | "historyComments" | "estimateResult") => {
+  const handleCloseModal = (
+    modalType: "comments" | "historyComments" | "estimateResult" | "edit",
+  ) => {
     switch (modalType) {
       case "comments":
         dispatch(toggleModalComments(false));
@@ -85,6 +102,10 @@ export const Inconsistencies = () => {
         break;
       case "estimateResult":
         dispatch(toggleModalEstimateResult(false));
+        break;
+      case "edit":
+        dispatch(toggleModalEdit(false));
+        setEditItem(null);
         break;
     }
   };
@@ -209,6 +230,7 @@ export const Inconsistencies = () => {
                           href="#"
                           title="Изменить несоответствие может только администратор"
                           className={styles.redText}
+                          onClick={() => handleOpenModal("edit", item.num_nonconf)}
                         >
                           Изменить несоответствие
                         </a>
@@ -263,7 +285,11 @@ export const Inconsistencies = () => {
 
         <section className={styles.addButton}>
           <button onClick={openModal}>Добавить несоответствие</button>
-          <InconsistenciesModal isOpen={isModalOpen} onClose={closeModal} />
+          <InconsistenciesModal
+            isOpen={isModalEditOpen}
+            onClose={() => handleCloseModal("edit")}
+            editItem={editItem}
+          />
         </section>
         <ConfirmDeleteModal
           open={confirmDeleteOpen}
