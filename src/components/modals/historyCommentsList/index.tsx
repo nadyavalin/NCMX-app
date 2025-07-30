@@ -8,6 +8,20 @@ interface ModalProps {
   onClose: () => void;
 }
 
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return dateString;
+  }
+  return date.toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 export const InconsistenciesHistoryCommentsModal = ({
   currentInconsistencyNumber,
   isOpen,
@@ -45,7 +59,7 @@ export const InconsistenciesHistoryCommentsModal = ({
                 Автор: <b>{comment.comment_author}</b>
               </p>
               <p>
-                Дата: <b>{comment.auto_data}</b>
+                Дата: <b>{formatDate(comment.auto_data)}</b>
               </p>
             </div>
             <p>{comment.comment_text}</p>
