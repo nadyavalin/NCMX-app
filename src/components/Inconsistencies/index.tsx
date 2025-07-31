@@ -7,6 +7,7 @@ import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
+import { SearchFilter } from "@components/SearchFilter";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCurrentInconsistencyNumber,
@@ -20,6 +21,33 @@ import { deleteInconsistencyRequest, fetchItems } from "@api/route";
 import { ItemResponseGET, SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ConfirmDeleteModal } from "@components/modals/confirmDelete";
+
+// Определяем searchFields вне компонента для стабильности
+const searchFields: Array<keyof ItemResponseGET> = [
+  "num_nonconf",
+  "norm_doc",
+  "point",
+  "nonconf",
+  "report",
+  "report_date",
+  "analysis_start_date",
+  "analysis_finish_date",
+  "head_auditor",
+  "auditor",
+  "reason",
+  "correction",
+  "correction_date",
+  "resp_person_correction",
+  "department_correction",
+  "corrective_action",
+  "corrective_action_date",
+  "resp_person_corrective_action",
+  "department_corrective_action",
+  "estimate",
+  "nonconf_closure_date",
+  "resp_person_nonconf_closure",
+  "auto_data",
+];
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -41,13 +69,19 @@ export const Inconsistencies = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<ItemResponseGET | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredItems, setFilteredItems] = useState<ItemResponseGET[]>([]);
 
   useEffect(() => {
     const loadItems = async () => {
       try {
-        await dispatch(fetchItems()).unwrap();
+        console.log("Inconsistencies: Loading items...");
+        const result = await dispatch(fetchItems()).unwrap();
+        console.log("Inconsistencies: Items loaded", { itemsLength: result.length });
+        setFilteredItems(result); // Синхронизация filteredItems с результатом fetchItems
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
+        console.log("Inconsistencies: Fetch error", { errorMessage });
         setFetchError(errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
       }
@@ -56,7 +90,7 @@ export const Inconsistencies = () => {
   }, [dispatch, addSnackbar]);
 
   const openModal = () => {
-    setEditItem(null); // Режим создания
+    setEditItem(null);
     dispatch(toggleModalEdit(true));
   };
 
@@ -122,6 +156,7 @@ export const Inconsistencies = () => {
       await dispatch(deleteInconsistencyRequest(deleteNumNonconf)).unwrap();
       setConfirmDeleteOpen(false);
       setDeleteNumNonconf(null);
+      setFilteredItems(items); // Синхронизация после удаления
       addSnackbar(SnackbarType.success, `Несоответствие №${deleteNumNonconf} успешно удалено`);
     } catch (error: unknown) {
       const errorMessage =
@@ -138,8 +173,12 @@ export const Inconsistencies = () => {
     setDeleteNumNonconf(null);
   };
 
-  // Сортировка элементов по num_nonconf
-  const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  console.log("Inconsistencies render", {
+    itemsLength: items.length,
+    filteredItemsLength: filteredItems.length,
+  });
+
+  const sortedItems = [...filteredItems].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   if (itemsLoading) {
     return <div>Загрузка таблицы несоответствий...</div>;
@@ -176,7 +215,14 @@ export const Inconsistencies = () => {
             <option value="">ФИО из базы</option>
             <option value="">ФИО из базы</option>
           </select>
-          <input type="text" placeholder="Поиск..." />
+          <SearchFilter
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            items={items}
+            setFilteredItems={setFilteredItems}
+            searchFields={searchFields}
+            placeholder="Поиск по всем полям..."
+          />
           <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
         </section>
 
