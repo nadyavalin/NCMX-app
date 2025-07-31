@@ -30,11 +30,24 @@ export const InconsistenciesHistoryCommentsModal = ({
 }: ModalProps) => {
   const { comments, loading, error } = useFetchCommentsItems(currentInconsistencyNumber);
   const hasFetched = useRef(false);
+  const modalContentRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    if (modalContentRef.current) {
+      modalContentRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     if (isOpen && !hasFetched.current && currentInconsistencyNumber) {
       console.log("Fetching comments for num_nonconf:", currentInconsistencyNumber);
       hasFetched.current = true;
+      setTimeout(() => {
+        scrollToTop();
+      }, 0);
     }
     if (!isOpen) {
       hasFetched.current = false;
@@ -43,7 +56,12 @@ export const InconsistenciesHistoryCommentsModal = ({
 
   if (loading) {
     return (
-      <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
+      <ModalComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        additionalClass={styles.modalContentSpec}
+        contentRef={modalContentRef}
+      >
         <div>Загрузка комментариев...</div>
       </ModalComponent>
     );
@@ -51,7 +69,12 @@ export const InconsistenciesHistoryCommentsModal = ({
 
   if (error) {
     return (
-      <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
+      <ModalComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        additionalClass={styles.modalContentSpec}
+        contentRef={modalContentRef}
+      >
         <div>Ошибка: {error}</div>
       </ModalComponent>
     );
@@ -62,11 +85,18 @@ export const InconsistenciesHistoryCommentsModal = ({
   );
 
   return (
-    <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
+    <ModalComponent
+      isOpen={isOpen}
+      onClose={onClose}
+      additionalClass={styles.modalContentSpec}
+      contentRef={modalContentRef}
+    >
+      {filteredComments.length > 0 && (
+        <h3>История комментариев к несоответствию {currentInconsistencyNumber}</h3>
+      )}
       {filteredComments.length > 0 ? (
         filteredComments.map((comment) => (
           <div className={styles.commentCard} key={comment.id}>
-            <h3>История комментариев к несоответствию {comment.num_nonconf}</h3>
             <div className={styles.authorAndDate}>
               <p>
                 Автор: <b>{comment.comment_author}</b>
