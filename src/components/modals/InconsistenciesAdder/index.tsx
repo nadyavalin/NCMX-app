@@ -48,6 +48,15 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
 
+  const scrollToTop = () => {
+    if (modalContentRef.current) {
+      modalContentRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       if (editItem) {
@@ -78,10 +87,10 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       } else {
         setFormData(initialFormData);
       }
-      // Сбрасываем прокрутку в начало модального окна
-      if (modalContentRef.current) {
-        modalContentRef.current.scrollTop = 0;
-      }
+      // Сбрасываем прокрутку с небольшой задержкой
+      setTimeout(() => {
+        scrollToTop();
+      }, 0);
     }
   }, [isOpen, editItem]);
 
@@ -138,7 +147,6 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
 
     try {
       if (editItem) {
-        // Режим редактирования
         const result = await dispatch(
           updateInconsistencyRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
         ).unwrap();
@@ -147,11 +155,10 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
           `Несоответствие №${result.num_nonconf} успешно обновлено`,
         );
       } else {
-        // Режим создания
         const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
         addSnackbar(SnackbarType.success, `Несоответствие №${result.num_nonconf} успешно создано`);
       }
-      setFormData(initialFormData); // Сбрасываем форму после успешной отправки
+      setFormData(initialFormData);
       onClose();
     } catch (error: unknown) {
       let errorMessage = "Ошибка при сохранении";
@@ -166,253 +173,256 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
   };
 
   const handleClose = () => {
-    setFormData(initialFormData); // Сбрасываем форму при закрытии
+    setFormData(initialFormData);
     setErrors({});
     onClose();
   };
 
   return (
-    <ModalComponent isOpen={isOpen} onClose={handleClose} additionalClass={styles.modalContentSpec}>
-      <div ref={modalContentRef}>
-        <form className={styles.modalForm} onSubmit={handleSubmit}>
-          {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
-          {createError && <p className={styles.submitError}>{createError}</p>}
-          <div className={styles.nonConfNumberBlock}>
-            <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
-            <div className={styles.nonConfNumberInputBlock}>
-              <label htmlFor="num_nonconf">Номер несоответствия:</label>
-              <input
-                type="number"
-                name="num_nonconf"
-                id="num_nonconf"
-                value={formData.num_nonconf || ""}
-                onChange={handleChange}
-                required
-                ref={numNonconfRef}
-                className={errors.num_nonconf ? styles.inputError : ""}
-                disabled={!!editItem}
-              />
-              {errors.num_nonconf && <p className={styles.submitError}>{errors.num_nonconf}</p>}
-            </div>
+    <ModalComponent
+      isOpen={isOpen}
+      onClose={handleClose}
+      additionalClass={styles.modalContentSpec}
+      contentRef={modalContentRef}
+    >
+      <form className={styles.modalForm} onSubmit={handleSubmit}>
+        {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
+        {createError && <p className={styles.submitError}>{createError}</p>}
+        <div className={styles.nonConfNumberBlock}>
+          <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
+          <div className={styles.nonConfNumberInputBlock}>
+            <label htmlFor="num_nonconf">Номер несоответствия:</label>
+            <input
+              type="number"
+              name="num_nonconf"
+              id="num_nonconf"
+              value={formData.num_nonconf || ""}
+              onChange={handleChange}
+              required
+              ref={numNonconfRef}
+              className={errors.num_nonconf ? styles.inputError : ""}
+              disabled={!!editItem}
+            />
+            {errors.num_nonconf && <p className={styles.submitError}>{errors.num_nonconf}</p>}
           </div>
+        </div>
 
-          <div className={styles.modalInternalBlocks}>
-            <p>1. Основная информация о несоответствии</p>
-            <select
-              name="norm_doc"
-              id="norm_doc"
-              value={formData.norm_doc || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать нормативный документ из базы</option>
-              <option value="А1">А1</option>
-              <option value="А2">А2</option>
-              <option value="А3">А3</option>
-              <option value="А4">А4</option>
-              <option value="А14">А14</option>
-            </select>
+        <div className={styles.modalInternalBlocks}>
+          <p>1. Основная информация о несоответствии</p>
+          <select
+            name="norm_doc"
+            id="norm_doc"
+            value={formData.norm_doc || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать нормативный документ из базы</option>
+            <option value="А1">А1</option>
+            <option value="А2">А2</option>
+            <option value="А3">А3</option>
+            <option value="А4">А4</option>
+            <option value="А14">А14</option>
+          </select>
+          <input
+            name="point"
+            type="text"
+            value={formData.point || ""}
+            placeholder="Номер пункта нормативного документа"
+            onChange={handleChange}
+          />
+          <a href="#">Добавить НД</a>
+          <textarea
+            name="nonconf"
+            id="nonconf"
+            value={formData.nonconf || ""}
+            placeholder="Описание несоответствия"
+            rows={10}
+            onChange={handleChange}
+          />
+          <input
+            name="report"
+            id="report"
+            type="text"
+            value={formData.report || ""}
+            placeholder="Источник информации о несоответствии"
+            onChange={handleChange}
+          />
+          <input
+            type="date"
+            name="report_date"
+            id="report_date"
+            title="Выберите дату утверждения источника"
+            value={formData.report_date || ""}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className={styles.modalInternalBlocks}>
+          <p>2. Анализ причин несоответствия</p>
+          <div className={styles.oneLineText}>
             <input
-              name="point"
-              type="text"
-              value={formData.point || ""}
-              placeholder="Номер пункта нормативного документа"
-              onChange={handleChange}
-            />
-            <a href="#">Добавить НД</a>
-            <textarea
-              name="nonconf"
-              id="nonconf"
-              value={formData.nonconf || ""}
-              placeholder="Описание несоответствия"
-              rows={10}
-              onChange={handleChange}
-            />
-            <input
-              name="report"
-              id="report"
-              type="text"
-              value={formData.report || ""}
-              placeholder="Источник информации о несоответствии"
+              type="date"
+              name="analysis_start_date"
+              id="analysis_start_date"
+              title="Выберите дату начала проведения анализа"
+              value={formData.analysis_start_date || ""}
               onChange={handleChange}
             />
             <input
               type="date"
-              name="report_date"
-              id="report_date"
-              title="Выберите дату утверждения источника"
-              value={formData.report_date || ""}
+              name="analysis_finish_date"
+              id="analysis_finish_date"
+              title="Выберите дату окончания проведения анализа"
+              value={formData.analysis_finish_date || ""}
               onChange={handleChange}
             />
           </div>
 
-          <div className={styles.modalInternalBlocks}>
-            <p>2. Анализ причин несоответствия</p>
-            <div className={styles.oneLineText}>
-              <input
-                type="date"
-                name="analysis_start_date"
-                id="analysis_start_date"
-                title="Выберите дату начала проведения анализа"
-                value={formData.analysis_start_date || ""}
-                onChange={handleChange}
-              />
-              <input
-                type="date"
-                name="analysis_finish_date"
-                id="analysis_finish_date"
-                title="Выберите дату окончания проведения анализа"
-                value={formData.analysis_finish_date || ""}
-                onChange={handleChange}
-              />
-            </div>
+          <select
+            name="head_auditor"
+            id="head_auditor"
+            value={formData.head_auditor || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать главного аудитора из базы</option>
+            <option value="Разумнева Н.П.">Разумнева Н.П.</option>
+          </select>
 
-            <select
-              name="head_auditor"
-              id="head_auditor"
-              value={formData.head_auditor || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать главного аудитора из базы</option>
-              <option value="Разумнева Н.П.">Разумнева Н.П.</option>
-            </select>
+          <select
+            name="auditor"
+            id="auditor"
+            value={formData.auditor || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать аудитора из базы</option>
+            <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
+            <option value="Ткачук Н.С.">Ткачук Н.С.</option>
+            <option value="Морозова Е.">Морозова Е.</option>
+            <option value="Зюзева Е.">Зюзева Е.</option>
+          </select>
+          <a href="#">Добавить аудитора</a>
+          <textarea
+            name="reason"
+            id="reason"
+            value={formData.reason || ""}
+            placeholder="Причины несоответствия, определенные по результатам анализа"
+            rows={10}
+            onChange={handleChange}
+          />
+        </div>
 
-            <select
-              name="auditor"
-              id="auditor"
-              value={formData.auditor || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать аудитора из базы</option>
-              <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
-              <option value="Ткачук Н.С.">Ткачук Н.С.</option>
-              <option value="Морозова Е.">Морозова Е.</option>
-              <option value="Зюзева Е.">Зюзева Е.</option>
-            </select>
-            <a href="#">Добавить аудитора</a>
-            <textarea
-              name="reason"
-              id="reason"
-              value={formData.reason || ""}
-              placeholder="Причины несоответствия, определенные по результатам анализа"
-              rows={10}
+        <div className={styles.modalInternalBlocks}>
+          <div className={styles.oneLineText}>
+            <p>3. Коррекция</p>
+            <a href="#">Добавить коррекцию</a>
+          </div>
+          <textarea
+            name="correction"
+            id="correction"
+            value={formData.correction || ""}
+            placeholder="Описание коррекции"
+            rows={10}
+            onChange={handleChange}
+          />
+          <div className={styles.oneLineText}>
+            <input
+              type="date"
+              name="correction_date"
+              id="correction_date"
+              title="Выберите дату внедрения коррекции"
+              value={formData.correction_date || ""}
               onChange={handleChange}
             />
           </div>
 
-          <div className={styles.modalInternalBlocks}>
-            <div className={styles.oneLineText}>
-              <p>3. Коррекция</p>
-              <a href="#">Добавить коррекцию</a>
-            </div>
-            <textarea
-              name="correction"
-              id="correction"
-              value={formData.correction || ""}
-              placeholder="Описание коррекции"
-              rows={10}
+          <select
+            name="resp_person_correction"
+            id="resp_person_correction"
+            value={formData.resp_person_correction || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать ответственное лицо из базы</option>
+            <option value="Матвеева М.А.">Матвеева М.А.</option>
+            <option value="Семенов К.С.">Семенов К.С.</option>
+            <option value="Курженков С.А.">Курженков С.А.</option>
+          </select>
+          <a href="#">Добавить ответственное лицо</a>
+
+          <select
+            name="department_correction"
+            id="department_correction"
+            value={formData.department_correction || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать ответственное подразделение из базы</option>
+            <option value="НПО">НПО</option>
+            <option value="НПГС">НПГС</option>
+            <option value="ПП СОК">ПП СОК</option>
+            <option value="ПП ФЭИС">ПП ФЭИС</option>
+          </select>
+          <a href="#">Добавить ответственное подразделение</a>
+        </div>
+
+        <div className={styles.modalInternalBlocks}>
+          <div className={styles.oneLineText}>
+            <p>4. Корректирующее действие</p>
+            <a href="#">Добавить кор. действие</a>
+          </div>
+          <textarea
+            name="corrective_action"
+            id="corrective_action"
+            value={formData.corrective_action || ""}
+            placeholder="Описание корректирующего действия"
+            rows={10}
+            onChange={handleChange}
+          />
+          <div className={styles.oneLineText}>
+            <input
+              type="date"
+              name="corrective_action_date"
+              id="corrective_action_date"
+              title="Выберите дату внедрения корректирующего действия"
+              value={formData.corrective_action_date || ""}
               onChange={handleChange}
             />
-            <div className={styles.oneLineText}>
-              <input
-                type="date"
-                name="correction_date"
-                id="correction_date"
-                title="Выберите дату внедрения коррекции"
-                value={formData.correction_date || ""}
-                onChange={handleChange}
-              />
-            </div>
-
-            <select
-              name="resp_person_correction"
-              id="resp_person_correction"
-              value={formData.resp_person_correction || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать ответственное лицо из базы</option>
-              <option value="Матвеева М.А.">Матвеева М.А.</option>
-              <option value="Семенов К.С.">Семенов К.С.</option>
-              <option value="Курженков С.А.">Курженков С.А.</option>
-            </select>
-            <a href="#">Добавить ответственное лицо</a>
-
-            <select
-              name="department_correction"
-              id="department_correction"
-              value={formData.department_correction || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать ответственное подразделение из базы</option>
-              <option value="НПО">НПО</option>
-              <option value="НПГС">НПГС</option>
-              <option value="ПП СОК">ПП СОК</option>
-              <option value="ПП ФЭИС">ПП ФЭИС</option>
-            </select>
-            <a href="#">Добавить ответственное подразделение</a>
           </div>
 
-          <div className={styles.modalInternalBlocks}>
-            <div className={styles.oneLineText}>
-              <p>4. Корректирующее действие</p>
-              <a href="#">Добавить кор. действие</a>
-            </div>
-            <textarea
-              name="corrective_action"
-              id="corrective_action"
-              value={formData.corrective_action || ""}
-              placeholder="Описание корректирующего действия"
-              rows={10}
-              onChange={handleChange}
-            />
-            <div className={styles.oneLineText}>
-              <input
-                type="date"
-                name="corrective_action_date"
-                id="corrective_action_date"
-                title="Выберите дату внедрения корректирующего действия"
-                value={formData.corrective_action_date || ""}
-                onChange={handleChange}
-              />
-            </div>
+          <select
+            name="resp_person_corrective_action"
+            id="resp_person_corrective_action"
+            value={formData.resp_person_corrective_action || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать ответственное лицо из базы</option>
+            <option value="Матвеева М.А.">Матвеева М.А.</option>
+            <option value="Семенов К.С.">Семенов К.С.</option>
+            <option value="Курженков С.А.">Курженков С.А.</option>
+          </select>
+          <a href="#">Добавить ответственное лицо</a>
 
-            <select
-              name="resp_person_corrective_action"
-              id="resp_person_corrective_action"
-              value={formData.resp_person_corrective_action || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать ответственное лицо из базы</option>
-              <option value="Матвеева М.А.">Матвеева М.А.</option>
-              <option value="Семенов К.С.">Семенов К.С.</option>
-              <option value="Курженков С.А.">Курженков С.А.</option>
-            </select>
-            <a href="#">Добавить ответственное лицо</a>
-
-            <select
-              name="department_corrective_action"
-              id="department_corrective_action"
-              value={formData.department_corrective_action || ""}
-              onChange={handleChange}
-            >
-              <option value="">...выбрать ответственное подразделение из базы</option>
-              <option value="НПО">НПО</option>
-              <option value="НПГС">НПГС</option>
-              <option value="ПП СОК">ПП СОК</option>
-              <option value="ПП ФЭИС">ПП ФЭИС</option>
-            </select>
-            <a href="#">Добавить ответственное подразделение</a>
-          </div>
-          <div className={styles.buttonsBlock}>
-            <button type="submit" disabled={createLoading}>
-              {createLoading
-                ? "Сохранение..."
-                : editItem
-                  ? "Сохранить изменения"
-                  : "Сохранить и закрыть"}
-            </button>
-          </div>
-        </form>
-      </div>
+          <select
+            name="department_corrective_action"
+            id="department_corrective_action"
+            value={formData.department_corrective_action || ""}
+            onChange={handleChange}
+          >
+            <option value="">...выбрать ответственное подразделение из базы</option>
+            <option value="НПО">НПО</option>
+            <option value="НПГС">НПГС</option>
+            <option value="ПП СОК">ПП СОК</option>
+            <option value="ПП ФЭИС">ПП ФЭИС</option>
+          </select>
+          <a href="#">Добавить ответственное подразделение</a>
+        </div>
+        <div className={styles.buttonsBlock}>
+          <button type="submit" disabled={createLoading}>
+            {createLoading
+              ? "Сохранение..."
+              : editItem
+                ? "Сохранить изменения"
+                : "Сохранить и закрыть"}
+          </button>
+        </div>
+      </form>
     </ModalComponent>
   );
 };
