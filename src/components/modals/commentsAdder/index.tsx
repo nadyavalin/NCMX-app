@@ -13,6 +13,12 @@ interface ModalProps {
   onClose: () => void;
 }
 
+const initialCommentFormData: ItemCommentRequestPOST = {
+  num_nonconf: null,
+  comment_author: "",
+  comment_text: "",
+};
+
 export const InconsistenciesCommentsModal = ({
   currentInconsistencyNumber,
   isOpen,
@@ -21,19 +27,16 @@ export const InconsistenciesCommentsModal = ({
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
   const { commentLoading, commentError } = useSelector((state: RootState) => state.num);
-  const [formData, setFormData] = useState<ItemCommentRequestPOST>({
-    num_nonconf: null,
-    comment_author: "",
-    comment_text: "",
-  });
+  const [formData, setFormData] = useState<ItemCommentRequestPOST>(initialCommentFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (isOpen) {
-      setFormData((prevData) => ({
-        ...prevData,
+      setFormData({
         num_nonconf: currentInconsistencyNumber,
-      }));
+        comment_author: "",
+        comment_text: "",
+      });
       setErrors({});
     }
   }, [isOpen, currentInconsistencyNumber]);
@@ -71,6 +74,8 @@ export const InconsistenciesCommentsModal = ({
 
     try {
       const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
+      setFormData(initialCommentFormData); // Сбрасываем форму после успешной отправки
+      setErrors({});
       onClose();
       addSnackbar(
         SnackbarType.success,
@@ -84,8 +89,14 @@ export const InconsistenciesCommentsModal = ({
     }
   };
 
+  const handleClose = () => {
+    setFormData(initialCommentFormData); // Сбрасываем форму при закрытии
+    setErrors({});
+    onClose();
+  };
+
   return (
-    <ModalComponent isOpen={isOpen} onClose={onClose}>
+    <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <h3>Заполните форму для внесения комментария к несоответствию</h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
