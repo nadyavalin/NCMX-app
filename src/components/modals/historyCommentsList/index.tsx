@@ -1,7 +1,9 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
+import { InconsistenciesCommentsModal } from "../commentsAdder";
 import { useFetchCommentsItems } from "@/api/route";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ItemCommentResponseGET } from "@components/types";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -28,9 +30,11 @@ export const InconsistenciesHistoryCommentsModal = ({
   isOpen,
   onClose,
 }: ModalProps) => {
-  const { comments, loading, error } = useFetchCommentsItems(currentInconsistencyNumber);
+  const { comments, loading, error, refetch } = useFetchCommentsItems(currentInconsistencyNumber);
   const hasFetched = useRef(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingComment, setEditingComment] = useState<ItemCommentResponseGET | null>(null);
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -53,6 +57,17 @@ export const InconsistenciesHistoryCommentsModal = ({
       hasFetched.current = false;
     }
   }, [isOpen, currentInconsistencyNumber]);
+
+  const handleEditClick = (comment: ItemCommentResponseGET) => {
+    setEditingComment(comment);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setEditingComment(null);
+    refetch(); // Обновляем комментарии после закрытия
+  };
 
   if (loading) {
     return (
@@ -85,37 +100,52 @@ export const InconsistenciesHistoryCommentsModal = ({
   );
 
   return (
-    <ModalComponent
-      isOpen={isOpen}
-      onClose={onClose}
-      additionalClass={styles.modalContentSpec}
-      contentRef={modalContentRef}
-    >
-      {filteredComments.length > 0 && (
-        <h3>История комментариев к несоответствию {currentInconsistencyNumber}</h3>
-      )}
-      {filteredComments.length > 0 ? (
-        filteredComments.map((comment) => (
-          <div className={styles.commentCard} key={comment.id}>
-            <div className={styles.authorAndDate}>
-              <p>
-                Автор: <b>{comment.comment_author}</b>
-              </p>
-              <p>
-                Дата: <b>{formatDate(comment.created_at)}</b>
-              </p>
+    <>
+      <ModalComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        additionalClass={styles.modalContentSpec}
+        contentRef={modalContentRef}
+      >
+        {filteredComments.length > 0 && (
+          <h3>История комментариев к несоответствию {currentInconsistencyNumber}</h3>
+        )}
+        {filteredComments.length > 0 ? (
+          filteredComments.map((comment) => (
+            <div className={styles.commentCard} key={comment.id}>
+              <div className={styles.authorAndDate}>
+                <p>
+                  Автор: <b>{comment.comment_author}</b>
+                </p>
+                <p>
+                  Дата: <b>{formatDate(comment.created_at)}</b>
+                </p>
+              </div>
+              <p>{comment.comment_text}</p>
+              <div className={styles.comment_change}>
+                <a href="#" onClick={() => handleEditClick(comment)}>
+                  Изменить
+                </a>
+              </div>
             </div>
-            <p>{comment.comment_text}</p>
-          </div>
-        ))
-      ) : (
-        <div>Нет комментариев для отображения.</div>
+          ))
+        ) : (
+          <div>Нет комментариев для отображения.</div>
+        )}
+        <div className={styles.buttonsBlock}>
+          <button onClick={onClose} className={styles.closeButton}>
+            Закрыть
+          </button>
+        </div>
+      </ModalComponent>
+      {isEditModalOpen && editingComment && (
+        <InconsistenciesCommentsModal
+          currentInconsistencyNumber={currentInconsistencyNumber}
+          isOpen={isEditModalOpen}
+          onClose={handleEditModalClose}
+          editComment={editingComment}
+        />
       )}
-      <div className={styles.buttonsBlock}>
-        <button onClick={onClose} className={styles.closeButton}>
-          Закрыть
-        </button>
-      </div>
-    </ModalComponent>
+    </>
   );
 };

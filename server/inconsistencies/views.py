@@ -68,3 +68,20 @@ class InconsistenciesComments(APIView):
                 )
         logger.error(f"Serializer validation errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, id):
+        comment = get_object_or_404(NCMXInconsistencyComments, id=id)
+        serializer = NCMXInconsistencyCommentsSerializer(comment, data=request.data, partial=True)
+        if serializer.is_valid():
+            try:
+                comment = serializer.save()
+                logger.debug(f"Comment updated: {serializer.data}")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                logger.error(f"Error updating comment: {str(e)}", exc_info=True)
+                return Response(
+                    {"error": f"Ошибка при обновлении комментария: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        logger.error(f"Serializer validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

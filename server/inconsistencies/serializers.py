@@ -19,7 +19,7 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         return data
 
 class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):
-    num_nonconf = serializers.IntegerField(write_only=True)
+    num_nonconf = serializers.IntegerField()
 
     class Meta:
         model = NCMXInconsistencyComments
@@ -33,7 +33,6 @@ class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):
         if not data.get('comment_text'):
             raise serializers.ValidationError({"comment_text": "Текст комментария обязателен"})
         
-        # Проверяем, существует ли NCMXInconsistencies с указанным num_nonconf
         try:
             NCMXInconsistencies.objects.get(num_nonconf=data['num_nonconf'])
         except NCMXInconsistencies.DoesNotExist:
@@ -55,6 +54,20 @@ class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
         except Exception as e:
             raise serializers.ValidationError({"error": f"Ошибка при создании комментария: {str(e)}"})
+
+    def update(self, instance, validated_data):
+        try:
+            num_nonconf_value = validated_data.pop('num_nonconf')
+            num_nonconf_instance = NCMXInconsistencies.objects.get(num_nonconf=num_nonconf_value)
+            instance.num_nonconf = num_nonconf_instance
+            instance.comment_author = validated_data.get('comment_author', instance.comment_author)
+            instance.comment_text = validated_data.get('comment_text', instance.comment_text)
+            instance.save()
+            return instance
+        except NCMXInconsistencies.DoesNotExist:
+            raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
+        except Exception as e:
+            raise serializers.ValidationError({"error": f"Ошибка при обновлении комментария: {str(e)}"})
 
     def to_representation(self, instance):
         representation = {

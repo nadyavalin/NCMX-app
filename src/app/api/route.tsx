@@ -86,6 +86,21 @@ export const createCommentInconsistencyRequest = createAsyncThunk<
   }
 });
 
+// Thunk для обновления комментария
+export const updateCommentInconsistencyRequest = createAsyncThunk<
+  ItemCommentResponseGET,
+  { id: number; data: ItemCommentRequestPOST },
+  { state: RootState }
+>("num/updateCommentInconsistency", async ({ id, data }) => {
+  try {
+    const response = await api.patch<ItemCommentResponseGET>(`/ncmx-comments/${id}/`, data);
+    return response.data;
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при обновлении комментария");
+    throw new Error(errorMessage);
+  }
+});
+
 // Thunk для загрузки комментариев
 export const fetchCommentsItems = createAsyncThunk<
   ItemCommentResponseGET[],

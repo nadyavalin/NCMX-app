@@ -1,8 +1,8 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useEffect, useState } from "react";
-import { ItemCommentRequestPOST, SnackbarType } from "@components/types";
-import { createCommentInconsistencyRequest } from "@/api/route";
+import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@components/types";
+import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api/route";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
@@ -11,6 +11,7 @@ interface ModalProps {
   currentInconsistencyNumber: number | null;
   isOpen: boolean;
   onClose: () => void;
+  editComment?: ItemCommentResponseGET | null;
 }
 
 const initialCommentFormData: ItemCommentRequestPOST = {
@@ -23,6 +24,7 @@ export const InconsistenciesCommentsModal = ({
   currentInconsistencyNumber,
   isOpen,
   onClose,
+  editComment,
 }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
@@ -32,14 +34,22 @@ export const InconsistenciesCommentsModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      setFormData({
-        num_nonconf: currentInconsistencyNumber,
-        comment_author: "",
-        comment_text: "",
-      });
+      if (editComment) {
+        setFormData({
+          num_nonconf: editComment.num_nonconf,
+          comment_author: editComment.comment_author,
+          comment_text: editComment.comment_text,
+        });
+      } else {
+        setFormData({
+          num_nonconf: currentInconsistencyNumber,
+          comment_author: "",
+          comment_text: "",
+        });
+      }
       setErrors({});
     }
-  }, [isOpen, currentInconsistencyNumber]);
+  }, [isOpen, currentInconsistencyNumber, editComment]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -73,14 +83,27 @@ export const InconsistenciesCommentsModal = ({
     }
 
     try {
-      const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
-      setFormData(initialCommentFormData); // Сбрасываем форму после успешной отправки
-      setErrors({});
-      onClose();
-      addSnackbar(
-        SnackbarType.success,
-        `Комментарий успешно добавлен к несоответствию №${result.num_nonconf}`,
-      );
+      if (editComment) {
+        const result = await dispatch(
+          updateCommentInconsistencyRequest({ id: editComment.id, data: formData }),
+        ).unwrap();
+        setFormData(initialCommentFormData);
+        setErrors({});
+        onClose();
+        addSnackbar(
+          SnackbarType.success,
+          `Комментарий к несоответствию №${result.num_nonconf} успешно обновлен`,
+        );
+      } else {
+        const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
+        setFormData(initialCommentFormData);
+        setErrors({});
+        onClose();
+        addSnackbar(
+          SnackbarType.success,
+          `Комментарий успешно добавлен к несоответствию №${result.num_nonconf}`,
+        );
+      }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при отправке комментария";
@@ -90,7 +113,7 @@ export const InconsistenciesCommentsModal = ({
   };
 
   const handleClose = () => {
-    setFormData(initialCommentFormData); // Сбрасываем форму при закрытии
+    setFormData(initialCommentFormData);
     setErrors({});
     onClose();
   };
@@ -98,7 +121,7 @@ export const InconsistenciesCommentsModal = ({
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
-        <h3>Заполните форму для внесения комментария к несоответствию</h3>
+        <h3>{editComment ? "Редактировать комментарий" : "Внести комментарий к несоответствию"}</h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {commentError && <p className={styles.submitError}>{commentError}</p>}
         <select
@@ -124,7 +147,11 @@ export const InconsistenciesCommentsModal = ({
         {errors.comment_text && <p className={styles.submitError}>{errors.comment_text}</p>}
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={commentLoading}>
-            {commentLoading ? "Сохранение..." : "Сохранить и закрыть"}
+            {commentLoading
+              ? "Сохранение..."
+              : editComment
+                ? "Сохранить изменения"
+                : "Сохранить и закрыть"}
           </button>
         </div>
       </form>

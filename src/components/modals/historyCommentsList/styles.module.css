@@ -29,6 +29,11 @@
   margin-bottom: 10px;
 }
 
+.comment_change {
+  display: flex;
+  justify-content: right;
+}
+
 .buttonsBlock {
   display: flex;
   justify-content: flex-end;

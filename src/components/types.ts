@@ -89,6 +89,11 @@ export interface ItemCommentRequestPOST {
   comment_text: string;
 }
 
+export interface ItemCommentRequestPATCH {
+  num_nonconf: number | null;
+  comment_text: string;
+}
+
 export enum SnackbarType {
   error = "error",
   success = "success",
