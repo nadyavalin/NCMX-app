@@ -32,12 +32,12 @@ class NCMXInconsistencies(models.Model):
 
 class NCMXInconsistencyComments(models.Model):
     num_nonconf = models.ForeignKey('NCMXInconsistencies', on_delete=models.CASCADE, db_comment='Номер несоответствия')
-    comment_author = models.CharField(max_length=50, db_comment='Автор комментария подтаблица\r\n')
-    comment_text = models.CharField(max_length=1000, db_comment='Текс комментария подтаблица')
-    auto_data = models.DateTimeField(auto_now_add=True, db_comment='Дата создания комментария')
+    comment_author = models.CharField(max_length=50, db_comment='Автор комментария')
+    comment_text = models.CharField(max_length=1000, db_comment='Текст комментария')
+    created_at = models.DateTimeField(auto_now_add=True, db_comment='Дата создания комментария')
 
     class Meta:
         db_table = 'NCMX_inconsistency_comments'
 
     def __str__(self):
-      return f'{self.comment_author} {self.auto_data}'
+        return f'{self.comment_author} {self.created_at}'

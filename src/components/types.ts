@@ -5,9 +5,14 @@ export interface InconsistencyNumberState {
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
+  isModalEditOpen: boolean;
   items: ItemResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
+  createLoading: boolean;
+  createError: string | null;
+  commentLoading: boolean;
+  commentError: string | null;
 }
 
 export interface ItemResponseGET {
@@ -42,11 +47,11 @@ export interface APIResponse {
 }
 
 export interface ItemCommentResponseGET {
-  id: string;
+  id: number;
   num_nonconf: number;
   comment_author: string;
   comment_text: string;
-  auto_data: DateString;
+  created_at: DateString;
 }
 
 export interface APICommentsResponse {

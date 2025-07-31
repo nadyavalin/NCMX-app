@@ -69,50 +69,51 @@ export const updateInconsistencyRequest = createAsyncThunk<
   }
 });
 
+// Thunk для создания комментария
+export const createCommentInconsistencyRequest = createAsyncThunk<
+  ItemCommentResponseGET,
+  ItemCommentRequestPOST,
+  { state: RootState }
+>("num/createCommentInconsistency", async (formData) => {
+  try {
+    const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
+    return response.data;
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при создании комментария");
+    throw new Error(errorMessage);
+  }
+});
+
 // Хук для загрузки комментариев
 export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
   const [comments, setComments] = useState<ItemCommentResponseGET[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchComments = async () => {
+    if (currentInconsistencyNumber === null) {
+      setComments([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
+        params: { num_nonconf: currentInconsistencyNumber },
+      });
+      setComments(response.data.results || []);
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchComments = async () => {
-      if (currentInconsistencyNumber === null) {
-        setComments([]);
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
-          params: { num_nonconf: currentInconsistencyNumber },
-        });
-        setComments(response.data.results || []);
-      } catch (error: unknown) {
-        const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchComments();
   }, [currentInconsistencyNumber]);
 
-  return { comments, loading, error };
-};
-
-// Функция для отправки комментария
-export const sendCommentInconsistencyRequest = async (
-  formData: ItemCommentRequestPOST,
-): Promise<ItemCommentResponseGET> => {
-  try {
-    const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
-    console.log("Success: ", response.data);
-    return response.data;
-  } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при отправке комментария");
-    throw new Error(errorMessage);
-  }
+  return { comments, loading, error, refetch: fetchComments };
 };

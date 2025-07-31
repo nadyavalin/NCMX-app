@@ -138,6 +138,9 @@ export const Inconsistencies = () => {
     setDeleteNumNonconf(null);
   };
 
+  // Сортировка элементов по num_nonconf
+  const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
+
   if (itemsLoading) {
     return <div>Загрузка таблицы несоответствий...</div>;
   }
@@ -203,14 +206,14 @@ export const Inconsistencies = () => {
               </tr>
             </thead>
             <tbody>
-              {items.length === 0 ? (
+              {sortedItems.length === 0 ? (
                 <tr>
                   <td colSpan={15} className="error">
                     Нет данных для отображения.
                   </td>
                 </tr>
               ) : (
-                items.map((item) => (
+                sortedItems.map((item) => (
                   <tr key={item.num_nonconf}>
                     <td>{item.num_nonconf}</td>
                     <td>{item.norm_doc || "-"}</td>

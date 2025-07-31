@@ -44,14 +44,10 @@ export const InconsistenciesHistoryCommentsModal = ({
     );
   }
 
-  const filteredComments = comments.filter(
-    (comment) => comment.num_nonconf === currentInconsistencyNumber,
-  );
-
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
-      {filteredComments.length > 0 ? (
-        filteredComments.map((comment) => (
+      {comments.length > 0 ? (
+        comments.map((comment) => (
           <div className={styles.commentCard} key={comment.id}>
             <h3>История комментариев к несоответствию {comment.num_nonconf}</h3>
             <div className={styles.authorAndDate}>
@@ -59,7 +55,7 @@ export const InconsistenciesHistoryCommentsModal = ({
                 Автор: <b>{comment.comment_author}</b>
               </p>
               <p>
-                Дата: <b>{formatDate(comment.auto_data)}</b>
+                Дата: <b>{formatDate(comment.created_at)}</b>
               </p>
             </div>
             <p>{comment.comment_text}</p>

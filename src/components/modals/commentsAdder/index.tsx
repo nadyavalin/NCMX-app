@@ -1,8 +1,11 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useEffect, useState } from "react";
-import { ItemCommentRequestPOST } from "@components/types";
-import { sendCommentInconsistencyRequest } from "@/api/route";
+import { ItemCommentRequestPOST, SnackbarType } from "@components/types";
+import { createCommentInconsistencyRequest, useFetchCommentsItems } from "@/api/route";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../../store/store";
+import { useSnackbar } from "@components/snackbar/snackbarContext";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -15,6 +18,10 @@ export const InconsistenciesCommentsModal = ({
   isOpen,
   onClose,
 }: ModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const addSnackbar = useSnackbar();
+  const { commentLoading, commentError } = useSelector((state: RootState) => state.num);
+  const { refetch } = useFetchCommentsItems(currentInconsistencyNumber);
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
     num_nonconf: null,
     comment_author: "",
@@ -64,13 +71,18 @@ export const InconsistenciesCommentsModal = ({
     }
 
     try {
-      const result = await sendCommentInconsistencyRequest(formData);
-      console.log("Success: ", result);
+      const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
       onClose();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error during API call: ", error);
-      setErrors({ submit: "Ошибка при отправке комментария. Попробуйте снова." });
+      addSnackbar(
+        SnackbarType.success,
+        `Комментарий успешно добавлен к несоответствию №${result.num_nonconf}`,
+      );
+      refetch(); // Обновляем список комментариев
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при отправке комментария";
+      setErrors({ submit: errorMessage });
+      addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
@@ -79,6 +91,7 @@ export const InconsistenciesCommentsModal = ({
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <h3>Заполните форму для внесения комментария к несоответствию</h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
+        {commentError && <p className={styles.submitError}>{commentError}</p>}
         <select
           name="comment_author"
           id="comment_author"
@@ -101,7 +114,9 @@ export const InconsistenciesCommentsModal = ({
         />
         {errors.comment_text && <p className={styles.submitError}>{errors.comment_text}</p>}
         <div className={styles.buttonsBlock}>
-          <button type="submit">Сохранить и закрыть</button>
+          <button type="submit" disabled={commentLoading}>
+            {commentLoading ? "Сохранение..." : "Сохранить и закрыть"}
+          </button>
         </div>
       </form>
     </ModalComponent>

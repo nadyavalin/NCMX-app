@@ -18,6 +18,8 @@ interface InconsistencyNumberState {
   itemsError: string | null;
   createLoading: boolean;
   createError: string | null;
+  commentLoading: boolean;
+  commentError: string | null;
 }
 
 const initialState: InconsistencyNumberState = {
@@ -31,6 +33,8 @@ const initialState: InconsistencyNumberState = {
   itemsError: null,
   createLoading: false,
   createError: null,
+  commentLoading: false,
+  commentError: null,
 };
 
 const numSlice = createSlice({
