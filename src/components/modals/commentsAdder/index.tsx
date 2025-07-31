@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useEffect, useState } from "react";
 import { ItemCommentRequestPOST, SnackbarType } from "@components/types";
-import { createCommentInconsistencyRequest, useFetchCommentsItems } from "@/api/route";
+import { createCommentInconsistencyRequest } from "@/api/route";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
@@ -21,7 +21,6 @@ export const InconsistenciesCommentsModal = ({
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
   const { commentLoading, commentError } = useSelector((state: RootState) => state.num);
-  const { refetch } = useFetchCommentsItems(currentInconsistencyNumber);
   const [formData, setFormData] = useState<ItemCommentRequestPOST>({
     num_nonconf: null,
     comment_author: "",
@@ -77,7 +76,6 @@ export const InconsistenciesCommentsModal = ({
         SnackbarType.success,
         `Комментарий успешно добавлен к несоответствию №${result.num_nonconf}`,
       );
-      refetch(); // Обновляем список комментариев
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при отправке комментария";

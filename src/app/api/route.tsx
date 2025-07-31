@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import {
   APIResponse,
   APICommentsResponse,
@@ -11,6 +11,8 @@ import {
 } from "../../components/types";
 import { handleApiError } from "../../utils/handleApiError";
 import { RootState } from "../../store/store";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
 
 // Thunk для загрузки списка несоответствий
 export const fetchItems = createAsyncThunk<ItemResponseGET[], void, { state: RootState }>(
@@ -84,36 +86,42 @@ export const createCommentInconsistencyRequest = createAsyncThunk<
   }
 });
 
+// Thunk для загрузки комментариев
+export const fetchCommentsItems = createAsyncThunk<
+  ItemCommentResponseGET[],
+  number | null,
+  { state: RootState }
+>("num/fetchCommentsItems", async (num_nonconf) => {
+  if (num_nonconf === null) {
+    return [];
+  }
+  try {
+    const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
+      params: { num_nonconf },
+    });
+    return response.data.results || [];
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
+    throw new Error(errorMessage);
+  }
+});
+
 // Хук для загрузки комментариев
 export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
-  const [comments, setComments] = useState<ItemCommentResponseGET[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    comments,
+    commentLoading: loading,
+    commentError: error,
+  } = useSelector((state: RootState) => state.num);
 
-  const fetchComments = async () => {
-    if (currentInconsistencyNumber === null) {
-      setComments([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
-        params: { num_nonconf: currentInconsistencyNumber },
-      });
-      setComments(response.data.results || []);
-    } catch (error: unknown) {
-      const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchComments = useCallback(async () => {
+    await dispatch(fetchCommentsItems(currentInconsistencyNumber));
+  }, [dispatch, currentInconsistencyNumber]);
 
   useEffect(() => {
     fetchComments();
-  }, [currentInconsistencyNumber]);
+  }, [fetchComments]);
 
   return { comments, loading, error, refetch: fetchComments };
 };

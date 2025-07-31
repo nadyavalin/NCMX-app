@@ -13,11 +13,11 @@ export interface InconsistencyNumberState {
   createError: string | null;
   commentLoading: boolean;
   commentError: string | null;
+  comments: ItemCommentResponseGET[];
 }
 
 export interface ItemResponseGET {
   num_nonconf: number;
-  department?: string;
   norm_doc?: string;
   point?: string;
   nonconf?: string;
@@ -39,7 +39,7 @@ export interface ItemResponseGET {
   estimate?: number;
   nonconf_closure_date?: DateString;
   resp_person_nonconf_closure?: string;
-  auto_data?: string;
+  auto_data?: DateString;
 }
 
 export interface APIResponse {
@@ -60,7 +60,6 @@ export interface APICommentsResponse {
 
 export interface ItemRequestPOST {
   num_nonconf: number;
-  department?: string;
   norm_doc?: string;
   point?: string;
   nonconf?: string;
@@ -82,7 +81,6 @@ export interface ItemRequestPOST {
   estimate?: number | null;
   nonconf_closure_date?: string | null;
   resp_person_nonconf_closure?: string;
-  auto_data?: string;
 }
 
 export interface ItemCommentRequestPOST {

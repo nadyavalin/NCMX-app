@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ItemResponseGET } from "@components/types";
+import { ItemResponseGET, ItemCommentResponseGET } from "@components/types";
 import {
   fetchItems,
   createInconsistencyRequest,
   deleteInconsistencyRequest,
   updateInconsistencyRequest,
+  createCommentInconsistencyRequest,
+  fetchCommentsItems,
 } from "@api/route";
 
 interface InconsistencyNumberState {
@@ -20,6 +22,7 @@ interface InconsistencyNumberState {
   createError: string | null;
   commentLoading: boolean;
   commentError: string | null;
+  comments: ItemCommentResponseGET[];
 }
 
 const initialState: InconsistencyNumberState = {
@@ -35,6 +38,7 @@ const initialState: InconsistencyNumberState = {
   createError: null,
   commentLoading: false,
   commentError: null,
+  comments: [],
 };
 
 const numSlice = createSlice({
@@ -55,9 +59,6 @@ const numSlice = createSlice({
     },
     toggleModalEdit(state, action: PayloadAction<boolean>) {
       state.isModalEditOpen = action.payload;
-    },
-    addItemSuccess(state, action: PayloadAction<ItemResponseGET>) {
-      state.items = [...state.items, action.payload];
     },
   },
   extraReducers: (builder) => {
@@ -110,6 +111,36 @@ const numSlice = createSlice({
       .addCase(updateInconsistencyRequest.rejected, (state, action) => {
         state.itemsError = action.error.message || "Ошибка при обновлении несоответствия";
         state.itemsLoading = false;
+      })
+      .addCase(fetchCommentsItems.pending, (state) => {
+        state.commentLoading = true;
+        state.commentError = null;
+      })
+      .addCase(
+        fetchCommentsItems.fulfilled,
+        (state, action: PayloadAction<ItemCommentResponseGET[]>) => {
+          state.comments = action.payload;
+          state.commentLoading = false;
+        },
+      )
+      .addCase(fetchCommentsItems.rejected, (state, action) => {
+        state.commentError = action.error.message || "Ошибка при получении комментариев";
+        state.commentLoading = false;
+      })
+      .addCase(createCommentInconsistencyRequest.pending, (state) => {
+        state.commentLoading = true;
+        state.commentError = null;
+      })
+      .addCase(
+        createCommentInconsistencyRequest.fulfilled,
+        (state, action: PayloadAction<ItemCommentResponseGET>) => {
+          state.comments = [...state.comments, action.payload];
+          state.commentLoading = false;
+        },
+      )
+      .addCase(createCommentInconsistencyRequest.rejected, (state, action) => {
+        state.commentError = action.error.message || "Ошибка при создании комментария";
+        state.commentLoading = false;
       });
   },
 });
@@ -120,7 +151,6 @@ export const {
   toggleModalHistoryComments,
   toggleModalEstimateResult,
   toggleModalEdit,
-  addItemSuccess,
 } = numSlice.actions;
 
 export default numSlice.reducer;

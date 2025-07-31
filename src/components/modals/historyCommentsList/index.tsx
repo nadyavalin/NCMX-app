@@ -1,6 +1,7 @@
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { useFetchCommentsItems } from "@/api/route";
+import { useEffect, useRef } from "react";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -28,6 +29,18 @@ export const InconsistenciesHistoryCommentsModal = ({
   onClose,
 }: ModalProps) => {
   const { comments, loading, error } = useFetchCommentsItems(currentInconsistencyNumber);
+  const hasFetched = useRef(false);
+
+  useEffect(() => {
+    if (isOpen && !hasFetched.current && currentInconsistencyNumber) {
+      console.log("Fetching comments for num_nonconf:", currentInconsistencyNumber);
+      hasFetched.current = true;
+    }
+    if (!isOpen) {
+      hasFetched.current = false;
+    }
+  }, [isOpen, currentInconsistencyNumber]);
+
   if (loading) {
     return (
       <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
@@ -44,10 +57,14 @@ export const InconsistenciesHistoryCommentsModal = ({
     );
   }
 
+  const filteredComments = comments.filter(
+    (comment) => comment.num_nonconf === currentInconsistencyNumber,
+  );
+
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
-      {comments.length > 0 ? (
-        comments.map((comment) => (
+      {filteredComments.length > 0 ? (
+        filteredComments.map((comment) => (
           <div className={styles.commentCard} key={comment.id}>
             <h3>История комментариев к несоответствию {comment.num_nonconf}</h3>
             <div className={styles.authorAndDate}>
