@@ -9,14 +9,26 @@ export const MainPage = () => {
           <div className={styles.card}>
             <h4>Несоответствия (открытые)</h4>
             <div className={styles.innerCardText}>
-              <p className={styles.innerCardTitles}>Общее количество:</p>
+              <p className={styles.innerCardTitles}>
+                Общее количество: <b>68</b>
+              </p>
               <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
               <div className={styles.innerCardDepartments}>
-                <p>НПГС:</p>
-                <p>ППГС:</p>
-                <p>НПО:</p>
-                <p>ПП СОК:</p>
-                <p>ПП ФЭИС:</p>
+                <p>
+                  НПГС: <b>9</b>
+                </p>
+                <p>
+                  ППГС: <b>8</b>
+                </p>
+                <p>
+                  НПО: <b>0</b>
+                </p>
+                <p>
+                  ПП СОК: <b>5</b>
+                </p>
+                <p>
+                  ПП ФЭИС: <b>27</b>
+                </p>
                 <p>...</p>
               </div>
             </div>
@@ -51,7 +63,7 @@ export const MainPage = () => {
 
         <div className={styles.cards}>
           <div className={styles.card}>
-            <h4>Закрыто несоответствий в 2024</h4>
+            <h4>Закрыто несоответствий в 2025</h4>
             <div className={styles.innerCardText}>
               <p className={styles.innerCardTitles}>Общее количество:</p>
               <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
@@ -66,7 +78,7 @@ export const MainPage = () => {
             </div>
           </div>
           <div className={styles.card}>
-            <h4>Закрыто наблюдений в 2024</h4>
+            <h4>Закрыто наблюдений в 2025</h4>
             <p className={styles.innerCardTitles}>Общее количество:</p>
             <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
             <div className={styles.innerCardDepartments}>
@@ -79,7 +91,7 @@ export const MainPage = () => {
             </div>
           </div>
           <div className={styles.card}>
-            <h4>Закрыто возможностей для улучшения в 2024</h4>
+            <h4>Закрыто возможностей для улучшения в 2025</h4>
             <p className={styles.innerCardTitles}>Общее количество:</p>
             <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
             <div className={styles.innerCardDepartments}>

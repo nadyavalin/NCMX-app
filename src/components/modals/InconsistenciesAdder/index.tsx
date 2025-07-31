@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "@components/types";
-import { sendInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
+import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
-import { AppDispatch } from "../../../store/store";
-import { addItemSuccess } from "../../../store/numSlice";
+import { isAxiosError } from "axios";
+import { AppDispatch, RootState } from "../../../store/store";
 
 interface ModalProps {
   isOpen: boolean;
@@ -17,6 +17,7 @@ interface ModalProps {
 export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
+  const { createLoading, createError } = useSelector((state: RootState) => state.num);
   const [formData, setFormData] = useState<ItemRequestPOST>({
     num_nonconf: 0,
     norm_doc: "",
@@ -165,13 +166,17 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
         );
       } else {
         // Режим создания
-        const result = await sendInconsistencyRequest(payload);
-        dispatch(addItemSuccess(result));
+        const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
         addSnackbar(SnackbarType.success, `Несоответствие №${result.num_nonconf} успешно создано`);
       }
       onClose();
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Ошибка при сохранении";
+      let errorMessage = "Ошибка при сохранении";
+      if (isAxiosError(error)) {
+        errorMessage = error.response?.data?.detail || error.message || "Ошибка сервера";
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       setErrors({ submit: errorMessage });
       addSnackbar(SnackbarType.error, errorMessage);
     }
@@ -181,6 +186,7 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
     <ModalComponent isOpen={isOpen} onClose={onClose} additionalClass={styles.modalContentSpec}>
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
+        {createError && <p className={styles.submitError}>{createError}</p>}
         <div className={styles.nonConfNumberBlock}>
           <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
           <div className={styles.nonConfNumberInputBlock}>
@@ -407,7 +413,13 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
           <a href="#">Добавить ответственное подразделение</a>
         </div>
         <div className={styles.buttonsBlock}>
-          <button type="submit">{editItem ? "Сохранить изменения" : "Сохранить и закрыть"}</button>
+          <button type="submit" disabled={createLoading}>
+            {createLoading
+              ? "Сохранение..."
+              : editItem
+                ? "Сохранить изменения"
+                : "Сохранить и закрыть"}
+          </button>
         </div>
       </form>
     </ModalComponent>

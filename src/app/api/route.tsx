@@ -26,12 +26,27 @@ export const fetchItems = createAsyncThunk<ItemResponseGET[], void, { state: Roo
   },
 );
 
+// Thunk для создания несоответствия
+export const createInconsistencyRequest = createAsyncThunk<
+  ItemResponseGET,
+  ItemRequestPOST,
+  { state: RootState }
+>("num/createInconsistency", async (formData) => {
+  try {
+    const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
+    return response.data;
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при создании несоответствия");
+    throw new Error(errorMessage);
+  }
+});
+
 // Thunk для удаления несоответствия
 export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state: RootState }>(
   "num/deleteInconsistency",
   async (num_nonconf) => {
     try {
-      await api.delete(`/ncmx-table/${num_nonconf}/delete/`);
+      await api.delete(`/ncmx-table/${num_nonconf}/`);
     } catch (error: unknown) {
       const errorMessage = handleApiError(error, "Ошибка при удалении несоответствия");
       throw new Error(errorMessage);
@@ -53,20 +68,6 @@ export const updateInconsistencyRequest = createAsyncThunk<
     throw new Error(errorMessage);
   }
 });
-
-// Функция для отправки нового несоответствия
-export const sendInconsistencyRequest = async (
-  formData: ItemRequestPOST,
-): Promise<ItemResponseGET> => {
-  try {
-    const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
-    console.log(`Successfully created inconsistency: ${response.data.num_nonconf}`, response.data);
-    return response.data;
-  } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при отправке формы");
-    throw new Error(errorMessage);
-  }
-};
 
 // Хук для загрузки комментариев
 export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {

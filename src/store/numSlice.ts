@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ItemResponseGET } from "@components/types";
-import { fetchItems, deleteInconsistencyRequest, updateInconsistencyRequest } from "@api/route";
+import {
+  fetchItems,
+  createInconsistencyRequest,
+  deleteInconsistencyRequest,
+  updateInconsistencyRequest,
+} from "@api/route";
 
 interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
@@ -11,6 +16,8 @@ interface InconsistencyNumberState {
   items: ItemResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
+  createLoading: boolean;
+  createError: string | null;
 }
 
 const initialState: InconsistencyNumberState = {
@@ -22,6 +29,8 @@ const initialState: InconsistencyNumberState = {
   items: [],
   itemsLoading: false,
   itemsError: null,
+  createLoading: false,
+  createError: null,
 };
 
 const numSlice = createSlice({
@@ -60,6 +69,21 @@ const numSlice = createSlice({
       .addCase(fetchItems.rejected, (state, action) => {
         state.itemsError = action.error.message || "Ошибка при загрузке данных";
         state.itemsLoading = false;
+      })
+      .addCase(createInconsistencyRequest.pending, (state) => {
+        state.createLoading = true;
+        state.createError = null;
+      })
+      .addCase(
+        createInconsistencyRequest.fulfilled,
+        (state, action: PayloadAction<ItemResponseGET>) => {
+          state.items = [...state.items, action.payload];
+          state.createLoading = false;
+        },
+      )
+      .addCase(createInconsistencyRequest.rejected, (state, action) => {
+        state.createError = action.error.message || "Ошибка при создании несоответствия";
+        state.createLoading = false;
       })
       .addCase(
         deleteInconsistencyRequest.fulfilled,
