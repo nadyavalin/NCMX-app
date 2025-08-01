@@ -6,7 +6,17 @@ export const Footer = () => {
   return (
     <>
       <footer>
-        <div className={styles.text}>2025</div>
+        <div className={styles.footerText}>
+          <div className={styles.text}>
+            <p></p>
+            <p>
+              &copy;&nbsp;<b>Optosense</b> 2025
+            </p>
+            <p>
+              <em>v1.0.0</em>
+            </p>
+          </div>
+        </div>
       </footer>
     </>
   );

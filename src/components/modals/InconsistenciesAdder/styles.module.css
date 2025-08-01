@@ -2,7 +2,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
-  max-height: 80vh;
+  max-height: 90vh;
   width: 65%;
   overflow-y: auto;
 }

@@ -8,19 +8,19 @@ export const Header = () => {
     <>
       <header>
         <nav className={styles.navMenu}>
-          <Link href={`/`} className={styles.menuButton}>
+          <Link href={`/`} className="menuButton">
             Главная
           </Link>
-          <Link href={`/Inconsistencies`} className={styles.menuButton}>
+          <Link href={`/Inconsistencies`} className="menuButton">
             Несоответствия
           </Link>
-          <Link href={`/Observations`} className={styles.menuButton}>
+          <Link href={`/Observations`} className="menuButton">
             Наблюдения
           </Link>
-          <Link href={`/Improvements`} className={styles.menuButton}>
+          <Link href={`/Improvements`} className="menuButton">
             Возможности для улучшения
           </Link>
-          <Link href={`/Archive`} className={styles.menuButton}>
+          <Link href={`/Archive`} className="menuButton">
             Архив
           </Link>
         </nav>
