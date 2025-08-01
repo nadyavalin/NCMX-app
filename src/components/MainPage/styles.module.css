@@ -7,7 +7,6 @@
 
 .card {
   width: 25%;
-  height: 180px;
   border: 1px solid var(--border-shadow-color);
   border-radius: 10px;
   padding: 10px;
@@ -25,7 +24,22 @@
 }
 
 .innerCardDepartments {
-  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.innerCardDepartments p {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.innerCardDepartments p .dotted {
+  flex-grow: 1;
+  border-bottom: 1px dotted var(--text-color);
+  margin: 0 10px;
+  transform: translateY(3px);
 }
 
 @media (hover: hover) {

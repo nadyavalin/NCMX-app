@@ -1,5 +1,6 @@
 import "@/globals.css";
 import styles from "./styles.module.css";
+import { SearchInput } from "@components/searchInput";
 
 export const ArchiveImprovements = () => {
   return (
@@ -10,7 +11,7 @@ export const ArchiveImprovements = () => {
           технологических аудитов
         </h3>
         <section className={styles.filterSection}>
-          <input type="text" placeholder="Поиск..." />
+          <SearchInput />
           <button>Получить данные</button>
         </section>
 

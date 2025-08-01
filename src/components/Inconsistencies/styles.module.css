@@ -5,8 +5,7 @@
   justify-content: space-between;
 }
 
-.filterSection select,
-.filterSection input {
+.filterSection select {
   width: 400px;
 }
 

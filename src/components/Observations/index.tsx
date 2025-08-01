@@ -1,5 +1,6 @@
 import "@/globals.css";
 import styles from "./styles.module.css";
+import { SearchInput } from "@components/searchInput";
 
 export const Observations = () => {
   return (
@@ -24,7 +25,7 @@ export const Observations = () => {
             <option value="">ФИО из базы</option>
           </select>
 
-          <input type="text" placeholder="Поиск..." />
+          <SearchInput />
 
           <button>Получить данные</button>
         </section>

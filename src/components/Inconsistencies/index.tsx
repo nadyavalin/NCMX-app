@@ -20,6 +20,7 @@ import { deleteInconsistencyRequest, fetchItems } from "@api/route";
 import { ItemResponseGET, SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ConfirmDeleteModal } from "@components/modals/confirmDelete";
+import { SearchInput } from "@components/searchInput";
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -176,7 +177,7 @@ export const Inconsistencies = () => {
             <option value="">ФИО из базы</option>
             <option value="">ФИО из базы</option>
           </select>
-          <input type="text" placeholder="Поиск..." />
+          <SearchInput />
           <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
         </section>
 

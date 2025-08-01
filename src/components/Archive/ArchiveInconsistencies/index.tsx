@@ -10,6 +10,7 @@ import { fetchItems } from "@api/route";
 import { SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { AppDispatch, RootState } from "../../../store/store";
+import { SearchInput } from "@components/searchInput";
 
 export const ArchiveInconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -76,7 +77,7 @@ export const ArchiveInconsistencies = () => {
           аудитов
         </h3>
         <section className={styles.filterSection}>
-          <input type="text" placeholder="Поиск..." />
+          <SearchInput />
           <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
         </section>
 

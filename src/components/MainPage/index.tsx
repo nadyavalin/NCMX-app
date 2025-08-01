@@ -15,19 +15,29 @@ export const MainPage = () => {
               <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
               <div className={styles.innerCardDepartments}>
                 <p>
-                  НПГС: <b>9</b>
+                  <span>НПГС:</span>
+                  <span className={styles.dotted}></span>
+                  <b>9</b>
                 </p>
                 <p>
-                  ППГС: <b>8</b>
+                  <span>ППГС:</span>
+                  <span className={styles.dotted}></span>
+                  <b>8</b>
                 </p>
                 <p>
-                  НПО: <b>0</b>
+                  <span>НПО:</span>
+                  <span className={styles.dotted}></span>
+                  <b>0</b>
                 </p>
                 <p>
-                  ПП СОК: <b>5</b>
+                  <span>ПП СОК:</span>
+                  <span className={styles.dotted}></span>
+                  <b>5</b>
                 </p>
                 <p>
-                  ПП ФЭИС: <b>27</b>
+                  <span>ПП ФЭИС:</span>
+                  <span className={styles.dotted}></span>
+                  <b>27</b>
                 </p>
                 <p>...</p>
               </div>
