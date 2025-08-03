@@ -47,6 +47,7 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const [currentEditItem, setCurrentEditItem] = useState<ItemResponseGET | null>(null);
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -172,6 +173,12 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
     }
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentEditItem(editItem);
+    }
+  }, [isOpen, editItem]);
+
   const handleClose = () => {
     setFormData(initialFormData);
     setErrors({});
@@ -189,7 +196,9 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {createError && <p className={styles.submitError}>{createError}</p>}
         <div className={styles.nonConfNumberBlock}>
-          <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
+          <h4>
+            {currentEditItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}
+          </h4>
           <div className={styles.nonConfNumberInputBlock}>
             <label htmlFor="num_nonconf">Номер несоответствия:</label>
             <input
