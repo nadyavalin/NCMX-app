@@ -21,6 +21,7 @@ import { ItemResponseGET, SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ConfirmDeleteModal } from "@components/modals/confirmDelete";
 import { SearchInput } from "@components/searchInput";
+import { MainFilter } from "@components/filters/mainFilter";
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -159,24 +160,7 @@ export const Inconsistencies = () => {
         </h3>
         {deleteError && <div className={styles.errorMessage}>{deleteError}</div>}
         <section className={styles.filterSection}>
-          <select>
-            <option value="orderNumber">фильтр по порядковому номеру</option>
-            <option value="requirements">фильтр по требованиям НД</option>
-            <option value="departments">фильтр по подразделению</option>
-            <option value="responsibleForCorrection">
-              фильтр по ответственному лицу за коррекцию
-            </option>
-            <option value="responsibleForCorrectiveAction">
-              фильтр по ответственному лицу за кор.действие
-            </option>
-          </select>
-          <select>
-            <option value="">порядковые номера из базы</option>
-            <option value="">НД из базы</option>
-            <option value="">аббревиатура подразделения из базы</option>
-            <option value="">ФИО из базы</option>
-            <option value="">ФИО из базы</option>
-          </select>
+          <MainFilter />
           <SearchInput />
           <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
         </section>

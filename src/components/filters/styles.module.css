@@ -1,0 +1,39 @@
+.filterContainer {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.filter {
+  width: 300px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  background-color: var(--bg-filter-search-color);
+  border: 2px solid var(--filter-border);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.filter:focus {
+  border-color: var(--filter-border-focus);
+  box-shadow: var(--filter-box-shadow);
+}
+
+.filter option {
+  padding: 10px;
+  background-color: var(--bg-filter-search-hover);
+}
+
+.filter option:checked {
+  color: var(--bg-filter-search-hover);
+  background-color: var(--filter-bg-option-checked);
+}
+
+@media (hover: hover) {
+  .filter:hover {
+    background-color: var(--bg-filter-search-hover);
+    border-color: var(--filter-border-hover);
+  }
+}

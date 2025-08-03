@@ -10,6 +10,8 @@
     "lint:fix": "eslint --fix --ext .ts,.js,.tsx,.jsx src/",
     "format": "prettier . --write",
     "format:ci": "prettier --check .",
+    "stylelint": "stylelint \"**/*.css\" --fix",
+    "stylelint:check": "stylelint \"**/*.css\"",
     "prepare": "husky"
   },
   "dependencies": {
@@ -30,7 +32,12 @@
     "eslint": "9",
     "eslint-config-next": "15.1.1",
     "husky": "9.1.7",
+    "postcss-html": "^1.8.0",
     "prettier": "3.4.2",
+    "stylelint": "^16.23.0",
+    "stylelint-config-recess-order": "^7.1.0",
+    "stylelint-config-standard": "^39.0.0",
+    "stylelint-order": "^7.0.0",
     "typescript": "5"
   }
 }

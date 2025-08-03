@@ -8,7 +8,11 @@ export const Footer = () => {
       <footer>
         <div className={styles.footerText}>
           <div className={styles.text}>
-            <p></p>
+            <p>
+              <a href="#" className={styles.eventListLink}>
+                Журнал событий
+              </a>
+            </p>
             <p>
               &copy;&nbsp;<b>Optosense</b> 2025
             </p>

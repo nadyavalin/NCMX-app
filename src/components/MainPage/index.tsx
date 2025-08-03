@@ -1,4 +1,5 @@
 import styles from "./styles.module.css";
+import { StatisticCard } from "@components/MainPage/statisticCard";
 
 export const MainPage = () => {
   return (
@@ -6,157 +7,21 @@ export const MainPage = () => {
       <main>
         <h3>Из реестра несоответствий внутренних аудитов</h3>
         <div className={styles.cards}>
-          <div className={styles.card}>
-            <h4>Несоответствия (открытые)</h4>
-            <div className={styles.innerCardText}>
-              <p className={styles.innerCardTitles}>
-                Общее количество: <b>68</b>
-              </p>
-              <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-              <div className={styles.innerCardDepartments}>
-                <p>
-                  <span>НПГС:</span>
-                  <span className={styles.dotted}></span>
-                  <b>9</b>
-                </p>
-                <p>
-                  <span>ППГС:</span>
-                  <span className={styles.dotted}></span>
-                  <b>8</b>
-                </p>
-                <p>
-                  <span>НПО:</span>
-                  <span className={styles.dotted}></span>
-                  <b>0</b>
-                </p>
-                <p>
-                  <span>ПП СОК:</span>
-                  <span className={styles.dotted}></span>
-                  <b>5</b>
-                </p>
-                <p>
-                  <span>ПП ФЭИС:</span>
-                  <span className={styles.dotted}></span>
-                  <b>27</b>
-                </p>
-                <p>...</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Наблюдения (открытые)</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Возможности для улучшения (открытые)</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
+          <StatisticCard title="Несоответствия (открытые)" />
+          <StatisticCard title="Наблюдения (открытые)" />
+          <StatisticCard title="Возможности для улучшения (открытые)" />
         </div>
 
         <div className={styles.cards}>
-          <div className={styles.card}>
-            <h4>Закрыто несоответствий в 2025</h4>
-            <div className={styles.innerCardText}>
-              <p className={styles.innerCardTitles}>Общее количество:</p>
-              <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-              <div className={styles.innerCardDepartments}>
-                <p>НПГС:</p>
-                <p>ППГС:</p>
-                <p>НПО:</p>
-                <p>ПП СОК:</p>
-                <p>ПП ФЭИС:</p>
-                <p>...</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Закрыто наблюдений в 2025</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Закрыто возможностей для улучшения в 2025</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
+          <StatisticCard title="Закрыто несоответствий в 2025" />
+          <StatisticCard title="Закрыто наблюдений в 2025" />
+          <StatisticCard title="Закрыто возможностей для улучшения в 2025" />
         </div>
 
         <div className={styles.cards}>
-          <div className={styles.card}>
-            <h4>Закрыто несоответствий всего</h4>
-            <div className={styles.innerCardText}>
-              <p className={styles.innerCardTitles}>Общее количество:</p>
-              <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-              <div className={styles.innerCardDepartments}>
-                <p>НПГС:</p>
-                <p>ППГС:</p>
-                <p>НПО:</p>
-                <p>ПП СОК:</p>
-                <p>ПП ФЭИС:</p>
-                <p>...</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Закрыто наблюдений всего</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
-          <div className={styles.card}>
-            <h4>Закрыто возможностей для улучшения всего</h4>
-            <p className={styles.innerCardTitles}>Общее количество:</p>
-            <p className={styles.innerCardTitles}>Количество в каждом подразделении:</p>
-            <div className={styles.innerCardDepartments}>
-              <p>НПГС:</p>
-              <p>ППГС:</p>
-              <p>НПО:</p>
-              <p>ПП СОК:</p>
-              <p>ПП ФЭИС:</p>
-              <p>...</p>
-            </div>
-          </div>
+          <StatisticCard title="Закрыто несоответствий всего" />
+          <StatisticCard title="Закрыто наблюдений всего" />
+          <StatisticCard title="Закрыто возможностей для улучшения всего" />
         </div>
       </main>
     </>

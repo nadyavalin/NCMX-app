@@ -1,5 +1,8 @@
+"use client";
+
 import "@/globals.css";
 import styles from "./styles.module.css";
+import { MainFilter } from "@components/filters/mainFilter";
 import { SearchInput } from "@components/searchInput";
 
 export const Improvements = () => {
@@ -11,22 +14,8 @@ export const Improvements = () => {
           технологических аудитов
         </h3>
         <section className={styles.filterSection}>
-          <select>
-            <option value="orderNumber">фильтр по порядковому номеру</option>
-            <option value="requirements">фильтр по требованиям НД</option>
-            <option value="requirements">фильтр по подразделению</option>
-            <option value="responsibleForObservation">фильтр по ответственному лицу</option>
-          </select>
-
-          <select>
-            <option value="">порядковые номера из базы</option>
-            <option value="">НД из базы</option>
-            <option value="">аббревиатура подразделения из базы</option>
-            <option value="">ФИО из базы</option>
-          </select>
-
+          <MainFilter />
           <SearchInput />
-
           <button>Получить данные</button>
         </section>
 

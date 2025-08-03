@@ -1,21 +1,17 @@
 .filterSection {
-  width: 100%;
-  margin: 20px 0;
   display: flex;
   justify-content: space-between;
-}
-
-.filterSection select {
-  width: 400px;
+  width: 100%;
+  margin: 20px 0;
 }
 
 .inconsistenciesActions {
-  width: 100%;
-  margin: 20px 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  margin: 20px 0;
 }
 
 .inconsistenciesActions a {
@@ -23,10 +19,10 @@
 }
 
 .addButton {
-  margin: 20px 0;
-  width: 100%;
   display: flex;
   justify-content: flex-end;
+  width: 100%;
+  margin: 20px 0;
 }
 
 .redText {

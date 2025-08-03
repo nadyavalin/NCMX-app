@@ -2,73 +2,78 @@
   font-family: Inter, system-ui, Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  --bg-color: rgb(240, 240, 240);
-  --bg-header-gradient: linear-gradient(45deg, rgb(172, 175, 212), rgb(52, 49, 230));
-  --bg-footer-gradient: linear-gradient(45deg, rgb(52, 49, 230), rgb(172, 175, 212));
-  --border-shadow-color: rgba(255, 255, 255, 0.5);
+  --bg-color: rgb(240 240 240);
+  --bg-header-gradient: linear-gradient(45deg, rgb(172 175 212), rgb(52 49 230));
+  --bg-footer-gradient: linear-gradient(45deg, rgb(52 49 230), rgb(172 175 212));
+  --border-shadow-color: rgb(255 255 255 / 50%);
   --text-button-color: #f5f5f5;
   --accent-color: #421df9;
   --accent-color-hover: #9681ff;
-  --text-color: #000000;
+  --text-color: #000;
   --table-color: #c1c1bf;
   --card-color: #dedede;
   --card-hover-color: #b2caff;
   --scrollbar-color: #97b8ff;
-  --error: #ff0000;
+  --error: #f00;
   --change: #ff6767;
   --success: #00b825;
   --estimate: #00b825;
-  --button-shadow: rgba(175, 172, 255, 0.6);
-
-  --modal-shadow: rgba(0, 0, 0, 0.5);
-
-  --bg-archive-color: #dddddd;
+  --button-shadow: rgb(175 172 255 / 60%);
+  --modal-shadow: rgb(0 0 0 / 50%);
+  --bg-archive-color: #ddd;
   --text-archive-color: #6b6b6b;
-
   --snackbar-bg-color: #dedede;
   --snackbar-border: #a3a3a3;
-  --snackbar-color: #000000;
-
+  --snackbar-color: #000;
   --notifications-layer: 1;
-
+  --filter-border: #3a7bd5;
+  --bg-filter-search-color: #f8f9fa;
+  --filter-border-hover: #00d2ff;
+  --bg-filter-search-hover: #fff;
+  --filter-border-focus: #00d2ff;
+  --filter-box-shadow: 0 0 0 3px rgb(58 123 213 / 20%);
+  --filter-bg-option-checked: #3a7bd5;
   --search-input-focus-color: #007bff;
-  --search-input-box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  --search-input-box-shadow: 0 0 5px rgb(0 123 255 / 30%);
 
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 100vh;
+  padding: 0;
   margin: 0;
+  overflow-y: auto;
+  color: var(--text-color);
+  text-align: center;
   background-color: var(--bg-color);
   background-attachment: fixed;
-  text-align: center;
-  color: var(--text-color);
   background-blend-mode: darken;
-  overflow-y: auto;
 }
 
 main {
-  display: block;
-  margin: 0 30px;
+  display: flex;
+  flex: 1;
   flex-grow: 1;
+  flex-direction: column;
+  margin: 0 30px;
   font-size: 16px;
   text-align: left;
 }
 
 h1 {
-  font-size: 2em;
   margin: 0.67em 0;
+  font-size: 2em;
 }
 
 h2,
@@ -85,8 +90,8 @@ h3 {
 }
 
 h4 {
-  text-align: center;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 a {
@@ -97,26 +102,27 @@ a {
 }
 
 button {
+  min-width: 200px;
   height: 35px;
   padding: 7px 20px;
-  border: none;
-  border-radius: 10px;
-  background-color: var(--accent-color);
   color: var(--text-button-color);
   cursor: pointer;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 .menuButton {
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
   padding: 7px 20px;
   margin: 20px;
-  border-radius: 10px;
-  background-color: var(--accent-color);
+  font-size: 16px;
+  font-weight: 500;
   color: var(--text-button-color);
-  box-shadow: 3px 1px 1px rgba(175, 172, 255, 0.6);
+  text-decoration: none;
+  background-color: var(--accent-color);
+  border-radius: 10px;
+  box-shadow: 3px 1px 1px rgb(175 172 255 / 60%);
 }
 
 input,
@@ -144,8 +150,8 @@ select {
 
 table {
   width: 100%;
-  border: none;
   font-size: 13px;
+  border: none;
 }
 
 table thead tr th {
@@ -154,9 +160,9 @@ table thead tr th {
 
 table thead tr th,
 table tbody tr td {
+  padding: 3px;
   border: 1px solid var(--table-color);
   border-radius: 6px;
-  padding: 3px;
 }
 
 ::-webkit-scrollbar {
@@ -179,6 +185,10 @@ table tbody tr td {
   font-weight: 500;
   color: var(--error);
   text-align: center;
+}
+
+footer {
+  margin-top: auto;
 }
 
 @media (hover: hover) {

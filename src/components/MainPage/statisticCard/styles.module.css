@@ -1,0 +1,58 @@
+.card {
+  width: 25%;
+  padding: 10px;
+  cursor: pointer;
+  background-color: var(--card-color);
+  border: 1px solid var(--border-shadow-color);
+  border-radius: 10px;
+  transition: background-color 0.5s ease;
+}
+
+.card h4 {
+  text-decoration: underline;
+}
+
+.innerCardText {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.innerCardTitle {
+  font-weight: 500;
+}
+
+.innerCardDepartments {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.innerCardDepartments p {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.innerCardDepartments p .dotted {
+  flex-grow: 1;
+  margin: 0 10px;
+  border-bottom: 1px dotted var(--text-color);
+  transform: translateY(3px);
+}
+
+.statisticLink {
+  display: flex;
+  justify-content: center;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    background-color: var(--card-hover-color);
+  }
+
+  .card:hover .statisticLink a {
+    color: var(--change);
+  }
+}

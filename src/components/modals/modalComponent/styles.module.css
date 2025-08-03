@@ -1,29 +1,26 @@
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--modal-shadow);
+  inset: 0;
   display: flex;
-  justify-content: center;
+  visibility: hidden;
   align-items: center;
+  justify-content: center;
+  background-color: var(--modal-shadow);
+  opacity: 0;
   transition:
     opacity 0.5s ease-in-out,
     visibility 0.5s ease-in-out;
-  opacity: 0;
-  visibility: hidden;
 }
 
 .modalContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
-  background-color: var(--bg-color);
   padding: 20px;
+  background-color: var(--bg-color);
   border-radius: 8px;
   box-shadow: 0 0 10px var(--modal-shadow);
-  position: absolute;
-  left: 50%;
-  top: 50%;
   transform: translate(-50%, -50%);
   transition:
     opacity 0.5s ease-in-out,
@@ -38,11 +35,11 @@
 }
 
 .animated {
-  opacity: 0;
   visibility: hidden;
+  opacity: 0;
 }
 
 .show {
-  opacity: 1;
   visibility: visible;
+  opacity: 1;
 }

@@ -1,12 +1,20 @@
 .searchInput {
-  width: 500px;
-  padding: 8px;
   box-sizing: border-box;
+  width: 100%;
   height: 35px;
+  padding: 8px;
+  margin-right: 20px;
+  background-color: var(--bg-filter-search-color);
 }
 
 .searchInput:focus {
   outline: none;
   border-color: var(--search-input-focus-color);
   box-shadow: var(--search-input-box-shadow);
+}
+
+@media (hover: hover) {
+  .searchInput:hover {
+    background-color: var(--bg-filter-search-hover);
+  }
 }

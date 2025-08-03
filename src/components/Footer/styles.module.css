@@ -1,15 +1,26 @@
 .footerText {
-  font-size: 16px;
-  background: var(--bg-footer-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px;
+  font-size: 16px;
+  background: var(--bg-footer-gradient);
 }
 
 .text {
-  width: 100%;
   display: flex;
-  justify-content: space-between;
   gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.eventListLink {
+  font-weight: 400;
+  color: var(--text-button-color);
+}
+
+@media (hover: hover) {
+  a:hover {
+    color: var(--accent-color-hover);
+  }
 }

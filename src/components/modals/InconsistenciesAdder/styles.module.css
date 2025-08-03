@@ -1,9 +1,9 @@
 .modalContentSpec {
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 10px;
-  max-height: 90vh;
+  justify-content: space-between;
   width: 65%;
+  max-height: 90vh;
   overflow-y: auto;
 }
 
@@ -33,16 +33,16 @@
   flex-direction: column;
   gap: 10px;
   width: 45%;
-  background-color: var(--bg-color);
   padding: 20px;
+  background-color: var(--bg-color);
   border-radius: 10px;
   box-shadow: 0 0 3px var(--modal-shadow);
 }
 
 .oneLineText {
   display: flex;
-  justify-content: space-between;
   gap: 5px;
+  justify-content: space-between;
 }
 
 .analysisDateBlock {
@@ -50,10 +50,10 @@
 }
 
 .buttonsBlock {
-  width: 100%;
   display: flex;
-  justify-content: flex-end;
   gap: 10px;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .submitError {
