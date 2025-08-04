@@ -7,6 +7,7 @@ import {
   updateInconsistencyRequest,
   createCommentInconsistencyRequest,
   fetchCommentsItems,
+  restoreInconsistencyRequest,
 } from "@api/route";
 
 interface InconsistencyNumberState {
@@ -111,6 +112,17 @@ const numSlice = createSlice({
       .addCase(updateInconsistencyRequest.rejected, (state, action) => {
         state.itemsError = action.error.message || "Ошибка при обновлении несоответствия";
         state.itemsLoading = false;
+      })
+      .addCase(
+        restoreInconsistencyRequest.fulfilled,
+        (state, action: PayloadAction<ItemResponseGET>) => {
+          state.items = state.items.map((item) =>
+            item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+          );
+        },
+      )
+      .addCase(restoreInconsistencyRequest.rejected, (state, action) => {
+        state.itemsError = action.error.message || "Ошибка при восстановлении несоответствия";
       })
       .addCase(fetchCommentsItems.pending, (state) => {
         state.commentLoading = true;

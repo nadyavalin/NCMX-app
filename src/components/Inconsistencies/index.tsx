@@ -47,7 +47,7 @@ export const Inconsistencies = () => {
   useEffect(() => {
     const loadItems = async () => {
       try {
-        await dispatch(fetchItems()).unwrap();
+        await dispatch(fetchItems({ is_archived: false })).unwrap();
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
         console.log("Inconsistencies: Fetch error", { errorMessage });
@@ -162,7 +162,9 @@ export const Inconsistencies = () => {
         <section className={styles.filterSection}>
           <MainFilter />
           <SearchInput />
-          <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
+          <button onClick={() => dispatch(fetchItems({ is_archived: false }))}>
+            Получить данные
+          </button>
         </section>
 
         <section className="inconsistenciesTableSection">

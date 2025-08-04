@@ -6,11 +6,25 @@ import styles from "./styles.module.css";
 import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentInconsistencyNumber, toggleModalHistoryComments } from "../../../store/numSlice";
-import { fetchItems } from "@api/route";
+import { fetchItems, restoreInconsistencyRequest } from "@api/route";
 import { SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { AppDispatch, RootState } from "../../../store/store";
 import { SearchInput } from "@components/searchInput";
+
+const formatDate = (dateString: string | undefined): string => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  console.log("Formatting date:", dateString, "Parsed:", date);
+  return date.toLocaleString("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 export const ArchiveInconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +35,6 @@ export const ArchiveInconsistencies = () => {
     items,
     itemsLoading,
     itemsError,
-    createError,
   } = useSelector((state: RootState) => state.num);
 
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -29,10 +42,11 @@ export const ArchiveInconsistencies = () => {
   useEffect(() => {
     const loadItems = async () => {
       try {
-        await dispatch(fetchItems()).unwrap();
+        const result = await dispatch(fetchItems({ is_archived: true })).unwrap();
+        console.log("Fetched archived items:", result); // Лог для отладки
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
-        console.log("Inconsistencies: Fetch error", { errorMessage });
+        console.log("ArchiveInconsistencies: Fetch error", { errorMessage });
         setFetchError(errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
       }
@@ -40,33 +54,36 @@ export const ArchiveInconsistencies = () => {
     loadItems();
   }, [dispatch, addSnackbar]);
 
-  const handleOpenModal = (modalType: "historyComments", num: number | null = null) => {
-    if (num !== null) {
-      dispatch(setCurrentInconsistencyNumber(num));
-    }
-    switch (modalType) {
-      case "historyComments":
-        dispatch(toggleModalHistoryComments(true));
-        break;
-    }
+  const handleOpenModal = (num: number) => {
+    dispatch(setCurrentInconsistencyNumber(num));
+    dispatch(toggleModalHistoryComments(true));
   };
 
-  const handleCloseModal = (modalType: "historyComments") => {
-    switch (modalType) {
-      case "historyComments":
-        dispatch(toggleModalHistoryComments(false));
-        break;
+  const handleCloseModal = () => {
+    dispatch(toggleModalHistoryComments(false));
+  };
+
+  const handleRestore = async (num_nonconf: number) => {
+    try {
+      await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
+      addSnackbar(SnackbarType.success, `Несоответствие №${num_nonconf} восстановлено`);
+      await dispatch(fetchItems({ is_archived: true })).unwrap(); // Обновляем архив
+      await dispatch(fetchItems({ is_archived: false })).unwrap(); // Обновляем активные
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при восстановлении несоответствия";
+      addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
   const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   if (itemsLoading) {
-    return <div>Загрузка таблицы несоответствий...</div>;
+    return <div>Загрузка архива несоответствий...</div>;
   }
 
-  if (itemsError || fetchError || createError) {
-    return <div>Ошибка: {itemsError || fetchError || createError}</div>;
+  if (itemsError || fetchError) {
+    return <div>Ошибка: {itemsError || fetchError}</div>;
   }
 
   return (
@@ -78,7 +95,9 @@ export const ArchiveInconsistencies = () => {
         </h3>
         <section className={styles.filterSection}>
           <SearchInput />
-          <button onClick={() => dispatch(fetchItems())}>Получить данные</button>
+          <button onClick={() => dispatch(fetchItems({ is_archived: true }))}>
+            Получить данные
+          </button>
         </section>
 
         <section className="inconsistenciesTableSection">
@@ -131,23 +150,22 @@ export const ArchiveInconsistencies = () => {
                     <td>{item.resp_person_corrective_action || "-"}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
-                        <p>Дата проведения оценки и переноса в архив: {}</p>
-                        <p>Оценка результативности: {}</p>
-                        <a
-                          href="#"
-                          onClick={() => handleOpenModal("historyComments", item.num_nonconf)}
-                        >
+                        <p>
+                          Дата проведения оценки и переноса в архив: <br />
+                          <b>{formatDate(item.nonconf_closure_date)}</b>
+                        </p>
+                        <p>
+                          Оценка результативности:{" "}
+                          <b>{item.estimate === 1 ? "удовлетворительно" : "неудовлетворительно"}</b>
+                        </p>
+                        <a href="#" onClick={() => handleOpenModal(item.num_nonconf)}>
                           Посмотреть историю комментариев к несоответствию
                         </a>
-                        <InconsistenciesHistoryCommentsModal
-                          currentInconsistencyNumber={currentInconsistencyNumber}
-                          isOpen={isModalHistoryCommentsOpen}
-                          onClose={() => handleCloseModal("historyComments")}
-                        />
                         <a
                           href="#"
                           title="Восстановить несоответствие может только администратор"
                           className={styles.redText}
+                          onClick={() => handleRestore(item.num_nonconf)}
                         >
                           Восстановить
                         </a>
@@ -159,6 +177,11 @@ export const ArchiveInconsistencies = () => {
             </tbody>
           </table>
         </section>
+        <InconsistenciesHistoryCommentsModal
+          currentInconsistencyNumber={currentInconsistencyNumber}
+          isOpen={isModalHistoryCommentsOpen}
+          onClose={handleCloseModal}
+        />
       </main>
     </>
   );

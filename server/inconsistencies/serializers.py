@@ -10,11 +10,11 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
             'reason', 'correction', 'correction_date', 'resp_person_correction',
             'department_correction', 'corrective_action', 'corrective_action_date',
             'resp_person_corrective_action', 'department_corrective_action', 'estimate',
-            'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data'
+            'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data', 'is_archived'
         ]
 
     def validate(self, data):
-        if not data.get('num_nonconf'):
+        if not data.get('num_nonconf') and not self.instance:
             raise serializers.ValidationError({"num_nonconf": "Номер несоответствия обязателен"})
         return data
 

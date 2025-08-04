@@ -15,18 +15,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 
 // Thunk для загрузки списка несоответствий
-export const fetchItems = createAsyncThunk<ItemResponseGET[], void, { state: RootState }>(
-  "num/fetchItems",
-  async () => {
-    try {
-      const response = await api.get<APIResponse>("/ncmx-table/");
-      return response.data.results || [];
-    } catch (error: unknown) {
-      const errorMessage = handleApiError(error, "Ошибка при получении списка несоответствий");
-      throw new Error(errorMessage);
-    }
-  },
-);
+export const fetchItems = createAsyncThunk<
+  ItemResponseGET[],
+  { is_archived?: boolean } | void,
+  { state: RootState }
+>("num/fetchItems", async (params) => {
+  try {
+    const response = await api.get<APIResponse>("/ncmx-table/", {
+      params: { is_archived: params?.is_archived },
+    });
+    return response.data.results || [];
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при получении списка несоответствий");
+    throw new Error(errorMessage);
+  }
+});
 
 // Thunk для создания несоответствия
 export const createInconsistencyRequest = createAsyncThunk<
@@ -55,6 +58,21 @@ export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state
     }
   },
 );
+
+// Thunk для восстановления несоответствия
+export const restoreInconsistencyRequest = createAsyncThunk<
+  ItemResponseGET,
+  number,
+  { state: RootState }
+>("num/restoreInconsistency", async (num_nonconf) => {
+  try {
+    const response = await api.post<ItemResponseGET>(`/ncmx-table/${num_nonconf}/restore/`);
+    return response.data;
+  } catch (error: unknown) {
+    const errorMessage = handleApiError(error, "Ошибка при восстановлении несоответствия");
+    throw new Error(errorMessage);
+  }
+});
 
 // Thunk для обновления несоответствия
 export const updateInconsistencyRequest = createAsyncThunk<

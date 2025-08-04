@@ -40,6 +40,7 @@ export interface ItemResponseGET {
   nonconf_closure_date?: DateString;
   resp_person_nonconf_closure?: string;
   auto_data?: DateString;
+  is_archived?: boolean;
 }
 
 export interface APIResponse {
@@ -81,6 +82,7 @@ export interface ItemRequestPOST {
   estimate?: number | null;
   nonconf_closure_date?: string | null;
   resp_person_nonconf_closure?: string;
+  is_archived?: boolean;
 }
 
 export interface ItemCommentRequestPOST {
