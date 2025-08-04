@@ -5,7 +5,7 @@ export const MainPage = () => {
   return (
     <>
       <main>
-        <h3>Из реестра несоответствий внутренних аудитов</h3>
+        <h3>Динамика закрытия несоответствий / наблюдений / возможностей для улучшения </h3>
         <div className={styles.cards}>
           <StatisticCard title="Несоответствия (открытые)" />
           <StatisticCard title="Наблюдения (открытые)" />
