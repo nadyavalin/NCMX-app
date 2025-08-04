@@ -51,6 +51,7 @@ export const createInconsistencyRequest = createAsyncThunk<
         error.response?.data?.num_nonconf?.[0] ||
         error.response?.data?.detail ||
         "Ошибка при создании несоответствия";
+      console.log("createInconsistencyRequest serverMessage:", serverMessage); // Отладочный лог
       if (
         serverMessage.toLowerCase().includes("already exists") ||
         serverMessage.toLowerCase().includes("уже существует") ||

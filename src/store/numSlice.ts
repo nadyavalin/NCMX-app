@@ -108,7 +108,15 @@ const numSlice = createSlice({
         },
       )
       .addCase(createInconsistencyRequest.rejected, (state, action) => {
-        state.createError = (action.payload as string) || "Ошибка при создании несоответствия";
+        if (
+          typeof action.payload === "string" &&
+          action.payload.includes("Несоответствие с номером") &&
+          action.payload.includes("уже существует")
+        ) {
+          // Не устанавливаем createError для ошибки дублирования
+        } else {
+          state.createError = (action.payload as string) || "Ошибка при создании несоответствия";
+        }
         state.createLoading = false;
       })
       .addCase(

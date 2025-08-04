@@ -35,7 +35,6 @@ export const Inconsistencies = () => {
     activeItems,
     itemsLoading,
     itemsError,
-    createError,
   } = useSelector((state: RootState) => state.num);
 
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -147,8 +146,8 @@ export const Inconsistencies = () => {
     return <div>Загрузка таблицы несоответствий...</div>;
   }
 
-  if (itemsError || fetchError || createError) {
-    return <div>Ошибка: {itemsError || fetchError || createError}</div>;
+  if (itemsError || fetchError) {
+    return <div>Ошибка: {itemsError || fetchError}</div>;
   }
 
   return (

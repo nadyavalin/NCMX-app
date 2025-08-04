@@ -163,32 +163,35 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       onClose();
     } catch (error: unknown) {
       console.log("InconsistenciesModal error:", error);
-      let errorMessage = "Ошибка при сохранении";
       if (isAxiosError(error) && error.response?.status === 400) {
-        console.log("Server error response:", error.response?.data);
         const serverMessage =
           error.response?.data?.num_nonconf?.[0] ||
           error.response?.data?.detail ||
           JSON.stringify(error.response?.data) ||
           "Ошибка сервера";
+        console.log("Parsed serverMessage:", serverMessage);
         if (
           serverMessage.toLowerCase().includes("already exists") ||
           serverMessage.toLowerCase().includes("уже существует") ||
           serverMessage.toLowerCase().includes("duplicate")
         ) {
-          errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+          const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
           setErrors({ num_nonconf: errorMessage });
           if (numNonconfRef.current) {
             numNonconfRef.current.focus();
             numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-        } else {
-          errorMessage = serverMessage;
+          console.log("Final errorMessage for snackbar:", errorMessage);
+          addSnackbar(SnackbarType.error, errorMessage);
+          return; // Прерываем выполнение, чтобы не перезаписать errorMessage
         }
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+        console.log("Final errorMessage for snackbar:", serverMessage);
+        addSnackbar(SnackbarType.error, serverMessage);
+      } else {
+        const errorMessage = error instanceof Error ? error.message : "Ошибка при сохранении";
+        console.log("Final errorMessage for snackbar:", errorMessage);
+        addSnackbar(SnackbarType.error, errorMessage);
       }
-      addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
