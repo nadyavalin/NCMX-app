@@ -26,6 +26,11 @@
   align-items: flex-start;
   width: 100%;
   margin: 20px 0;
+  font-size: 11px;
+}
+
+.inconsistenciesActions p {
+  color: var(--text-color);
 }
 
 .inconsistenciesActions a {

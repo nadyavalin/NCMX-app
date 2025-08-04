@@ -131,6 +131,8 @@ export const ArchiveInconsistencies = () => {
                     <td>{item.resp_person_corrective_action || "-"}</td>
                     <td>
                       <div className={styles.inconsistenciesActions}>
+                        <p>Дата проведения оценки и переноса в архив: {}</p>
+                        <p>Оценка результативности: {}</p>
                         <a
                           href="#"
                           onClick={() => handleOpenModal("historyComments", item.num_nonconf)}
