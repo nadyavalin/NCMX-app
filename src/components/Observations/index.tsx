@@ -50,7 +50,9 @@ export const Observations = () => {
                   <div className={styles.observationActions}>
                     <a href="#">Добавить комментарий</a>
                     <a href="#">Посмотреть историю комментариев к наблюдению</a>
-                    <a href="#">Закрыть наблюдение и перенести в архив</a>
+                    <a href="#" className={styles.close}>
+                      Закрыть наблюдение и перенести в архив
+                    </a>
                   </div>
                 </td>
               </tr>

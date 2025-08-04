@@ -46,7 +46,9 @@ export const Improvements = () => {
                   <div className={styles.observationActions}>
                     <a href="#">Добавить комментарий</a>
                     <a href="#">Посмотреть историю комментариев к возможности для улучшения</a>
-                    <a href="#">Закрыть возможность для улучшения и перенести в архив</a>
+                    <a href="#" className={styles.close}>
+                      Закрыть возможность для улучшения и перенести в архив
+                    </a>
                   </div>
                 </td>
               </tr>

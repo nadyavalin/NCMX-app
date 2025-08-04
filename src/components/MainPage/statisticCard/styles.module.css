@@ -53,6 +53,6 @@
   }
 
   .card:hover .statisticLink a {
-    color: var(--change);
+    color: var(--red-color);
   }
 }

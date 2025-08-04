@@ -20,11 +20,11 @@
 }
 
 .snackbar_error {
-  color: var(--error);
+  color: var(--accent-red-color);
 }
 
 .snackbar_success {
-  color: var(--success);
+  color: var(--accent-green-color);
 }
 
 @keyframes snackbar-animation {

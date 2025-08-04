@@ -26,9 +26,9 @@
 }
 
 .redText {
-  color: var(--change);
+  color: var(--red-color);
 }
 
 .estimate {
-  color: var(--estimate);
+  color: var(--accent-green-color);
 }

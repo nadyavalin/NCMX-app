@@ -25,10 +25,9 @@ body {
   --card-color: #dedede;
   --card-hover-color: #b2caff;
   --scrollbar-color: #97b8ff;
-  --error: #f00;
-  --change: #ff6767;
-  --success: #00b825;
-  --estimate: #00b825;
+  --accent-red-color: #f00;
+  --red-color: #ff6767;
+  --accent-green-color: #00b825;
   --button-shadow: rgb(175 172 255 / 60%);
   --modal-shadow: rgb(0 0 0 / 50%);
   --bg-archive-color: #ddd;

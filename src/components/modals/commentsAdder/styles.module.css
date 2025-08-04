@@ -17,7 +17,7 @@
 
 .submitError {
   font-size: 12px;
-  color: var(--errors);
+  color: var(--accent-red-color);
   text-align: start;
 }
 
