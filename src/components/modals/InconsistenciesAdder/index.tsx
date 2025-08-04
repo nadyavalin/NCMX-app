@@ -4,9 +4,9 @@ import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/ro
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { isAxiosError } from "axios";
 import { AppDispatch, RootState } from "../../../store/store";
+import { useSnackbar } from "@components/snackbar/snackbarContext";
 
 interface ModalProps {
   isOpen: boolean;
@@ -42,7 +42,7 @@ const initialFormData: ItemRequestPOST = {
 export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
-  const { createLoading, createError } = useSelector((state: RootState) => state.num);
+  const { createLoading } = useSelector((state: RootState) => state.num);
   const [formData, setFormData] = useState<ItemRequestPOST>(initialFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
@@ -88,7 +88,6 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       } else {
         setFormData(initialFormData);
       }
-      // Сбрасываем прокрутку с небольшой задержкой
       setTimeout(() => {
         scrollToTop();
       }, 0);
@@ -136,6 +135,7 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      addSnackbar(SnackbarType.error, validationErrors.num_nonconf);
       return;
     }
 
@@ -162,13 +162,32 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       setFormData(initialFormData);
       onClose();
     } catch (error: unknown) {
+      console.log("InconsistenciesModal error:", error);
       let errorMessage = "Ошибка при сохранении";
-      if (isAxiosError(error)) {
-        errorMessage = error.response?.data?.detail || error.message || "Ошибка сервера";
+      if (isAxiosError(error) && error.response?.status === 400) {
+        console.log("Server error response:", error.response?.data);
+        const serverMessage =
+          error.response?.data?.num_nonconf?.[0] ||
+          error.response?.data?.detail ||
+          JSON.stringify(error.response?.data) ||
+          "Ошибка сервера";
+        if (
+          serverMessage.toLowerCase().includes("already exists") ||
+          serverMessage.toLowerCase().includes("уже существует") ||
+          serverMessage.toLowerCase().includes("duplicate")
+        ) {
+          errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+          setErrors({ num_nonconf: errorMessage });
+          if (numNonconfRef.current) {
+            numNonconfRef.current.focus();
+            numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        } else {
+          errorMessage = serverMessage;
+        }
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
-      setErrors({ submit: errorMessage });
       addSnackbar(SnackbarType.error, errorMessage);
     }
   };
@@ -193,8 +212,6 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       contentRef={modalContentRef}
     >
       <form className={styles.modalForm} onSubmit={handleSubmit}>
-        {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
-        {createError && <p className={styles.submitError}>{createError}</p>}
         <div className={styles.nonConfNumberBlock}>
           <h4>
             {currentEditItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}

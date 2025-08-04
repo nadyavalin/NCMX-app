@@ -9,7 +9,7 @@ import {
   ItemRequestPOST,
   ItemCommentRequestPOST,
 } from "../../components/types";
-import { handleApiError } from "../../utils/handleApiError";
+import { isAxiosError } from "axios";
 import { RootState } from "../../store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
@@ -19,15 +19,19 @@ export const fetchItems = createAsyncThunk<
   ItemResponseGET[],
   { is_archived?: boolean } | void,
   { state: RootState }
->("num/fetchItems", async (params) => {
+>("num/fetchItems", async (params, { rejectWithValue }) => {
   try {
     const response = await api.get<APIResponse>("/ncmx-table/", {
       params: { is_archived: params?.is_archived },
     });
     return response.data.results || [];
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при получении списка несоответствий");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage =
+        error.response?.data?.detail || "Ошибка при получении списка несоответствий";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при получении списка несоответствий");
   }
 });
 
@@ -36,25 +40,42 @@ export const createInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   ItemRequestPOST,
   { state: RootState }
->("num/createInconsistency", async (formData) => {
+>("num/createInconsistency", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
     return response.data;
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при создании несоответствия");
-    throw new Error(errorMessage);
+    console.log("createInconsistencyRequest error:", error);
+    if (isAxiosError(error) && error.response?.status === 400) {
+      const serverMessage =
+        error.response?.data?.num_nonconf?.[0] ||
+        error.response?.data?.detail ||
+        "Ошибка при создании несоответствия";
+      if (
+        serverMessage.toLowerCase().includes("already exists") ||
+        serverMessage.toLowerCase().includes("уже существует") ||
+        serverMessage.toLowerCase().includes("duplicate")
+      ) {
+        return rejectWithValue(`Несоответствие с номером ${formData.num_nonconf} уже существует`);
+      }
+      return rejectWithValue(serverMessage);
+    }
+    return rejectWithValue("Ошибка при создании несоответствия");
   }
 });
 
 // Thunk для удаления несоответствия
 export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state: RootState }>(
   "num/deleteInconsistency",
-  async (num_nonconf) => {
+  async (num_nonconf, { rejectWithValue }) => {
     try {
       await api.delete(`/ncmx-table/${num_nonconf}/`);
     } catch (error: unknown) {
-      const errorMessage = handleApiError(error, "Ошибка при удалении несоответствия");
-      throw new Error(errorMessage);
+      if (isAxiosError(error)) {
+        const errorMessage = error.response?.data?.detail || "Ошибка при удалении несоответствия";
+        return rejectWithValue(errorMessage);
+      }
+      return rejectWithValue("Ошибка при удалении несоответствия");
     }
   },
 );
@@ -64,13 +85,17 @@ export const restoreInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   number,
   { state: RootState }
->("num/restoreInconsistency", async (num_nonconf) => {
+>("num/restoreInconsistency", async (num_nonconf, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemResponseGET>(`/ncmx-table/${num_nonconf}/restore/`);
     return response.data;
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при восстановлении несоответствия");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage =
+        error.response?.data?.detail || "Ошибка при восстановлении несоответствия";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при восстановлении несоответствия");
   }
 });
 
@@ -79,13 +104,16 @@ export const updateInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   { num_nonconf: number; data: Partial<ItemRequestPOST> },
   { state: RootState }
->("num/updateInconsistency", async ({ num_nonconf, data }) => {
+>("num/updateInconsistency", async ({ num_nonconf, data }, { rejectWithValue }) => {
   try {
     const response = await api.patch<ItemResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
     return response.data;
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при обновлении несоответствия");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || "Ошибка при обновлении несоответствия";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при обновлении несоответствия");
   }
 });
 
@@ -94,13 +122,16 @@ export const createCommentInconsistencyRequest = createAsyncThunk<
   ItemCommentResponseGET,
   ItemCommentRequestPOST,
   { state: RootState }
->("num/createCommentInconsistency", async (formData) => {
+>("num/createCommentInconsistency", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
     return response.data;
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при создании комментария");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || "Ошибка при создании комментария";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при создании комментария");
   }
 });
 
@@ -109,13 +140,16 @@ export const updateCommentInconsistencyRequest = createAsyncThunk<
   ItemCommentResponseGET,
   { id: number; data: ItemCommentRequestPOST },
   { state: RootState }
->("num/updateCommentInconsistency", async ({ id, data }) => {
+>("num/updateCommentInconsistency", async ({ id, data }, { rejectWithValue }) => {
   try {
     const response = await api.patch<ItemCommentResponseGET>(`/ncmx-comments/${id}/`, data);
     return response.data;
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при обновлении комментария");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || "Ошибка при обновлении комментария";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при обновлении комментария");
   }
 });
 
@@ -124,7 +158,7 @@ export const fetchCommentsItems = createAsyncThunk<
   ItemCommentResponseGET[],
   number | null,
   { state: RootState }
->("num/fetchCommentsItems", async (num_nonconf) => {
+>("num/fetchCommentsItems", async (num_nonconf, { rejectWithValue }) => {
   if (num_nonconf === null) {
     return [];
   }
@@ -134,8 +168,11 @@ export const fetchCommentsItems = createAsyncThunk<
     });
     return response.data.results || [];
   } catch (error: unknown) {
-    const errorMessage = handleApiError(error, "Ошибка при получении комментариев");
-    throw new Error(errorMessage);
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || "Ошибка при получении комментариев";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при получении комментариев");
   }
 });
 

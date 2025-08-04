@@ -182,7 +182,7 @@ table tbody tr td {
 .error {
   font-size: 18px;
   font-weight: 500;
-  color: var(--error);
+  color: var(--accent-red-color);
   text-align: center;
 }
 

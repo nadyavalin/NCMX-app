@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { toggleModalComments, toggleModalEstimateResult } from "../../../store/numSlice";
-import { updateInconsistencyRequest } from "@api/route";
+import { updateInconsistencyRequest, fetchItems } from "@api/route";
 import { InconsistenciesCommentsModal } from "../commentsAdder";
 import { SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
@@ -46,7 +46,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Submitting form:", { currentInconsistencyNumber, estimate, respPerson }); // Лог для отладки
+    console.log("Submitting form:", { currentInconsistencyNumber, estimate, respPerson });
     if (!currentInconsistencyNumber) {
       addSnackbar(SnackbarType.error, "Номер несоответствия не указан");
       return;
@@ -68,6 +68,8 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
             },
           }),
         ).unwrap();
+        await dispatch(fetchItems({ is_archived: false })).unwrap();
+        await dispatch(fetchItems({ is_archived: true })).unwrap();
         addSnackbar(
           SnackbarType.success,
           `Несоответствие №${currentInconsistencyNumber} успешно перенесено в архив`,
@@ -77,6 +79,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
         setRespPerson("");
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при переносе в архив";
+        console.log("Update error:", errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
       }
     } else {

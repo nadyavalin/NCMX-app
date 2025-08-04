@@ -32,7 +32,7 @@ export const Inconsistencies = () => {
     isModalHistoryCommentsOpen,
     isModalEstimateResultOpen,
     isModalEditOpen,
-    items,
+    activeItems,
     itemsLoading,
     itemsError,
     createError,
@@ -64,7 +64,7 @@ export const Inconsistencies = () => {
   };
 
   const openEditModal = (num_nonconf: number) => {
-    const item = items.find((item) => item.num_nonconf === num_nonconf);
+    const item = activeItems.find((item) => item.num_nonconf === num_nonconf);
     if (item) {
       setEditItem(item);
       dispatch(toggleModalEdit(true));
@@ -141,7 +141,7 @@ export const Inconsistencies = () => {
     setDeleteNumNonconf(null);
   };
 
-  const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  const sortedItems = [...activeItems].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   if (itemsLoading) {
     return <div>Загрузка таблицы несоответствий...</div>;

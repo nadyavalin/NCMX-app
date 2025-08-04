@@ -47,3 +47,7 @@
 .redText {
   color: var(--red-color);
 }
+
+.estimate b {
+  color: var(--accent-green-color);
+}

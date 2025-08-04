@@ -32,7 +32,7 @@ export const ArchiveInconsistencies = () => {
   const {
     currentInconsistencyNumber,
     isModalHistoryCommentsOpen,
-    items,
+    archivedItems,
     itemsLoading,
     itemsError,
   } = useSelector((state: RootState) => state.num);
@@ -43,7 +43,7 @@ export const ArchiveInconsistencies = () => {
     const loadItems = async () => {
       try {
         const result = await dispatch(fetchItems({ is_archived: true })).unwrap();
-        console.log("Fetched archived items:", result); // Лог для отладки
+        console.log("Fetched archived items:", result);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
         console.log("ArchiveInconsistencies: Fetch error", { errorMessage });
@@ -67,8 +67,8 @@ export const ArchiveInconsistencies = () => {
     try {
       await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
       addSnackbar(SnackbarType.success, `Несоответствие №${num_nonconf} восстановлено`);
-      await dispatch(fetchItems({ is_archived: true })).unwrap(); // Обновляем архив
-      await dispatch(fetchItems({ is_archived: false })).unwrap(); // Обновляем активные
+      await dispatch(fetchItems({ is_archived: true })).unwrap();
+      await dispatch(fetchItems({ is_archived: false })).unwrap();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при восстановлении несоответствия";
@@ -76,7 +76,7 @@ export const ArchiveInconsistencies = () => {
     }
   };
 
-  const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  const sortedItems = [...archivedItems].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   if (itemsLoading) {
     return <div>Загрузка архива несоответствий...</div>;
@@ -154,7 +154,7 @@ export const ArchiveInconsistencies = () => {
                           Дата проведения оценки и переноса в архив: <br />
                           <b>{formatDate(item.nonconf_closure_date)}</b>
                         </p>
-                        <p>
+                        <p className={styles.estimate}>
                           Оценка результативности:{" "}
                           <b>{item.estimate === 1 ? "удовлетворительно" : "неудовлетворительно"}</b>
                         </p>

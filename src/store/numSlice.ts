@@ -16,7 +16,8 @@ interface InconsistencyNumberState {
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
   isModalEditOpen: boolean;
-  items: ItemResponseGET[];
+  activeItems: ItemResponseGET[];
+  archivedItems: ItemResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
@@ -32,7 +33,8 @@ const initialState: InconsistencyNumberState = {
   isModalHistoryCommentsOpen: false,
   isModalEstimateResultOpen: false,
   isModalEditOpen: false,
-  items: [],
+  activeItems: [],
+  archivedItems: [],
   itemsLoading: false,
   itemsError: null,
   createLoading: false,
@@ -68,12 +70,30 @@ const numSlice = createSlice({
         state.itemsLoading = true;
         state.itemsError = null;
       })
-      .addCase(fetchItems.fulfilled, (state, action: PayloadAction<ItemResponseGET[]>) => {
-        state.items = action.payload;
-        state.itemsLoading = false;
-      })
+      .addCase(
+        fetchItems.fulfilled,
+        (
+          state,
+          action: PayloadAction<
+            ItemResponseGET[],
+            string,
+            { arg: { is_archived?: boolean } | void }
+          >,
+        ) => {
+          if (action.meta.arg && "is_archived" in action.meta.arg) {
+            if (action.meta.arg.is_archived) {
+              state.archivedItems = action.payload;
+            } else {
+              state.activeItems = action.payload;
+            }
+          } else {
+            state.activeItems = action.payload;
+          }
+          state.itemsLoading = false;
+        },
+      )
       .addCase(fetchItems.rejected, (state, action) => {
-        state.itemsError = action.error.message || "Ошибка при загрузке данных";
+        state.itemsError = (action.payload as string) || "Ошибка при загрузке данных";
         state.itemsLoading = false;
       })
       .addCase(createInconsistencyRequest.pending, (state) => {
@@ -83,46 +103,75 @@ const numSlice = createSlice({
       .addCase(
         createInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<ItemResponseGET>) => {
-          state.items = [...state.items, action.payload];
+          state.activeItems = [...state.activeItems, action.payload];
           state.createLoading = false;
         },
       )
       .addCase(createInconsistencyRequest.rejected, (state, action) => {
-        state.createError = action.error.message || "Ошибка при создании несоответствия";
+        state.createError = (action.payload as string) || "Ошибка при создании несоответствия";
         state.createLoading = false;
       })
       .addCase(
         deleteInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<void, string, { arg: number }>) => {
-          state.items = state.items.filter((item) => item.num_nonconf !== action.meta.arg);
+          state.activeItems = state.activeItems.filter(
+            (item) => item.num_nonconf !== action.meta.arg,
+          );
         },
       )
       .addCase(deleteInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = action.error.message || "Ошибка при удалении несоответствия";
+        state.itemsError = (action.payload as string) || "Ошибка при удалении несоответствия";
       })
       .addCase(
         updateInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<ItemResponseGET>) => {
-          state.items = state.items.map((item) =>
-            item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
-          );
+          if (action.payload.is_archived) {
+            state.activeItems = state.activeItems.filter(
+              (item) => item.num_nonconf !== action.payload.num_nonconf,
+            );
+            state.archivedItems = state.archivedItems.some(
+              (item) => item.num_nonconf === action.payload.num_nonconf,
+            )
+              ? state.archivedItems.map((item) =>
+                  item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+                )
+              : [...state.archivedItems, action.payload];
+          } else {
+            state.archivedItems = state.archivedItems.filter(
+              (item) => item.num_nonconf !== action.payload.num_nonconf,
+            );
+            state.activeItems = state.activeItems.some(
+              (item) => item.num_nonconf === action.payload.num_nonconf,
+            )
+              ? state.activeItems.map((item) =>
+                  item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+                )
+              : [...state.activeItems, action.payload];
+          }
           state.itemsLoading = false;
         },
       )
       .addCase(updateInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = action.error.message || "Ошибка при обновлении несоответствия";
+        state.itemsError = (action.payload as string) || "Ошибка при обновлении несоответствия";
         state.itemsLoading = false;
       })
       .addCase(
         restoreInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<ItemResponseGET>) => {
-          state.items = state.items.map((item) =>
-            item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+          state.archivedItems = state.archivedItems.filter(
+            (item) => item.num_nonconf !== action.payload.num_nonconf,
           );
+          state.activeItems = state.activeItems.some(
+            (item) => item.num_nonconf === action.payload.num_nonconf,
+          )
+            ? state.activeItems.map((item) =>
+                item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+              )
+            : [...state.activeItems, action.payload];
         },
       )
       .addCase(restoreInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = action.error.message || "Ошибка при восстановлении несоответствия";
+        state.itemsError = (action.payload as string) || "Ошибка при восстановлении несоответствия";
       })
       .addCase(fetchCommentsItems.pending, (state) => {
         state.commentLoading = true;
@@ -136,7 +185,7 @@ const numSlice = createSlice({
         },
       )
       .addCase(fetchCommentsItems.rejected, (state, action) => {
-        state.commentError = action.error.message || "Ошибка при получении комментариев";
+        state.commentError = (action.payload as string) || "Ошибка при получении комментариев";
         state.commentLoading = false;
       })
       .addCase(createCommentInconsistencyRequest.pending, (state) => {
@@ -151,7 +200,7 @@ const numSlice = createSlice({
         },
       )
       .addCase(createCommentInconsistencyRequest.rejected, (state, action) => {
-        state.commentError = action.error.message || "Ошибка при создании комментария";
+        state.commentError = (action.payload as string) || "Ошибка при создании комментария";
         state.commentLoading = false;
       });
   },
