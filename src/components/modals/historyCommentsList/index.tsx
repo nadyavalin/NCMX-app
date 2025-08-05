@@ -66,8 +66,12 @@ export const InconsistenciesHistoryCommentsModal = ({
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
     setEditingComment(null);
-    refetch(); // Обновляем комментарии после закрытия
+    refetch();
   };
+
+  const sortedComments = [...comments].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
 
   if (loading) {
     return (
@@ -95,10 +99,6 @@ export const InconsistenciesHistoryCommentsModal = ({
     );
   }
 
-  const filteredComments = comments.filter(
-    (comment) => comment.num_nonconf === currentInconsistencyNumber,
-  );
-
   return (
     <>
       <ModalComponent
@@ -107,11 +107,11 @@ export const InconsistenciesHistoryCommentsModal = ({
         additionalClass={styles.modalContentSpec}
         contentRef={modalContentRef}
       >
-        {filteredComments.length > 0 && (
+        {sortedComments.length > 0 && (
           <h3>История комментариев к несоответствию {currentInconsistencyNumber}</h3>
         )}
-        {filteredComments.length > 0 ? (
-          filteredComments.map((comment) => (
+        {sortedComments.length > 0 ? (
+          sortedComments.map((comment) => (
             <div className={styles.commentCard} key={comment.id}>
               <div className={styles.authorAndDate}>
                 <p>

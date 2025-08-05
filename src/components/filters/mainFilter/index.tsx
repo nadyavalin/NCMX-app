@@ -6,7 +6,7 @@ import { InnerRespPersonsFilter } from "../innerFilters/responsiblePersons";
 import styles from "../styles.module.css";
 
 export const MainFilter = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("requirement");
+  const [selectedFilter, setSelectedFilter] = useState<string>("department");
 
   const handleMainFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedFilter(e.target.value);
