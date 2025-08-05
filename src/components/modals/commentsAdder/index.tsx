@@ -124,7 +124,7 @@ export const InconsistenciesCommentsModal = ({
         <h3>
           {editComment
             ? "Редактировать комментарий"
-            : `Внести комментарий к несоответствию ${formData.num_nonconf}`}
+            : `Внести комментарий к несоответствию №${currentInconsistencyNumber}`}
         </h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {commentError && <p className={styles.submitError}>{commentError}</p>}
@@ -135,7 +135,7 @@ export const InconsistenciesCommentsModal = ({
           onChange={handleChange}
         >
           <option value="">...выбрать автора комментария из базы</option>
-          <option value="Алтаева О.Ю.">Разумнева Н.П.</option>
+          <option value="Разумнева Н.П.">Разумнева Н.П.</option>
           <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
           <option value="Ткачук Н.С.">Ткачук Н.С.</option>
         </select>
