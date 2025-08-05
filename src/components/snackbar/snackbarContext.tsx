@@ -30,7 +30,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const addSnackbar = useCallback((type: SnackbarType, text: string) => {
     const id = Math.random().toString(36).substr(2, 9);
-    setSnackbars((prev) => [{ id, type, text }, ...prev]);
+    setSnackbars([{ id, type, text }]);
   }, []);
 
   const removeSnackbar = useCallback((id: string) => {

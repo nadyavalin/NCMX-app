@@ -164,34 +164,17 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
     } catch (error: unknown) {
       console.log("InconsistenciesModal error:", error);
       if (isAxiosError(error) && error.response?.status === 400) {
-        const serverMessage =
-          error.response?.data?.num_nonconf?.[0] ||
-          error.response?.data?.detail ||
-          JSON.stringify(error.response?.data) ||
-          "Ошибка сервера";
-        console.log("Parsed serverMessage:", serverMessage);
-        if (
-          serverMessage.toLowerCase().includes("already exists") ||
-          serverMessage.toLowerCase().includes("уже существует") ||
-          serverMessage.toLowerCase().includes("duplicate")
-        ) {
-          const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
-          setErrors({ num_nonconf: errorMessage });
-          if (numNonconfRef.current) {
-            numNonconfRef.current.focus();
-            numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-          console.log("Final errorMessage for snackbar:", errorMessage);
-          addSnackbar(SnackbarType.error, errorMessage);
-          return; // Прерываем выполнение, чтобы не перезаписать errorMessage
+        const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+        setErrors({ num_nonconf: errorMessage });
+        if (numNonconfRef.current) {
+          numNonconfRef.current.focus();
+          numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-        console.log("Final errorMessage for snackbar:", serverMessage);
-        addSnackbar(SnackbarType.error, serverMessage);
-      } else {
-        const errorMessage = error instanceof Error ? error.message : "Ошибка при сохранении";
-        console.log("Final errorMessage for snackbar:", errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
+        return;
       }
+      const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+      addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 

@@ -51,13 +51,14 @@ export const createInconsistencyRequest = createAsyncThunk<
         error.response?.data?.num_nonconf?.[0] ||
         error.response?.data?.detail ||
         "Ошибка при создании несоответствия";
-      console.log("createInconsistencyRequest serverMessage:", serverMessage); // Отладочный лог
+      console.log("createInconsistencyRequest serverMessage:", serverMessage);
       if (
         serverMessage.toLowerCase().includes("already exists") ||
         serverMessage.toLowerCase().includes("уже существует") ||
         serverMessage.toLowerCase().includes("duplicate")
       ) {
-        return rejectWithValue(`Несоответствие с номером ${formData.num_nonconf} уже существует`);
+        const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+        return rejectWithValue(errorMessage);
       }
       return rejectWithValue(serverMessage);
     }
