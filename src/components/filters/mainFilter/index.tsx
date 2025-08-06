@@ -1,9 +1,9 @@
+import styles from "../styles.module.css";
 import { useState } from "react";
-import { InnerRequirementsFilter } from "../innerFilters/requirements";
 import { InnerISORequirementsFilter } from "../innerFilters/ISOrequirements";
+import { InnerRequirementsFilter } from "../innerFilters/requirements";
 import { InnerDepartmentsFilter } from "../innerFilters/departments";
 import { InnerRespPersonsFilter } from "../innerFilters/responsiblePersons";
-import styles from "../styles.module.css";
 
 export const MainFilter = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("department");

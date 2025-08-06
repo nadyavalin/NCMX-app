@@ -1,24 +1,24 @@
-import React, { useCallback, useState } from "react";
 import styles from "./styles.module.css";
-import InconsistenciesCommentsModal from "@modals/commentsAdder";
-import InconsistenciesEstimateResultModal from "@modals/estimateResult";
-import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
-import InconsistenciesModal from "@modals/InconsistenciesAdder";
-import { ConfirmDeleteModal } from "@modals/confirmDelete";
-import { SearchInput } from "@components/searchInput";
-import { MainFilter } from "@components/filters/mainFilter";
+import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../store/store";
-import { ItemResponseGET, SnackbarType } from "@components/types";
-import { useSnackbar } from "@components/snackbar/snackbarContext";
-import { formatDate } from "../../utils/formatData";
+import { AppDispatch, RootState } from "@store/store";
 import {
   setCurrentInconsistencyNumber,
   toggleModalComments,
   toggleModalEstimateResult,
   toggleModalHistoryComments,
   toggleModalEdit,
-} from "../../store/numSlice";
+} from "@store/numSlice";
+import { formatDate } from "@utils/formatData";
+import InconsistenciesModal from "@modals/InconsistenciesAdder";
+import InconsistenciesCommentsModal from "@modals/commentsAdder";
+import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
+import InconsistenciesEstimateResultModal from "@modals/estimateResult";
+import { ConfirmDeleteModal } from "@modals/confirmDelete";
+import { MainFilter } from "@components/filters/mainFilter";
+import { SearchInput } from "@components/searchInput";
+import { useSnackbar } from "@components/snackbar/snackbarContext";
+import { ItemResponseGET, SnackbarType } from "../../types/types";
 
 interface InconsistencyTableProps {
   title: string;

@@ -1,12 +1,12 @@
-import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "@components/types";
-import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
 import styles from "./styles.module.css";
-import { ModalComponent } from "../modalComponent";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isAxiosError } from "axios";
-import { AppDispatch, RootState } from "../../../store/store";
+import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
+import { AppDispatch, RootState } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
+import { ModalComponent } from "../modalComponent";
+import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
 
 interface ModalProps {
   isOpen: boolean;

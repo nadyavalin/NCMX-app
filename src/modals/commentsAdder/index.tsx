@@ -1,12 +1,11 @@
-import React from "react";
 import styles from "./styles.module.css";
-import { ModalComponent } from "../modalComponent";
-import { FormEvent, useEffect, useState } from "react";
-import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@components/types";
-import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api/route";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../../store/store";
+import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api/route";
+import { RootState, AppDispatch } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
+import { ModalComponent } from "../modalComponent";
+import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "../../types/types";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

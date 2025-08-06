@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ItemResponseGET, ItemCommentResponseGET, ItemRequestPOST } from "@components/types";
 import {
   fetchItems,
   createInconsistencyRequest,
@@ -9,6 +8,7 @@ import {
   fetchCommentsItems,
   restoreInconsistencyRequest,
 } from "@api/route";
+import { ItemResponseGET, ItemCommentResponseGET, ItemRequestPOST } from "../types/types";
 
 interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;

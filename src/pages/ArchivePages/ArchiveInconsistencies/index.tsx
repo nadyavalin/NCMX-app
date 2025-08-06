@@ -1,8 +1,9 @@
 "use client";
 
+import styles from "./styles.module.css";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../../store/store";
+import { RootState, AppDispatch } from "@store/store";
 import { fetchItems, restoreInconsistencyRequest } from "@api/route";
 import InconsistencyTable from "@components/InconsistencyTable";
 
@@ -30,15 +31,17 @@ export const ArchiveInconsistencies = () => {
   }, [loadItems]);
 
   return (
-    <InconsistencyTable
-      title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-      items={archivedItems}
-      isLoading={itemsLoading}
-      error={itemsError}
-      isArchived={true}
-      onFetch={loadItems}
-      onRestore={handleRestore}
-    />
+    <div className={styles.archiveBlock}>
+      <InconsistencyTable
+        title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
+        items={archivedItems}
+        isLoading={itemsLoading}
+        error={itemsError}
+        isArchived={true}
+        onFetch={loadItems}
+        onRestore={handleRestore}
+      />
+    </div>
   );
 };
 

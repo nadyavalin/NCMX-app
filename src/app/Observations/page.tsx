@@ -1,4 +1,4 @@
-import { Observations } from "@components/Observations";
+import { Observations } from "@pages/ObservationsPage";
 
 export default function ObservationsPage() {
   return <Observations />;

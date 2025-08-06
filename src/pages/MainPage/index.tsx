@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
-import { StatisticCard } from "@components/MainPage/statisticCard";
+import { StatisticCard } from "./statisticCard";
 
 export const MainPage = () => {
   return (

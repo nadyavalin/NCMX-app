@@ -1,4 +1,4 @@
-import { ArchiveImprovements } from "@components/Archive/ArchiveImprovements";
+import { ArchiveImprovements } from "@pages/ArchivePages/ArchiveImprovements";
 
 export default function ArchiveInconsistenciesPage() {
   return <ArchiveImprovements />;

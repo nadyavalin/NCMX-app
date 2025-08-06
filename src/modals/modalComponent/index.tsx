@@ -1,6 +1,6 @@
-import { CrossCloseButton } from "@components/svg";
 import styles from "./styles.module.css";
 import { RefObject } from "react";
+import { CrossCloseButton } from "@components/svg";
 
 interface ModalProps {
   isOpen: boolean;

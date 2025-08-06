@@ -1,9 +1,9 @@
 "use client";
 
+import styles from "./styles.module.css";
 import React, { createContext, useState, useCallback, useContext } from "react";
 import Snackbar from "./snackbar";
-import { SnackbarType } from "@components/types";
-import styles from "./styles.module.css";
+import { SnackbarType } from "../../types/types";
 
 interface SnackbarItem {
   id: string;

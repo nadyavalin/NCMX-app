@@ -1,4 +1,4 @@
-import { ArchiveInconsistencies } from "@components/Archive/ArchiveInconsistencies";
+import { ArchiveInconsistencies } from "@pages/ArchivePages/ArchiveInconsistencies";
 
 export default function ArchiveInconsistenciesPage() {
   return <ArchiveInconsistencies />;

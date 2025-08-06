@@ -1,10 +1,9 @@
-import React from "react";
 import styles from "./styles.module.css";
+import React, { useEffect, useRef, useState } from "react";
+import { useFetchCommentsItems } from "@/api/route";
 import { ModalComponent } from "../modalComponent";
 import InconsistenciesCommentsModal from "../commentsAdder";
-import { useFetchCommentsItems } from "@/api/route";
-import { useEffect, useRef, useState } from "react";
-import { ItemCommentResponseGET } from "@components/types";
+import { ItemCommentResponseGET } from "../../types/types";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

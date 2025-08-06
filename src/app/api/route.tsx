@@ -1,8 +1,11 @@
 "use client";
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../../utils/api";
 import { useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
+import api from "@utils/api";
+import { RootState, AppDispatch } from "@store/store";
 import {
   APIResponse,
   APICommentsResponse,
@@ -10,11 +13,7 @@ import {
   ItemCommentResponseGET,
   ItemRequestPOST,
   ItemCommentRequestPOST,
-} from "../../components/types";
-import { isAxiosError } from "axios";
-import { RootState } from "../../store/store";
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
+} from "../../types/types";
 
 // Thunk для загрузки списка несоответствий
 export const fetchItems = createAsyncThunk<

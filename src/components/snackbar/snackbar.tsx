@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { SnackbarType } from "@components/types";
 import styles from "./styles.module.css";
+import React, { useEffect } from "react";
+import { SnackbarType } from "../../types/types";
 
 interface SnackbarProps {
   type: SnackbarType;
