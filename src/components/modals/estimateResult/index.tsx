@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
-import { toggleModalComments, toggleModalEstimateResult } from "../../../store/numSlice";
-import { updateInconsistencyRequest, fetchItems } from "@api/route";
-import { InconsistenciesCommentsModal } from "../commentsAdder";
+import { toggleModalEstimateResult } from "../../../store/numSlice";
+import {
+  updateInconsistencyRequest,
+  fetchItems,
+  createCommentInconsistencyRequest,
+} from "@api/route";
 import { SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import styles from "./styles.module.css";
@@ -16,37 +19,34 @@ interface ModalProps {
 
 export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentInconsistencyNumber, isModalCommentsOpen } = useSelector(
-    (state: RootState) => state.num,
-  );
+  const { currentInconsistencyNumber } = useSelector((state: RootState) => state.num);
   const addSnackbar = useSnackbar();
   const [estimate, setEstimate] = useState<string>("удовлетворительно");
   const [respPerson, setRespPerson] = useState<string>("");
+  const [commentText, setCommentText] = useState<string>("");
 
   const handleEstimateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setEstimate(event.target.value);
+    setCommentText(""); // Сбрасываем комментарий при смене оценки
   };
 
   const handleRespPersonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setRespPerson(event.target.value);
   };
 
-  const handleOpenCommentsModal = () => {
-    if (currentInconsistencyNumber !== null) {
-      dispatch(toggleModalComments(true));
-      dispatch(toggleModalEstimateResult(false));
-    }
+  const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCommentText(event.target.value);
   };
 
-  const handleCloseCommentsModal = () => {
-    dispatch(toggleModalComments(false));
-    setEstimate("удовлетворительно");
-    setRespPerson("");
-  };
+  const handleSubmit = async (isArchived: boolean) => {
+    console.log("Submitting form:", {
+      currentInconsistencyNumber,
+      estimate,
+      respPerson,
+      isArchived,
+      commentText,
+    });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("Submitting form:", { currentInconsistencyNumber, estimate, respPerson });
     if (!currentInconsistencyNumber) {
       addSnackbar(SnackbarType.error, "Номер несоответствия не указан");
       return;
@@ -56,67 +56,112 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
       return;
     }
 
-    if (estimate === "удовлетворительно") {
-      try {
+    try {
+      // Если оценка "неудовлетворительно", создаём комментарий
+      if (estimate === "неудовлетворительно" && commentText.trim()) {
         await dispatch(
-          updateInconsistencyRequest({
+          createCommentInconsistencyRequest({
             num_nonconf: currentInconsistencyNumber,
-            data: {
-              estimate: 1,
-              resp_person_nonconf_closure: respPerson,
-              is_archived: true,
-            },
+            comment_author: respPerson,
+            comment_text: commentText,
           }),
         ).unwrap();
-        await dispatch(fetchItems({ is_archived: false })).unwrap();
-        await dispatch(fetchItems({ is_archived: true })).unwrap();
         addSnackbar(
           SnackbarType.success,
-          `Несоответствие №${currentInconsistencyNumber} успешно перенесено в архив`,
+          `Комментарий успешно добавлен к несоответствию №${currentInconsistencyNumber}`,
         );
-        dispatch(toggleModalEstimateResult(false));
-        setEstimate("удовлетворительно");
-        setRespPerson("");
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "Ошибка при переносе в архив";
-        console.log("Update error:", errorMessage);
-        addSnackbar(SnackbarType.error, errorMessage);
       }
-    } else {
-      handleOpenCommentsModal();
+
+      const closureDate = new Date().toISOString();
+      await dispatch(
+        updateInconsistencyRequest({
+          num_nonconf: currentInconsistencyNumber,
+          data: {
+            estimate: estimate === "удовлетворительно" ? 1 : 0,
+            resp_person_nonconf_closure: respPerson,
+            is_archived: isArchived,
+            nonconf_closure_date: closureDate,
+          },
+        }),
+      ).unwrap();
+
+      await dispatch(fetchItems({ is_archived: false })).unwrap();
+      await dispatch(fetchItems({ is_archived: true })).unwrap();
+
+      addSnackbar(
+        SnackbarType.success,
+        isArchived
+          ? `Несоответствие №${currentInconsistencyNumber} успешно перенесено в архив`
+          : `Несоответствие №${currentInconsistencyNumber} оставлено в таблице`,
+      );
+
+      dispatch(toggleModalEstimateResult(false));
+      setEstimate("удовлетворительно");
+      setRespPerson("");
+      setCommentText("");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при обработке несоответствия";
+      console.log("Update error:", errorMessage);
+      addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
+  const isButtonsDisabled = estimate === "неудовлетворительно" && !commentText.trim();
+
   return (
-    <>
-      <ModalComponent isOpen={isOpen} onClose={onClose}>
-        <form className={styles.modalForm} onSubmit={handleSubmit}>
-          <h3>Выберите оценку результативности несоответствия {currentInconsistencyNumber}</h3>
-          <select
-            name="resp_person_nonconf_closure"
-            id="resp_person_nonconf_closure"
-            value={respPerson}
-            onChange={handleRespPersonChange}
-          >
-            <option value="">...выбрать ответственное лицо</option>
-            <option value="Разумнева Н.П.">Разумнева Н.П.</option>
-          </select>
-          <select name="estimate" id="estimate" value={estimate} onChange={handleEstimateChange}>
-            <option value="удовлетворительно">удовлетворительно</option>
-            <option value="неудовлетворительно">неудовлетворительно</option>
-          </select>
-          <div className={styles.buttonsBlock}>
-            <button type="submit">
-              {estimate === "неудовлетворительно" ? "Оставить комментарий" : "Сохранить и закрыть"}
+    <ModalComponent isOpen={isOpen} onClose={onClose}>
+      <form className={styles.modalForm}>
+        <h3>Выберите оценку результативности несоответствия {currentInconsistencyNumber}</h3>
+        <select
+          name="resp_person_nonconf_closure"
+          id="resp_person_nonconf_closure"
+          value={respPerson}
+          onChange={handleRespPersonChange}
+        >
+          <option value="">...выбрать ответственное лицо</option>
+          <option value="Разумнева Н.П.">Разумнева Н.П.</option>
+        </select>
+        <select name="estimate" id="estimate" value={estimate} onChange={handleEstimateChange}>
+          <option value="удовлетворительно">удовлетворительно</option>
+          <option value="неудовлетворительно">неудовлетворительно</option>
+        </select>
+        {estimate === "неудовлетворительно" && (
+          <textarea
+            name="comment_text"
+            id="comment_text"
+            placeholder="Введите комментарий"
+            rows={10}
+            value={commentText}
+            onChange={handleCommentChange}
+            className={styles.div_area}
+          />
+        )}
+        <div className={styles.buttonsBlock}>
+          {estimate === "удовлетворительно" ? (
+            <button type="button" onClick={() => handleSubmit(true)} disabled={!respPerson}>
+              Перенести в архив
             </button>
-          </div>
-        </form>
-      </ModalComponent>
-      <InconsistenciesCommentsModal
-        currentInconsistencyNumber={currentInconsistencyNumber}
-        isOpen={isModalCommentsOpen}
-        onClose={handleCloseCommentsModal}
-      />
-    </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => handleSubmit(false)}
+                disabled={isButtonsDisabled || !respPerson}
+              >
+                Не отправлять в архив
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSubmit(true)}
+                disabled={isButtonsDisabled || !respPerson}
+              >
+                Перенести в архив
+              </button>
+            </>
+          )}
+        </div>
+      </form>
+    </ModalComponent>
   );
 };

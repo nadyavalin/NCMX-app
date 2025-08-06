@@ -154,7 +154,13 @@ export const ArchiveInconsistencies = () => {
                           Дата проведения оценки и переноса в архив: <br />
                           <b>{formatDate(item.nonconf_closure_date)}</b>
                         </p>
-                        <p className={styles.estimate}>
+                        <p
+                          className={
+                            item.estimate === 1
+                              ? styles.estimateSatisfactory
+                              : styles.estimateUnsatisfactory
+                          }
+                        >
                           Оценка результативности:{" "}
                           <b>{item.estimate === 1 ? "удовлетворительно" : "неудовлетворительно"}</b>
                         </p>

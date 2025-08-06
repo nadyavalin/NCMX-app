@@ -48,6 +48,10 @@
   color: var(--red-color);
 }
 
-.estimate b {
+.estimateSatisfactory b {
   color: var(--accent-green-color);
+}
+
+.estimateUnsatisfactory b {
+  color: var(--accent-red-color);
 }

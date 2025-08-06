@@ -18,8 +18,9 @@ body {
   --bg-footer-gradient: linear-gradient(45deg, rgb(52 49 230), rgb(172 175 212));
   --border-shadow-color: rgb(255 255 255 / 50%);
   --text-button-color: #f5f5f5;
-  --accent-color: #421df9;
-  --accent-color-hover: #9681ff;
+  --accent-color: #2b00ff;
+  --accent-color-hover: #3000a1;
+  --button-disabled-color: #9681ff;
   --text-color: #000;
   --table-color: #c1c1bf;
   --card-color: #dedede;

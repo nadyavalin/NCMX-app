@@ -1,15 +1,22 @@
-.modalForm h3 {
-  width: 60%;
-  text-align: left;
-}
-
 .modalForm {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 440px;
+}
+
+.modalForm h3 {
+  width: 70%;
+  text-align: left;
 }
 
 .buttonsBlock {
   display: flex;
-  justify-content: flex-end;
+  gap: 16px;
+  justify-content: right;
+  width: 100%;
+}
+
+button:disabled {
+  background-color: var(--button-disabled-color);
 }
