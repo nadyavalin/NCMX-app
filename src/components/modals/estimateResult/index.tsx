@@ -68,7 +68,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
         ).unwrap();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий успешно добавлен к несоответствию №${currentInconsistencyNumber}`,
+          `Комментарий успешно добавлен к несоответствию № ${currentInconsistencyNumber}`,
         );
       }
 
@@ -91,8 +91,8 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
       addSnackbar(
         SnackbarType.success,
         isArchived
-          ? `Несоответствие №${currentInconsistencyNumber} успешно перенесено в архив`
-          : `Несоответствие №${currentInconsistencyNumber} оставлено в таблице`,
+          ? `Несоответствие № ${currentInconsistencyNumber} успешно перенесено в архив`
+          : `Несоответствие № ${currentInconsistencyNumber} оставлено в таблице`,
       );
 
       dispatch(toggleModalEstimateResult(false));
@@ -112,7 +112,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm}>
-        <h3>Выберите оценку результативности несоответствия {currentInconsistencyNumber}</h3>
+        <h3>Выберите оценку результативности несоответствия № {currentInconsistencyNumber}</h3>
         <select
           name="resp_person_nonconf_closure"
           id="resp_person_nonconf_closure"

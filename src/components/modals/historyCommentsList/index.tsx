@@ -108,7 +108,7 @@ export const InconsistenciesHistoryCommentsModal = ({
         contentRef={modalContentRef}
       >
         {sortedComments.length > 0 && (
-          <h3>История комментариев к несоответствию {currentInconsistencyNumber}</h3>
+          <h3>История комментариев к несоответствию № {currentInconsistencyNumber}</h3>
         )}
         {sortedComments.length > 0 ? (
           sortedComments.map((comment) => (

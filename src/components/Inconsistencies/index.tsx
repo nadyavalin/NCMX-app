@@ -124,7 +124,7 @@ export const Inconsistencies = () => {
       await dispatch(deleteInconsistencyRequest(deleteNumNonconf)).unwrap();
       setConfirmDeleteOpen(false);
       setDeleteNumNonconf(null);
-      addSnackbar(SnackbarType.success, `Несоответствие №${deleteNumNonconf} успешно удалено`);
+      addSnackbar(SnackbarType.success, `Несоответствие № ${deleteNumNonconf} успешно удалено`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при удалении несоответствия";
@@ -286,7 +286,7 @@ export const Inconsistencies = () => {
           onClose={cancelDelete}
           onConfirm={confirmDelete}
           title="Подтверждение удаления"
-          message={`Вы уверены, что хотите удалить несоответствие №${deleteNumNonconf}?`}
+          message={`Вы уверены, что хотите удалить несоответствие № ${deleteNumNonconf}?`}
         />
       </main>
     </>

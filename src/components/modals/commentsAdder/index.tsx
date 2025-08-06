@@ -92,7 +92,7 @@ export const InconsistenciesCommentsModal = ({
         onClose();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий к несоответствию №${result.num_nonconf} успешно обновлен`,
+          `Комментарий к несоответствию № ${result.num_nonconf} успешно обновлен`,
         );
       } else {
         const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
@@ -101,7 +101,7 @@ export const InconsistenciesCommentsModal = ({
         onClose();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий успешно добавлен к несоответствию №${result.num_nonconf}`,
+          `Комментарий успешно добавлен к несоответствию № ${result.num_nonconf}`,
         );
       }
     } catch (error: unknown) {
@@ -124,7 +124,7 @@ export const InconsistenciesCommentsModal = ({
         <h3>
           {editComment
             ? "Редактировать комментарий"
-            : `Внести комментарий к несоответствию №${currentInconsistencyNumber}`}
+            : `Внести комментарий к несоответствию № ${currentInconsistencyNumber}`}
         </h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {commentError && <p className={styles.submitError}>{commentError}</p>}
@@ -152,11 +152,7 @@ export const InconsistenciesCommentsModal = ({
         {errors.comment_text && <p className={styles.submitError}>{errors.comment_text}</p>}
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={commentLoading}>
-            {commentLoading
-              ? "Сохранение..."
-              : editComment
-                ? "Сохранить изменения"
-                : "Сохранить и закрыть"}
+            {commentLoading ? "Сохранение..." : "Сохранить и закрыть"}
           </button>
         </div>
       </form>

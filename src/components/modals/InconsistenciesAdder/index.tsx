@@ -161,13 +161,13 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
         console.log("updateInconsistencyRequest response:", result);
         addSnackbar(
           SnackbarType.success,
-          `Несоответствие №${result.num_nonconf} успешно обновлено`,
+          `Несоответствие № ${result.num_nonconf} успешно обновлено`,
         );
       } else {
         console.log("Sending createInconsistencyRequest:", payload);
         const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
         console.log("createInconsistencyRequest response:", result);
-        addSnackbar(SnackbarType.success, `Несоответствие №${result.num_nonconf} успешно создано`);
+        addSnackbar(SnackbarType.success, `Несоответствие № ${result.num_nonconf} успешно создано`);
       }
       setFormData(initialFormData);
       onClose();
@@ -437,11 +437,7 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
         </div>
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={createLoading}>
-            {createLoading
-              ? "Сохранение..."
-              : editItem
-                ? "Сохранить изменения"
-                : "Сохранить и закрыть"}
+            {createLoading ? "Сохранение..." : "Сохранить и закрыть"}
           </button>
         </div>
       </form>

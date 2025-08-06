@@ -66,7 +66,7 @@ export const ArchiveInconsistencies = () => {
   const handleRestore = async (num_nonconf: number) => {
     try {
       await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
-      addSnackbar(SnackbarType.success, `Несоответствие №${num_nonconf} восстановлено`);
+      addSnackbar(SnackbarType.success, `Несоответствие № ${num_nonconf} восстановлено`);
       await dispatch(fetchItems({ is_archived: true })).unwrap();
       await dispatch(fetchItems({ is_archived: false })).unwrap();
     } catch (error: unknown) {
