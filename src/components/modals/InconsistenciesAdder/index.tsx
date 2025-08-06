@@ -139,24 +139,34 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
       return;
     }
 
-    const payload = Object.fromEntries(
-      Object.entries(formData).map(([key, value]) => [
-        key,
-        value === "" || value === 0 ? null : value,
-      ]),
-    ) as ItemRequestPOST;
+    const payload = {
+      ...Object.fromEntries(
+        Object.entries(formData).map(([key, value]) => [
+          key,
+          value === "" || value === 0 ? null : value,
+        ]),
+      ),
+      is_archived: false, // Явно указываем, что не архивируем
+    } as ItemRequestPOST;
 
     try {
       if (editItem) {
+        console.log("Sending updateInconsistencyRequest:", {
+          num_nonconf: editItem.num_nonconf,
+          data: payload,
+        });
         const result = await dispatch(
           updateInconsistencyRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
         ).unwrap();
+        console.log("updateInconsistencyRequest response:", result);
         addSnackbar(
           SnackbarType.success,
           `Несоответствие №${result.num_nonconf} успешно обновлено`,
         );
       } else {
+        console.log("Sending createInconsistencyRequest:", payload);
         const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
+        console.log("createInconsistencyRequest response:", result);
         addSnackbar(SnackbarType.success, `Несоответствие №${result.num_nonconf} успешно создано`);
       }
       setFormData(initialFormData);

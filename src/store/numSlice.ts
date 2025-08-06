@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ItemResponseGET, ItemCommentResponseGET } from "@components/types";
+import { ItemResponseGET, ItemCommentResponseGET, ItemRequestPOST } from "@components/types";
 import {
   fetchItems,
   createInconsistencyRequest,
@@ -49,18 +49,23 @@ const numSlice = createSlice({
   initialState,
   reducers: {
     setCurrentInconsistencyNumber(state, action: PayloadAction<number | null>) {
+      console.log("setCurrentInconsistencyNumber", action.payload);
       state.currentInconsistencyNumber = action.payload;
     },
     toggleModalComments(state, action: PayloadAction<boolean>) {
+      console.log("toggleModalComments", action.payload);
       state.isModalCommentsOpen = action.payload;
     },
     toggleModalHistoryComments(state, action: PayloadAction<boolean>) {
+      console.log("toggleModalHistoryComments", action.payload);
       state.isModalHistoryCommentsOpen = action.payload;
     },
     toggleModalEstimateResult(state, action: PayloadAction<boolean>) {
+      console.log("toggleModalEstimateResult", action.payload);
       state.isModalEstimateResultOpen = action.payload;
     },
     toggleModalEdit(state, action: PayloadAction<boolean>) {
+      console.log("toggleModalEdit", action.payload);
       state.isModalEditOpen = action.payload;
     },
   },
@@ -103,7 +108,8 @@ const numSlice = createSlice({
       .addCase(
         createInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<ItemResponseGET>) => {
-          state.activeItems = [...state.activeItems, action.payload];
+          console.log("createInconsistencyRequest fulfilled:", action.payload);
+          state.activeItems = [...state.activeItems, { ...action.payload, is_archived: false }];
           state.createLoading = false;
         },
       )
@@ -132,8 +138,20 @@ const numSlice = createSlice({
       })
       .addCase(
         updateInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<ItemResponseGET>) => {
-          if (action.payload.is_archived) {
+        (
+          state,
+          action: PayloadAction<
+            ItemResponseGET,
+            string,
+            { arg: { num_nonconf: number; data: Partial<ItemRequestPOST> } }
+          >,
+        ) => {
+          console.log("updateInconsistencyRequest fulfilled:", {
+            payload: action.payload,
+            requestData: action.meta.arg.data,
+          });
+          const isArchived = action.meta.arg.data.is_archived ?? false; // Используем отправленное значение
+          if (isArchived) {
             state.activeItems = state.activeItems.filter(
               (item) => item.num_nonconf !== action.payload.num_nonconf,
             );
@@ -141,9 +159,11 @@ const numSlice = createSlice({
               (item) => item.num_nonconf === action.payload.num_nonconf,
             )
               ? state.archivedItems.map((item) =>
-                  item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+                  item.num_nonconf === action.payload.num_nonconf
+                    ? { ...action.payload, is_archived: true }
+                    : item,
                 )
-              : [...state.archivedItems, action.payload];
+              : [...state.archivedItems, { ...action.payload, is_archived: true }];
           } else {
             state.archivedItems = state.archivedItems.filter(
               (item) => item.num_nonconf !== action.payload.num_nonconf,
@@ -152,9 +172,11 @@ const numSlice = createSlice({
               (item) => item.num_nonconf === action.payload.num_nonconf,
             )
               ? state.activeItems.map((item) =>
-                  item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+                  item.num_nonconf === action.payload.num_nonconf
+                    ? { ...action.payload, is_archived: false }
+                    : item,
                 )
-              : [...state.activeItems, action.payload];
+              : [...state.activeItems, { ...action.payload, is_archived: false }];
           }
           state.itemsLoading = false;
         },
@@ -173,9 +195,11 @@ const numSlice = createSlice({
             (item) => item.num_nonconf === action.payload.num_nonconf,
           )
             ? state.activeItems.map((item) =>
-                item.num_nonconf === action.payload.num_nonconf ? action.payload : item,
+                item.num_nonconf === action.payload.num_nonconf
+                  ? { ...action.payload, is_archived: false }
+                  : item,
               )
-            : [...state.activeItems, action.payload];
+            : [...state.activeItems, { ...action.payload, is_archived: false }];
         },
       )
       .addCase(restoreInconsistencyRequest.rejected, (state, action) => {
