@@ -1,3 +1,5 @@
+"use client";
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../utils/api";
 import { useEffect, useCallback } from "react";

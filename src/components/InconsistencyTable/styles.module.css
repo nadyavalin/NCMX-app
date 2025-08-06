@@ -1,0 +1,46 @@
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.addButton {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.inconsistenciesActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.inconsistenciesActions a {
+  font-size: 11px;
+}
+
+.redText {
+  color: var(--accent-red-color);
+}
+
+.greenText {
+  color: var(--accent-green-color);
+}
+
+.estimateSatisfactory {
+  color: var(--accent-green-color);
+}
+
+.estimateUnsatisfactory {
+  color: var(--accent-red-color);
+}
+
+.errorMessage {
+  margin-bottom: 1rem;
+  color: red;
+}

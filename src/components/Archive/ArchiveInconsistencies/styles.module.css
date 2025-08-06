@@ -1,57 +1,8 @@
-.main {
-  padding: 20px;
-  margin-bottom: 20px;
+.archiveBlock {
+  padding: 20px 0;
+  margin: 5px 20px 20px;
   color: var(--text-archive-color);
   background-color: var(--bg-archive-color);
   border: 1px solid var(--table-color);
   border-radius: 10px;
-}
-
-.filterSection {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 20px 0;
-}
-
-.filterSection select,
-.filterSection input {
-  width: 400px;
-}
-
-.inconsistenciesActions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  width: 100%;
-  margin: 20px 0;
-  font-size: 11px;
-}
-
-.inconsistenciesActions p {
-  color: var(--text-color);
-}
-
-.inconsistenciesActions a {
-  font-size: 11px;
-}
-
-.addButton {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin: 20px 0;
-}
-
-.redText {
-  color: var(--red-color);
-}
-
-.estimateSatisfactory b {
-  color: var(--accent-green-color);
-}
-
-.estimateUnsatisfactory b {
-  color: var(--accent-red-color);
 }
