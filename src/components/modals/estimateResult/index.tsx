@@ -2,11 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { toggleModalEstimateResult } from "../../../store/numSlice";
-import {
-  updateInconsistencyRequest,
-  fetchItems,
-  createCommentInconsistencyRequest,
-} from "@api/route";
+import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@api/route";
 import { SnackbarType } from "@components/types";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import styles from "./styles.module.css";
@@ -39,14 +35,6 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
   };
 
   const handleSubmit = async (isArchived: boolean) => {
-    console.log("Submitting form:", {
-      currentInconsistencyNumber,
-      estimate,
-      respPerson,
-      isArchived,
-      commentText,
-    });
-
     if (!currentInconsistencyNumber) {
       addSnackbar(SnackbarType.error, "Номер несоответствия не указан");
       return;
@@ -57,7 +45,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
     }
 
     try {
-      // Если оценка "неудовлетворительно", создаём комментарий
+      // Если оценка "неудовлетворительно" и есть комментарий, создаём его
       if (estimate === "неудовлетворительно" && commentText.trim()) {
         await dispatch(
           createCommentInconsistencyRequest({
@@ -85,9 +73,6 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
         }),
       ).unwrap();
 
-      await dispatch(fetchItems({ is_archived: false })).unwrap();
-      await dispatch(fetchItems({ is_archived: true })).unwrap();
-
       addSnackbar(
         SnackbarType.success,
         isArchived
@@ -102,7 +87,6 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при обработке несоответствия";
-      console.log("Update error:", errorMessage);
       addSnackbar(SnackbarType.error, errorMessage);
     }
   };

@@ -151,28 +151,20 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
 
     try {
       if (editItem) {
-        console.log("Sending updateInconsistencyRequest:", {
-          num_nonconf: editItem.num_nonconf,
-          data: payload,
-        });
         const result = await dispatch(
           updateInconsistencyRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
         ).unwrap();
-        console.log("updateInconsistencyRequest response:", result);
         addSnackbar(
           SnackbarType.success,
           `Несоответствие № ${result.num_nonconf} успешно обновлено`,
         );
       } else {
-        console.log("Sending createInconsistencyRequest:", payload);
         const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
-        console.log("createInconsistencyRequest response:", result);
         addSnackbar(SnackbarType.success, `Несоответствие № ${result.num_nonconf} успешно создано`);
       }
       setFormData(initialFormData);
       onClose();
     } catch (error: unknown) {
-      console.log("InconsistenciesModal error:", error);
       if (isAxiosError(error) && error.response?.status === 400) {
         const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
         setErrors({ num_nonconf: errorMessage });

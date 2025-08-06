@@ -47,7 +47,6 @@ export const InconsistenciesHistoryCommentsModal = ({
 
   useEffect(() => {
     if (isOpen && !hasFetched.current && currentInconsistencyNumber) {
-      console.log("Fetching comments for num_nonconf:", currentInconsistencyNumber);
       hasFetched.current = true;
       setTimeout(() => {
         scrollToTop();

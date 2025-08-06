@@ -49,7 +49,6 @@ export const Inconsistencies = () => {
         await dispatch(fetchItems({ is_archived: false })).unwrap();
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
-        console.log("Inconsistencies: Fetch error", { errorMessage });
         setFetchError(errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
       }

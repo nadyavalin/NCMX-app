@@ -16,7 +16,6 @@ const formatDate = (dateString: string | undefined): string => {
   if (!dateString) return "-";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;
-  console.log("Formatting date:", dateString, "Parsed:", date);
   return date.toLocaleString("ru-RU", {
     day: "2-digit",
     month: "2-digit",
@@ -46,7 +45,6 @@ export const ArchiveInconsistencies = () => {
         console.log("Fetched archived items:", result);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Ошибка при загрузке данных";
-        console.log("ArchiveInconsistencies: Fetch error", { errorMessage });
         setFetchError(errorMessage);
         addSnackbar(SnackbarType.error, errorMessage);
       }
@@ -67,8 +65,6 @@ export const ArchiveInconsistencies = () => {
     try {
       await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
       addSnackbar(SnackbarType.success, `Несоответствие № ${num_nonconf} восстановлено`);
-      await dispatch(fetchItems({ is_archived: true })).unwrap();
-      await dispatch(fetchItems({ is_archived: false })).unwrap();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при восстановлении несоответствия";

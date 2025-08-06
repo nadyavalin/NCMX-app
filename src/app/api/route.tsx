@@ -45,13 +45,11 @@ export const createInconsistencyRequest = createAsyncThunk<
     const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
     return response.data;
   } catch (error: unknown) {
-    console.log("createInconsistencyRequest error:", error);
     if (isAxiosError(error) && error.response?.status === 400) {
       const serverMessage =
         error.response?.data?.num_nonconf?.[0] ||
         error.response?.data?.detail ||
         "Ошибка при создании несоответствия";
-      console.log("createInconsistencyRequest serverMessage:", serverMessage);
       if (
         serverMessage.toLowerCase().includes("already exists") ||
         serverMessage.toLowerCase().includes("уже существует") ||

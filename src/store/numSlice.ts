@@ -49,23 +49,18 @@ const numSlice = createSlice({
   initialState,
   reducers: {
     setCurrentInconsistencyNumber(state, action: PayloadAction<number | null>) {
-      console.log("setCurrentInconsistencyNumber", action.payload);
       state.currentInconsistencyNumber = action.payload;
     },
     toggleModalComments(state, action: PayloadAction<boolean>) {
-      console.log("toggleModalComments", action.payload);
       state.isModalCommentsOpen = action.payload;
     },
     toggleModalHistoryComments(state, action: PayloadAction<boolean>) {
-      console.log("toggleModalHistoryComments", action.payload);
       state.isModalHistoryCommentsOpen = action.payload;
     },
     toggleModalEstimateResult(state, action: PayloadAction<boolean>) {
-      console.log("toggleModalEstimateResult", action.payload);
       state.isModalEstimateResultOpen = action.payload;
     },
     toggleModalEdit(state, action: PayloadAction<boolean>) {
-      console.log("toggleModalEdit", action.payload);
       state.isModalEditOpen = action.payload;
     },
   },
@@ -108,7 +103,6 @@ const numSlice = createSlice({
       .addCase(
         createInconsistencyRequest.fulfilled,
         (state, action: PayloadAction<ItemResponseGET>) => {
-          console.log("createInconsistencyRequest fulfilled:", action.payload);
           state.activeItems = [...state.activeItems, { ...action.payload, is_archived: false }];
           state.createLoading = false;
         },
@@ -119,7 +113,6 @@ const numSlice = createSlice({
           action.payload.includes("Несоответствие с номером") &&
           action.payload.includes("уже существует")
         ) {
-          // Не устанавливаем createError для ошибки дублирования
         } else {
           state.createError = (action.payload as string) || "Ошибка при создании несоответствия";
         }
@@ -146,11 +139,7 @@ const numSlice = createSlice({
             { arg: { num_nonconf: number; data: Partial<ItemRequestPOST> } }
           >,
         ) => {
-          console.log("updateInconsistencyRequest fulfilled:", {
-            payload: action.payload,
-            requestData: action.meta.arg.data,
-          });
-          const isArchived = action.meta.arg.data.is_archived ?? false; // Используем отправленное значение
+          const isArchived = action.meta.arg.data.is_archived ?? false;
           if (isArchived) {
             state.activeItems = state.activeItems.filter(
               (item) => item.num_nonconf !== action.payload.num_nonconf,

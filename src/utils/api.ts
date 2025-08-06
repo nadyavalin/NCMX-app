@@ -13,7 +13,6 @@ api.interceptors.response.use(
   (error) => {
     console.log("API Error data:", error.response?.data);
     console.log("API Error status:", error.response?.status);
-    console.log("Full error object:", JSON.stringify(error, null, 2));
     return Promise.reject(error);
   },
 );
