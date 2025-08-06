@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "@components/types";
 import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
 import styles from "./styles.module.css";
@@ -39,7 +39,7 @@ const initialFormData: ItemRequestPOST = {
   resp_person_nonconf_closure: "",
 };
 
-export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
+const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
   const { createLoading } = useSelector((state: RootState) => state.num);
@@ -146,7 +146,7 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
           value === "" || value === 0 ? null : value,
         ]),
       ),
-      is_archived: false, // Явно указываем, что не архивируем
+      is_archived: false,
     } as ItemRequestPOST;
 
     try {
@@ -162,8 +162,11 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
         const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
         addSnackbar(SnackbarType.success, `Несоответствие № ${result.num_nonconf} успешно создано`);
       }
-      setFormData(initialFormData);
-      onClose();
+      setTimeout(() => {
+        setFormData(initialFormData);
+        setErrors({});
+        onClose();
+      }, 300);
     } catch (error: unknown) {
       if (isAxiosError(error) && error.response?.status === 400) {
         const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
@@ -187,9 +190,11 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
   }, [isOpen, editItem]);
 
   const handleClose = () => {
-    setFormData(initialFormData);
-    setErrors({});
-    onClose();
+    setTimeout(() => {
+      setFormData(initialFormData);
+      setErrors({});
+      onClose();
+    }, 300);
   };
 
   return (
@@ -436,3 +441,5 @@ export const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) 
     </ModalComponent>
   );
 };
+
+export default React.memo(InconsistenciesModal);

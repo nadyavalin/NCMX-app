@@ -1,6 +1,7 @@
+import React from "react";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
-import { InconsistenciesCommentsModal } from "../commentsAdder";
+import InconsistenciesCommentsModal from "../commentsAdder";
 import { useFetchCommentsItems } from "@/api/route";
 import { useEffect, useRef, useState } from "react";
 import { ItemCommentResponseGET } from "@components/types";
@@ -25,7 +26,7 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-export const InconsistenciesHistoryCommentsModal = ({
+const InconsistenciesHistoryCommentsModal = ({
   currentInconsistencyNumber,
   isOpen,
   onClose,
@@ -48,14 +49,17 @@ export const InconsistenciesHistoryCommentsModal = ({
   useEffect(() => {
     if (isOpen && !hasFetched.current && currentInconsistencyNumber) {
       hasFetched.current = true;
+      refetch();
       setTimeout(() => {
         scrollToTop();
       }, 0);
     }
     if (!isOpen) {
       hasFetched.current = false;
+      setIsEditModalOpen(false);
+      setEditingComment(null);
     }
-  }, [isOpen, currentInconsistencyNumber]);
+  }, [isOpen, currentInconsistencyNumber, refetch]);
 
   const handleEditClick = (comment: ItemCommentResponseGET) => {
     setEditingComment(comment);
@@ -63,9 +67,11 @@ export const InconsistenciesHistoryCommentsModal = ({
   };
 
   const handleEditModalClose = () => {
-    setIsEditModalOpen(false);
-    setEditingComment(null);
-    refetch();
+    setTimeout(() => {
+      setIsEditModalOpen(false);
+      setEditingComment(null);
+      refetch();
+    }, 300);
   };
 
   const sortedComments = [...comments].sort(
@@ -148,3 +154,5 @@ export const InconsistenciesHistoryCommentsModal = ({
     </>
   );
 };
+
+export default React.memo(InconsistenciesHistoryCommentsModal);

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./styles.module.css";
-import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
-import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
-import { InconsistenciesHistoryCommentsModal } from "@modals/historyCommentsList";
-import { InconsistenciesModal } from "@modals/InconsistenciesAdder";
+import InconsistenciesCommentsModal from "@modals/commentsAdder";
+import InconsistenciesEstimateResultModal from "@modals/estimateResult";
+import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
+import InconsistenciesModal from "@modals/InconsistenciesAdder";
 import { ConfirmDeleteModal } from "@modals/confirmDelete";
 import { SearchInput } from "@components/searchInput";
 import { MainFilter } from "@components/filters/mainFilter";
@@ -64,50 +64,51 @@ const InconsistencyTable = ({
 
   const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
-  const handleOpenModal = (
-    modalType: "comments" | "historyComments" | "estimateResult" | "edit",
-    num: number,
-  ) => {
-    dispatch(setCurrentInconsistencyNumber(num));
-    switch (modalType) {
-      case "comments":
-        dispatch(toggleModalComments(true));
-        break;
-      case "historyComments":
-        dispatch(toggleModalHistoryComments(true));
-        break;
-      case "estimateResult":
-        dispatch(toggleModalEstimateResult(true));
-        break;
-      case "edit":
-        const item = items.find((item) => item.num_nonconf === num);
-        if (item) {
-          setEditItem(item);
-          dispatch(toggleModalEdit(true));
-        }
-        break;
-    }
-  };
+  const handleOpenModal = useCallback(
+    (modalType: "comments" | "historyComments" | "estimateResult" | "edit", num: number) => {
+      dispatch(setCurrentInconsistencyNumber(num));
+      switch (modalType) {
+        case "comments":
+          dispatch(toggleModalComments(true));
+          break;
+        case "historyComments":
+          dispatch(toggleModalHistoryComments(true));
+          break;
+        case "estimateResult":
+          dispatch(toggleModalEstimateResult(true));
+          break;
+        case "edit":
+          const item = items.find((item) => item.num_nonconf === num);
+          if (item) {
+            setEditItem(item);
+            dispatch(toggleModalEdit(true));
+          }
+          break;
+      }
+    },
+    [dispatch, items],
+  );
 
-  const handleCloseModal = (
-    modalType: "comments" | "historyComments" | "estimateResult" | "edit",
-  ) => {
-    switch (modalType) {
-      case "comments":
-        dispatch(toggleModalComments(false));
-        break;
-      case "historyComments":
-        dispatch(toggleModalHistoryComments(false));
-        break;
-      case "estimateResult":
-        dispatch(toggleModalEstimateResult(false));
-        break;
-      case "edit":
-        dispatch(toggleModalEdit(false));
-        setEditItem(null);
-        break;
-    }
-  };
+  const handleCloseModal = useCallback(
+    (modalType: "comments" | "historyComments" | "estimateResult" | "edit") => {
+      switch (modalType) {
+        case "comments":
+          dispatch(toggleModalComments(false));
+          break;
+        case "historyComments":
+          dispatch(toggleModalHistoryComments(false));
+          break;
+        case "estimateResult":
+          dispatch(toggleModalEstimateResult(false));
+          break;
+        case "edit":
+          dispatch(toggleModalEdit(false));
+          setEditItem(null);
+          break;
+      }
+    },
+    [dispatch],
+  );
 
   const handleDelete = (num_nonconf: number) => {
     setDeleteNumNonconf(num_nonconf);

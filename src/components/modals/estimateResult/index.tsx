@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { toggleModalEstimateResult } from "../../../store/numSlice";
@@ -13,13 +13,14 @@ interface ModalProps {
   onClose: () => void;
 }
 
-export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
+const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { currentInconsistencyNumber } = useSelector((state: RootState) => state.num);
   const addSnackbar = useSnackbar();
   const [estimate, setEstimate] = useState<string>("удовлетворительно");
   const [respPerson, setRespPerson] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleEstimateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setEstimate(event.target.value);
@@ -44,6 +45,7 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
       return;
     }
 
+    setIsSubmitting(true);
     try {
       // Если оценка "неудовлетворительно" и есть комментарий, создаём его
       if (estimate === "неудовлетворительно" && commentText.trim()) {
@@ -80,18 +82,24 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
           : `Несоответствие № ${currentInconsistencyNumber} оставлено в таблице`,
       );
 
-      dispatch(toggleModalEstimateResult(false));
-      setEstimate("удовлетворительно");
-      setRespPerson("");
-      setCommentText("");
+      setTimeout(() => {
+        dispatch(toggleModalEstimateResult(false));
+        setEstimate("удовлетворительно");
+        setRespPerson("");
+        setCommentText("");
+        setIsSubmitting(false);
+        onClose();
+      }, 300);
     } catch (error: unknown) {
+      setIsSubmitting(false);
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при обработке несоответствия";
       addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
-  const isButtonsDisabled = estimate === "неудовлетворительно" && !commentText.trim();
+  const isButtonsDisabled =
+    (estimate === "неудовлетворительно" && !commentText.trim()) || isSubmitting;
 
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose}>
@@ -102,11 +110,18 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
           id="resp_person_nonconf_closure"
           value={respPerson}
           onChange={handleRespPersonChange}
+          disabled={isSubmitting}
         >
           <option value="">...выбрать ответственное лицо</option>
           <option value="Разумнева Н.П.">Разумнева Н.П.</option>
         </select>
-        <select name="estimate" id="estimate" value={estimate} onChange={handleEstimateChange}>
+        <select
+          name="estimate"
+          id="estimate"
+          value={estimate}
+          onChange={handleEstimateChange}
+          disabled={isSubmitting}
+        >
           <option value="удовлетворительно">удовлетворительно</option>
           <option value="неудовлетворительно">неудовлетворительно</option>
         </select>
@@ -119,11 +134,16 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
             value={commentText}
             onChange={handleCommentChange}
             className={styles.div_area}
+            disabled={isSubmitting}
           />
         )}
         <div className={styles.buttonsBlock}>
           {estimate === "удовлетворительно" ? (
-            <button type="button" onClick={() => handleSubmit(true)} disabled={!respPerson}>
+            <button
+              type="button"
+              onClick={() => handleSubmit(true)}
+              disabled={isButtonsDisabled || !respPerson}
+            >
               Перенести в архив
             </button>
           ) : (
@@ -149,3 +169,5 @@ export const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalPro
     </ModalComponent>
   );
 };
+
+export default React.memo(InconsistenciesEstimateResultModal);

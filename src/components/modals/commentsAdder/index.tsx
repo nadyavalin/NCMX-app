@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./styles.module.css";
 import { ModalComponent } from "../modalComponent";
 import { FormEvent, useEffect, useState } from "react";
@@ -20,7 +21,7 @@ const initialCommentFormData: ItemCommentRequestPOST = {
   comment_text: "",
 };
 
-export const InconsistenciesCommentsModal = ({
+const InconsistenciesCommentsModal = ({
   currentInconsistencyNumber,
   isOpen,
   onClose,
@@ -159,3 +160,5 @@ export const InconsistenciesCommentsModal = ({
     </ModalComponent>
   );
 };
+
+export default React.memo(InconsistenciesCommentsModal);
