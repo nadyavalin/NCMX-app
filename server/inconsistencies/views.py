@@ -116,3 +116,16 @@ class InconsistenciesComments(APIView):
                 )
         logger.error(f"Serializer validation errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        comment = get_object_or_404(NCMXInconsistencyComments, id=id)
+        try:
+            comment.delete()
+            logger.debug(f"Comment deleted: {id}")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(f"Error deleting comment: {str(e)}", exc_info=True)
+            return Response(
+                {"error": f"Ошибка при удалении комментария: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

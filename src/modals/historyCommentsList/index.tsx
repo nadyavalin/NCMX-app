@@ -1,9 +1,12 @@
 import styles from "./styles.module.css";
 import React, { useEffect, useRef, useState } from "react";
-import { useFetchCommentsItems } from "@/api/route";
+import { useFetchCommentsItems, deleteCommentInconsistencyRequest } from "@/api/route";
 import { ModalComponent } from "../modalComponent";
 import InconsistenciesCommentsModal from "../commentsAdder";
 import { ItemCommentResponseGET } from "../../types/types";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@store/store";
+import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -30,7 +33,9 @@ const InconsistenciesHistoryCommentsModal = ({
   isOpen,
   onClose,
 }: ModalProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const { comments, loading, error, refetch } = useFetchCommentsItems(currentInconsistencyNumber);
+  const addSnackbar = useSnackbar();
   const hasFetched = useRef(false);
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -63,6 +68,18 @@ const InconsistenciesHistoryCommentsModal = ({
   const handleEditClick = (comment: ItemCommentResponseGET) => {
     setEditingComment(comment);
     setIsEditModalOpen(true);
+  };
+
+  const handleDeleteClick = async (commentId: number) => {
+    try {
+      await dispatch(deleteCommentInconsistencyRequest(commentId)).unwrap();
+      addSnackbar(SnackbarType.success, `Комментарий успешно удалён`);
+      refetch();
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при удалении комментария";
+      addSnackbar(SnackbarType.error, errorMessage);
+    }
   };
 
   const handleEditModalClose = () => {
@@ -126,9 +143,16 @@ const InconsistenciesHistoryCommentsModal = ({
                 </p>
               </div>
               <p>{comment.comment_text}</p>
-              <div className={styles.comment_change}>
+              <div className={styles.commentChange}>
                 <a href="#" onClick={() => handleEditClick(comment)}>
                   Изменить
+                </a>
+                <a
+                  href="#"
+                  className={styles.redText}
+                  onClick={() => handleDeleteClick(comment.id)}
+                >
+                  Удалить
                 </a>
               </div>
             </div>

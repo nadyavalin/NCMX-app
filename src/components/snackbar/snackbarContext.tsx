@@ -53,3 +53,5 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     </SnackbarContext.Provider>
   );
 };
+
+export { SnackbarType };

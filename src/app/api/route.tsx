@@ -154,6 +154,23 @@ export const updateCommentInconsistencyRequest = createAsyncThunk<
   }
 });
 
+// Thunk для удаления комментария
+export const deleteCommentInconsistencyRequest = createAsyncThunk<
+  void,
+  number,
+  { state: RootState }
+>("num/deleteCommentInconsistency", async (commentId, { rejectWithValue }) => {
+  try {
+    await api.delete(`/ncmx-comments/${commentId}/`);
+  } catch (error: unknown) {
+    if (isAxiosError(error)) {
+      const errorMessage = error.response?.data?.detail || "Ошибка при удалении комментария";
+      return rejectWithValue(errorMessage);
+    }
+    return rejectWithValue("Ошибка при удалении комментария");
+  }
+});
+
 // Thunk для загрузки комментариев
 export const fetchCommentsItems = createAsyncThunk<
   ItemCommentResponseGET[],

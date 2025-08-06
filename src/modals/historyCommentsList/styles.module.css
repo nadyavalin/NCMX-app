@@ -29,9 +29,14 @@
   margin-bottom: 10px;
 }
 
-.comment_change {
+.commentChange {
   display: flex;
+  gap: 10px;
   justify-content: right;
+}
+
+.redText {
+  color: var(--accent-red-color);
 }
 
 .buttonsBlock {
