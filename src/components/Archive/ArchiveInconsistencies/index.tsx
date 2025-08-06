@@ -1,43 +1,44 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../../store/store";
 import { fetchItems, restoreInconsistencyRequest } from "@api/route";
-import { InconsistencyTable } from "@components/InconsistencyTable";
-import styles from "./styles.module.css";
+import InconsistencyTable from "@components/InconsistencyTable";
 
 export const ArchiveInconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { archivedItems, itemsLoading, itemsError } = useSelector((state: RootState) => state.num);
 
-  useEffect(() => {
-    const loadItems = async () => {
-      try {
-        await dispatch(fetchItems({ is_archived: true })).unwrap();
-      } catch (error: unknown) {
-        console.log(error);
-      }
-    };
-    loadItems();
+  const loadItems = useCallback(async () => {
+    try {
+      await dispatch(fetchItems({ is_archived: true })).unwrap();
+    } catch (error: unknown) {
+      console.log(error);
+    }
   }, [dispatch]);
 
-  const handleRestore = async (num_nonconf: number) => {
-    await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
-  };
+  const handleRestore = useCallback(
+    async (num_nonconf: number) => {
+      await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   return (
-    <div className={styles.archiveBlock}>
-      <InconsistencyTable
-        title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-        items={archivedItems}
-        isLoading={itemsLoading}
-        error={itemsError}
-        isArchived={true}
-        onFetch={() => dispatch(fetchItems({ is_archived: true }))}
-        onRestore={handleRestore}
-      />
-    </div>
+    <InconsistencyTable
+      title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
+      items={archivedItems}
+      isLoading={itemsLoading}
+      error={itemsError}
+      isArchived={true}
+      onFetch={loadItems}
+      onRestore={handleRestore}
+    />
   );
 };
 

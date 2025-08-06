@@ -1,29 +1,33 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
 import { fetchItems, deleteInconsistencyRequest } from "@api/route";
-import { InconsistencyTable } from "@components/InconsistencyTable";
+import InconsistencyTable from "@components/InconsistencyTable";
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { activeItems, itemsLoading, itemsError } = useSelector((state: RootState) => state.num);
 
-  useEffect(() => {
-    const loadItems = async () => {
-      try {
-        await dispatch(fetchItems({ is_archived: false })).unwrap();
-      } catch (error: unknown) {
-        console.log(error);
-      }
-    };
-    loadItems();
+  const loadItems = useCallback(async () => {
+    try {
+      await dispatch(fetchItems({ is_archived: false })).unwrap();
+    } catch (error: unknown) {
+      console.log(error);
+    }
   }, [dispatch]);
 
-  const handleDelete = async (num_nonconf: number) => {
-    await dispatch(deleteInconsistencyRequest(num_nonconf)).unwrap();
-  };
+  const handleDelete = useCallback(
+    async (num_nonconf: number) => {
+      await dispatch(deleteInconsistencyRequest(num_nonconf)).unwrap();
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   return (
     <InconsistencyTable
@@ -32,7 +36,7 @@ export const Inconsistencies = () => {
       isLoading={itemsLoading}
       error={itemsError}
       isArchived={false}
-      onFetch={() => dispatch(fetchItems({ is_archived: false }))}
+      onFetch={loadItems}
       onDelete={handleDelete}
       showAddButton={true}
       showEditAction={true}

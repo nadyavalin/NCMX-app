@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "./styles.module.css";
 import { InconsistenciesCommentsModal } from "@modals/commentsAdder";
 import { InconsistenciesEstimateResultModal } from "@modals/estimateResult";
@@ -35,7 +35,7 @@ interface InconsistencyTableProps {
   showEstimateAction?: boolean;
 }
 
-export const InconsistencyTable = ({
+const InconsistencyTable = ({
   title,
   items,
   isLoading,
@@ -325,3 +325,5 @@ export const InconsistencyTable = ({
     </main>
   );
 };
+
+export default React.memo(InconsistencyTable);
