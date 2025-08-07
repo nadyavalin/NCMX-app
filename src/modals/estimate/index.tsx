@@ -23,10 +23,33 @@ const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
   const [respPerson, setRespPerson] = useState<string>("");
   const [commentText, setCommentText] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [currentFormState, setCurrentFormState] = useState({
+    estimate: "удовлетворительно",
+    showCommentField: false,
+  });
 
   const handleEstimateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setEstimate(event.target.value);
-    setCommentText(""); // Сбрасываем комментарий при смене оценки
+    const newEstimate = event.target.value;
+    setEstimate(newEstimate);
+    setCommentText("");
+    setCurrentFormState({
+      estimate: newEstimate,
+      showCommentField: newEstimate === "неудовлетворительно",
+    });
+  };
+
+  const handleClose = () => {
+    setEstimate("удовлетворительно");
+    setRespPerson("");
+    setCommentText("");
+    setIsSubmitting(false);
+    onClose();
+    setTimeout(() => {
+      setCurrentFormState({
+        estimate: "удовлетворительно",
+        showCommentField: false,
+      });
+    }, 300);
   };
 
   const handleRespPersonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -91,6 +114,7 @@ const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
         setIsSubmitting(false);
         onClose();
       }, 300);
+      handleClose();
     } catch (error: unknown) {
       setIsSubmitting(false);
       const errorMessage =
@@ -106,7 +130,7 @@ const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
     itemsLoading;
 
   return (
-    <ModalComponent isOpen={isOpen} onClose={onClose}>
+    <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <form className={styles.modalForm}>
         <h3>Выберите оценку результативности несоответствия № {currentInconsistencyNumber}</h3>
         {commentError && <p className={styles.submitError}>{commentError}</p>}
@@ -131,7 +155,7 @@ const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
           <option value="удовлетворительно">удовлетворительно</option>
           <option value="неудовлетворительно">неудовлетворительно</option>
         </select>
-        {estimate === "неудовлетворительно" && (
+        {currentFormState.showCommentField && (
           <textarea
             name="comment_text"
             id="comment_text"
