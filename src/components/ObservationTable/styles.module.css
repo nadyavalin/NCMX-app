@@ -21,6 +21,10 @@
   margin: 20px 0;
 }
 
-.close {
+.redText {
+  color: var(--accent-red-color);
+}
+
+.greenText {
   color: var(--accent-green-color);
 }
