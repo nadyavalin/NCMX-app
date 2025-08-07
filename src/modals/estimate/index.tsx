@@ -13,7 +13,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
-const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
+const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { currentInconsistencyNumber } = useSelector((state: RootState) => state.ui);
   const { commentLoading, commentError } = useSelector((state: RootState) => state.comments);
@@ -176,4 +176,4 @@ const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => 
   );
 };
 
-export default React.memo(InconsistenciesEstimateResultModal);
+export default React.memo(InconsistenciesEstimateModal);

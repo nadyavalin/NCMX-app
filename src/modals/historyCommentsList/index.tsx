@@ -1,5 +1,6 @@
+import "@/globals.css";
 import styles from "./styles.module.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useFetchCommentsItems, deleteCommentInconsistencyRequest } from "@/api/route";
 import { AppDispatch } from "@store/store";
@@ -40,6 +41,7 @@ const InconsistenciesHistoryCommentsModal = ({
   const modalContentRef = useRef<HTMLDivElement>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingComment, setEditingComment] = useState<ItemCommentResponseGET | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -53,7 +55,8 @@ const InconsistenciesHistoryCommentsModal = ({
   useEffect(() => {
     if (isOpen && !hasFetched.current && currentInconsistencyNumber) {
       hasFetched.current = true;
-      refetch();
+      setIsInitialLoad(true);
+      refetch().finally(() => setIsInitialLoad(false));
       setTimeout(() => {
         scrollToTop();
       }, 0);
@@ -62,6 +65,7 @@ const InconsistenciesHistoryCommentsModal = ({
       hasFetched.current = false;
       setIsEditModalOpen(false);
       setEditingComment(null);
+      setIsInitialLoad(true);
     }
   }, [isOpen, currentInconsistencyNumber, refetch]);
 
@@ -74,9 +78,7 @@ const InconsistenciesHistoryCommentsModal = ({
     try {
       await dispatch(deleteCommentInconsistencyRequest(commentId)).unwrap();
       addSnackbar(SnackbarType.success, `Комментарий успешно удалён`);
-      setTimeout(() => {
-        refetch();
-      }, 300);
+      refetch();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при удалении комментария";
@@ -85,18 +87,20 @@ const InconsistenciesHistoryCommentsModal = ({
   };
 
   const handleEditModalClose = () => {
-    setTimeout(() => {
-      setIsEditModalOpen(false);
-      setEditingComment(null);
-      refetch();
-    }, 300);
+    setIsEditModalOpen(false);
+    setEditingComment(null);
+    refetch();
   };
 
-  const sortedComments = [...comments].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  const sortedComments = useMemo(
+    () =>
+      [...comments].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      ),
+    [comments],
   );
 
-  if (loading) {
+  if (loading && isInitialLoad) {
     return (
       <ModalComponent
         isOpen={isOpen}
@@ -104,7 +108,7 @@ const InconsistenciesHistoryCommentsModal = ({
         additionalClass={styles.modalContentSpec}
         contentRef={modalContentRef}
       >
-        <div>Загрузка комментариев...</div>
+        <div className="loader"></div>
       </ModalComponent>
     );
   }

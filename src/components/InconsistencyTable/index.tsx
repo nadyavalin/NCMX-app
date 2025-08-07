@@ -13,7 +13,7 @@ import { formatDate } from "@utils/formatData";
 import InconsistenciesModal from "@modals/InconsistenciesAdder";
 import InconsistenciesCommentsModal from "@modals/commentsAdder";
 import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
-import InconsistenciesEstimateResultModal from "@modals/estimateResult";
+import InconsistenciesEstimateModal from "@modals/estimate";
 import { ConfirmDeleteModal } from "@modals/confirmDelete";
 import { MainFilter } from "@components/filters/mainFilter";
 import { SearchInput } from "@components/searchInput";
@@ -312,7 +312,7 @@ const InconsistencyTable = ({
         isOpen={isModalHistoryCommentsOpen}
         onClose={() => handleCloseModal("historyComments")}
       />
-      <InconsistenciesEstimateResultModal
+      <InconsistenciesEstimateModal
         isOpen={isModalEstimateResultOpen}
         onClose={() => handleCloseModal("estimateResult")}
       />
