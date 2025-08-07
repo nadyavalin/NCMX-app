@@ -8,7 +8,9 @@ import InconsistencyTable from "@components/InconsistencyTable";
 
 export const Inconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { activeItems, itemsLoading, itemsError } = useSelector((state: RootState) => state.num);
+  const { activeItems, itemsLoading, itemsError } = useSelector(
+    (state: RootState) => state.inconsistencies,
+  );
 
   const loadItems = useCallback(async () => {
     try {

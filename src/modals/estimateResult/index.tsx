@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@api/route";
 import { RootState, AppDispatch } from "@store/store";
-import { toggleModalEstimateResult } from "@store/numSlice";
+import { toggleModalEstimateResult } from "@store/uiSlice";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";
 import { SnackbarType } from "../../types/types";
@@ -15,7 +15,9 @@ interface ModalProps {
 
 const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentInconsistencyNumber } = useSelector((state: RootState) => state.num);
+  const { currentInconsistencyNumber } = useSelector((state: RootState) => state.ui);
+  const { commentLoading, commentError } = useSelector((state: RootState) => state.comments);
+  const { itemsLoading, itemsError } = useSelector((state: RootState) => state.inconsistencies);
   const addSnackbar = useSnackbar();
   const [estimate, setEstimate] = useState<string>("удовлетворительно");
   const [respPerson, setRespPerson] = useState<string>("");
@@ -47,7 +49,6 @@ const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => 
 
     setIsSubmitting(true);
     try {
-      // Если оценка "неудовлетворительно" и есть комментарий, создаём его
       if (estimate === "неудовлетворительно" && commentText.trim()) {
         await dispatch(
           createCommentInconsistencyRequest({
@@ -99,18 +100,23 @@ const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => 
   };
 
   const isButtonsDisabled =
-    (estimate === "неудовлетворительно" && !commentText.trim()) || isSubmitting;
+    (estimate === "неудовлетворительно" && !commentText.trim()) ||
+    isSubmitting ||
+    commentLoading ||
+    itemsLoading;
 
   return (
     <ModalComponent isOpen={isOpen} onClose={onClose}>
       <form className={styles.modalForm}>
         <h3>Выберите оценку результативности несоответствия № {currentInconsistencyNumber}</h3>
+        {commentError && <p className={styles.submitError}>{commentError}</p>}
+        {itemsError && <p className={styles.submitError}>{itemsError}</p>}
         <select
           name="resp_person_nonconf_closure"
           id="resp_person_nonconf_closure"
           value={respPerson}
           onChange={handleRespPersonChange}
-          disabled={isSubmitting}
+          disabled={isSubmitting || commentLoading || itemsLoading}
         >
           <option value="">...выбрать ответственное лицо</option>
           <option value="Разумнева Н.П.">Разумнева Н.П.</option>
@@ -120,7 +126,7 @@ const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => 
           id="estimate"
           value={estimate}
           onChange={handleEstimateChange}
-          disabled={isSubmitting}
+          disabled={isSubmitting || commentLoading || itemsLoading}
         >
           <option value="удовлетворительно">удовлетворительно</option>
           <option value="неудовлетворительно">неудовлетворительно</option>
@@ -134,7 +140,7 @@ const InconsistenciesEstimateResultModal = ({ isOpen, onClose }: ModalProps) => 
             value={commentText}
             onChange={handleCommentChange}
             className={styles.div_area}
-            disabled={isSubmitting}
+            disabled={isSubmitting || commentLoading || itemsLoading}
           />
         )}
         <div className={styles.buttonsBlock}>

@@ -28,7 +28,7 @@ const InconsistenciesCommentsModal = ({
 }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
-  const { commentLoading, commentError } = useSelector((state: RootState) => state.num);
+  const { commentLoading, commentError } = useSelector((state: RootState) => state.comments);
   const [formData, setFormData] = useState<ItemCommentRequestPOST>(initialCommentFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 

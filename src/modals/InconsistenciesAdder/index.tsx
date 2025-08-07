@@ -42,12 +42,11 @@ const initialFormData: ItemRequestPOST = {
 const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
-  const { createLoading } = useSelector((state: RootState) => state.num);
+  const { createLoading } = useSelector((state: RootState) => state.inconsistencies);
   const [formData, setFormData] = useState<ItemRequestPOST>(initialFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
-  const [currentEditItem, setCurrentEditItem] = useState<ItemResponseGET | null>(null);
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -88,6 +87,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
       } else {
         setFormData(initialFormData);
       }
+      setErrors({});
       setTimeout(() => {
         scrollToTop();
       }, 0);
@@ -183,12 +183,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentEditItem(editItem);
-    }
-  }, [isOpen, editItem]);
-
   const handleClose = () => {
     setTimeout(() => {
       setFormData(initialFormData);
@@ -206,9 +200,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     >
       <form className={styles.modalForm} onSubmit={handleSubmit}>
         <div className={styles.nonConfNumberBlock}>
-          <h4>
-            {currentEditItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}
-          </h4>
+          <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
           <div className={styles.nonConfNumberInputBlock}>
             <label htmlFor="num_nonconf">Номер несоответствия:</label>
             <input
@@ -233,6 +225,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="norm_doc"
             value={formData.norm_doc || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать нормативный документ из базы</option>
             <option value="А1">А1</option>
@@ -247,6 +240,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             value={formData.point || ""}
             placeholder="Номер пункта нормативного документа"
             onChange={handleChange}
+            disabled={createLoading}
           />
           <a href="#">Добавить НД</a>
           <textarea
@@ -256,6 +250,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             placeholder="Описание несоответствия"
             rows={10}
             onChange={handleChange}
+            disabled={createLoading}
           />
           <input
             name="report"
@@ -264,6 +259,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             value={formData.report || ""}
             placeholder="Источник информации о несоответствии"
             onChange={handleChange}
+            disabled={createLoading}
           />
           <input
             type="date"
@@ -272,6 +268,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             title="Выберите дату утверждения источника"
             value={formData.report_date || ""}
             onChange={handleChange}
+            disabled={createLoading}
           />
         </div>
 
@@ -285,6 +282,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               title="Выберите дату начала проведения анализа"
               value={formData.analysis_start_date || ""}
               onChange={handleChange}
+              disabled={createLoading}
             />
             <input
               type="date"
@@ -293,6 +291,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               title="Выберите дату окончания проведения анализа"
               value={formData.analysis_finish_date || ""}
               onChange={handleChange}
+              disabled={createLoading}
             />
           </div>
 
@@ -301,6 +300,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="head_auditor"
             value={formData.head_auditor || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать главного аудитора из базы</option>
             <option value="Разумнева Н.П.">Разумнева Н.П.</option>
@@ -311,6 +311,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="auditor"
             value={formData.auditor || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать аудитора из базы</option>
             <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
@@ -326,6 +327,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             placeholder="Причины несоответствия, определенные по результатам анализа"
             rows={10}
             onChange={handleChange}
+            disabled={createLoading}
           />
         </div>
 
@@ -341,6 +343,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             placeholder="Описание коррекции"
             rows={10}
             onChange={handleChange}
+            disabled={createLoading}
           />
           <div className={styles.oneLineText}>
             <input
@@ -350,6 +353,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               title="Выберите дату внедрения коррекции"
               value={formData.correction_date || ""}
               onChange={handleChange}
+              disabled={createLoading}
             />
           </div>
 
@@ -358,6 +362,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="resp_person_correction"
             value={formData.resp_person_correction || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать ответственное лицо из базы</option>
             <option value="Матвеева М.А.">Матвеева М.А.</option>
@@ -371,6 +376,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="department_correction"
             value={formData.department_correction || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать ответственное подразделение из базы</option>
             <option value="НПО">НПО</option>
@@ -393,6 +399,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             placeholder="Описание корректирующего действия"
             rows={10}
             onChange={handleChange}
+            disabled={createLoading}
           />
           <div className={styles.oneLineText}>
             <input
@@ -402,6 +409,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               title="Выберите дату внедрения корректирующего действия"
               value={formData.corrective_action_date || ""}
               onChange={handleChange}
+              disabled={createLoading}
             />
           </div>
 
@@ -410,6 +418,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="resp_person_corrective_action"
             value={formData.resp_person_corrective_action || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать ответственное лицо из базы</option>
             <option value="Матвеева М.А.">Матвеева М.А.</option>
@@ -423,6 +432,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             id="department_corrective_action"
             value={formData.department_corrective_action || ""}
             onChange={handleChange}
+            disabled={createLoading}
           >
             <option value="">...выбрать ответственное подразделение из базы</option>
             <option value="НПО">НПО</option>

@@ -20,7 +20,7 @@ export const fetchItems = createAsyncThunk<
   ItemResponseGET[],
   { is_archived?: boolean } | void,
   { state: RootState }
->("num/fetchItems", async (params, { rejectWithValue }) => {
+>("inconsistencies/fetchItems", async (params, { rejectWithValue }) => {
   try {
     const response = await api.get<APIResponse>("/ncmx-table/", {
       params: { is_archived: params?.is_archived },
@@ -41,7 +41,7 @@ export const createInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   ItemRequestPOST,
   { state: RootState }
->("num/createInconsistency", async (formData, { rejectWithValue }) => {
+>("inconsistencies/createInconsistency", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
     return response.data;
@@ -67,7 +67,7 @@ export const createInconsistencyRequest = createAsyncThunk<
 
 // Thunk для удаления несоответствия
 export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state: RootState }>(
-  "num/deleteInconsistency",
+  "inconsistencies/deleteInconsistency",
   async (num_nonconf, { rejectWithValue }) => {
     try {
       await api.delete(`/ncmx-table/${num_nonconf}/`);
@@ -86,7 +86,7 @@ export const restoreInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   number,
   { state: RootState }
->("num/restoreInconsistency", async (num_nonconf, { rejectWithValue }) => {
+>("inconsistencies/restoreInconsistency", async (num_nonconf, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemResponseGET>(`/ncmx-table/${num_nonconf}/restore/`);
     return response.data;
@@ -105,7 +105,7 @@ export const updateInconsistencyRequest = createAsyncThunk<
   ItemResponseGET,
   { num_nonconf: number; data: Partial<ItemRequestPOST> },
   { state: RootState }
->("num/updateInconsistency", async ({ num_nonconf, data }, { rejectWithValue }) => {
+>("inconsistencies/updateInconsistency", async ({ num_nonconf, data }, { rejectWithValue }) => {
   try {
     const response = await api.patch<ItemResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
     return response.data;
@@ -123,7 +123,7 @@ export const createCommentInconsistencyRequest = createAsyncThunk<
   ItemCommentResponseGET,
   ItemCommentRequestPOST,
   { state: RootState }
->("num/createCommentInconsistency", async (formData, { rejectWithValue }) => {
+>("comments/createCommentInconsistency", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
     return response.data;
@@ -141,7 +141,7 @@ export const updateCommentInconsistencyRequest = createAsyncThunk<
   ItemCommentResponseGET,
   { id: number; data: ItemCommentRequestPOST },
   { state: RootState }
->("num/updateCommentInconsistency", async ({ id, data }, { rejectWithValue }) => {
+>("comments/updateCommentInconsistency", async ({ id, data }, { rejectWithValue }) => {
   try {
     const response = await api.patch<ItemCommentResponseGET>(`/ncmx-comments/${id}/`, data);
     return response.data;
@@ -159,7 +159,7 @@ export const deleteCommentInconsistencyRequest = createAsyncThunk<
   void,
   number,
   { state: RootState }
->("num/deleteCommentInconsistency", async (commentId, { rejectWithValue }) => {
+>("comments/deleteCommentInconsistency", async (commentId, { rejectWithValue }) => {
   try {
     await api.delete(`/ncmx-comments/${commentId}/`);
   } catch (error: unknown) {
@@ -176,7 +176,7 @@ export const fetchCommentsItems = createAsyncThunk<
   ItemCommentResponseGET[],
   number | null,
   { state: RootState }
->("num/fetchCommentsItems", async (num_nonconf, { rejectWithValue }) => {
+>("comments/fetchCommentsItems", async (num_nonconf, { rejectWithValue }) => {
   if (num_nonconf === null) {
     return [];
   }
@@ -201,7 +201,7 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
     comments,
     commentLoading: loading,
     commentError: error,
-  } = useSelector((state: RootState) => state.comments);
+  } = useSelector((state: RootState) => state.comments); // Уже соответствует commentsSlice
 
   const fetchComments = useCallback(async () => {
     await dispatch(fetchCommentsItems(currentInconsistencyNumber));

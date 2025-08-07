@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./styles.module.css";
+import styles from "../styles.module.css";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@store/store";
@@ -9,7 +9,9 @@ import InconsistencyTable from "@components/InconsistencyTable";
 
 export const ArchiveInconsistencies = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { archivedItems, itemsLoading, itemsError } = useSelector((state: RootState) => state.num);
+  const { archivedItems, itemsLoading, itemsError } = useSelector(
+    (state: RootState) => state.inconsistencies,
+  );
 
   const loadItems = useCallback(async () => {
     try {

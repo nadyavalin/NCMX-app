@@ -8,7 +8,7 @@ import {
   toggleModalEstimateResult,
   toggleModalHistoryComments,
   toggleModalEdit,
-} from "@store/numSlice";
+} from "@store/uiSlice";
 import { formatDate } from "@utils/formatData";
 import InconsistenciesModal from "@modals/InconsistenciesAdder";
 import InconsistenciesCommentsModal from "@modals/commentsAdder";
@@ -57,7 +57,7 @@ const InconsistencyTable = ({
     isModalHistoryCommentsOpen,
     isModalEstimateResultOpen,
     isModalEditOpen,
-  } = useSelector((state: RootState) => state.num);
+  } = useSelector((state: RootState) => state.ui);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<ItemResponseGET | null>(null);
