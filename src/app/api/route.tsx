@@ -201,7 +201,7 @@ export const useFetchCommentsItems = (currentInconsistencyNumber: number | null)
     comments,
     commentLoading: loading,
     commentError: error,
-  } = useSelector((state: RootState) => state.comments); // Уже соответствует commentsSlice
+  } = useSelector((state: RootState) => state.comments);
 
   const fetchComments = useCallback(async () => {
     await dispatch(fetchCommentsItems(currentInconsistencyNumber));
