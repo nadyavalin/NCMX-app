@@ -1,12 +1,12 @@
 import styles from "./styles.module.css";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useFetchCommentsItems, deleteCommentInconsistencyRequest } from "@/api/route";
+import { AppDispatch } from "@store/store";
+import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";
 import InconsistenciesCommentsModal from "../commentsAdder";
 import { ItemCommentResponseGET } from "../../types/types";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@store/store";
-import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -74,7 +74,9 @@ const InconsistenciesHistoryCommentsModal = ({
     try {
       await dispatch(deleteCommentInconsistencyRequest(commentId)).unwrap();
       addSnackbar(SnackbarType.success, `Комментарий успешно удалён`);
-      refetch();
+      setTimeout(() => {
+        refetch();
+      }, 300);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Ошибка при удалении комментария";
