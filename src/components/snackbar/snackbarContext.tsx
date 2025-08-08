@@ -1,15 +1,10 @@
-"use client";
-
 import styles from "./styles.module.css";
-import React, { createContext, useState, useCallback, useContext } from "react";
+import React, { createContext, useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Snackbar from "./snackbar";
+import { RootState, AppDispatch } from "@store/store";
+import { addSnackbar, removeSnackbar } from "@store/snackbarSlice";
 import { SnackbarType } from "../../types/types";
-
-interface SnackbarItem {
-  id: string;
-  type: SnackbarType;
-  text: string;
-}
 
 interface SnackbarContextType {
   addSnackbar: (type: SnackbarType, text: string) => void;
@@ -26,19 +21,19 @@ export const useSnackbar = () => {
 };
 
 export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [snackbars, setSnackbars] = useState<SnackbarItem[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const snackbars = useSelector((state: RootState) => state.snackbar.snackbars);
 
-  const addSnackbar = useCallback((type: SnackbarType, text: string) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    setSnackbars([{ id, type, text }]);
-  }, []);
+  const handleAddSnackbar = (type: SnackbarType, text: string) => {
+    dispatch(addSnackbar({ type, text }));
+  };
 
-  const removeSnackbar = useCallback((id: string) => {
-    setSnackbars((prev) => prev.filter((snackbar) => snackbar.id !== id));
-  }, []);
+  const handleRemoveSnackbar = (id: string) => {
+    dispatch(removeSnackbar(id));
+  };
 
   return (
-    <SnackbarContext.Provider value={{ addSnackbar }}>
+    <SnackbarContext.Provider value={{ addSnackbar: handleAddSnackbar }}>
       {children}
       <div className={styles.snackbarContainer}>
         {snackbars.map((snackbar) => (
@@ -46,7 +41,7 @@ export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             key={snackbar.id}
             type={snackbar.type}
             text={snackbar.text}
-            onClose={() => removeSnackbar(snackbar.id)}
+            onClose={() => handleRemoveSnackbar(snackbar.id)}
           />
         ))}
       </div>

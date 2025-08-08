@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { deleteCommentInconsistencyRequest } from "@/api";
-import { useFetchCommentsItems } from "@/hooks/useComments";
+import { useFetchCommentsItems } from "../../hooks/useComments";
 import { AppDispatch } from "@store/store";
 import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";

@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import ClientWrapper from "@components/ClientWrapper";
 import { Header } from "@pages/Header";
 import { Footer } from "@pages/Footer";
-import { SnackbarProvider } from "@components/snackbar/snackbarContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +30,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Header />
-        <SnackbarProvider>
-          <ClientWrapper>{children}</ClientWrapper>
-        </SnackbarProvider>
+        <ClientWrapper>{children}</ClientWrapper>
         <Footer />
       </body>
     </html>
