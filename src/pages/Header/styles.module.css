@@ -1,5 +1,20 @@
 .navMenu {
   padding: 20px;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   background: var(--bg-header-gradient);
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.auditMenuArea {
+  border: 1px solid var(--accent-color);
+  border-radius: 10px;
+}
+
+.auditTitle {
+  padding: 15px 0 20px 10px;
+  text-align: left;
+  font-size: 16px;
+  color: var(--text-button-color);
 }
