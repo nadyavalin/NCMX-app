@@ -3,7 +3,7 @@ import {
   fetchCommentsItems,
   createCommentInconsistencyRequest,
   deleteCommentInconsistencyRequest,
-} from "@api/route";
+} from "@/api";
 import { ItemCommentResponseGET } from "../types/types";
 
 interface CommentsState {

@@ -4,7 +4,7 @@ import styles from "../styles.module.css";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@store/store";
-import { fetchItems, restoreInconsistencyRequest } from "@api/route";
+import { fetchItems, restoreInconsistencyRequest } from "@/api";
 import InconsistencyTable from "@components/InconsistencyTable";
 
 export const ArchiveInconsistencies = () => {

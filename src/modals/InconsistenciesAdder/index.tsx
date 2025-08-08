@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isAxiosError } from "axios";
-import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api/route";
+import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api";
 import { AppDispatch, RootState } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";

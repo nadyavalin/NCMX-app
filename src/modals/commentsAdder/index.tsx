@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api/route";
+import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";

@@ -5,7 +5,7 @@ import {
   deleteInconsistencyRequest,
   updateInconsistencyRequest,
   restoreInconsistencyRequest,
-} from "@api/route";
+} from "@/api";
 import { ItemResponseGET, ItemRequestPOST } from "../types/types";
 
 interface InconsistenciesState {

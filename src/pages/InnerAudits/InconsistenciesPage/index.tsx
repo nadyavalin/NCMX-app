@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchItems, deleteInconsistencyRequest } from "@api/route";
+import { fetchItems, deleteInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
 import InconsistencyTable from "@components/InconsistencyTable";
 

@@ -8,21 +8,21 @@ export const Archive = () => {
       <main>
         <nav className={styles.archiveList}>
           <Link
-            href={`/Archive/ArchiveInconsistencies`}
+            href={`/InnerAudits/Archive/ArchiveInconsistencies`}
             title="Архив несоответствий"
             className={`${styles.archiveButton} menuButton`}
           >
             Архив несоответствий
           </Link>
           <Link
-            href={`/Archive/ArchiveObservations`}
+            href={`/InnerAudits/Archive/ArchiveObservations`}
             title="Архив несоответствий"
             className={`${styles.archiveButton} menuButton`}
           >
             Архив наблюдений
           </Link>
           <Link
-            href={`/Archive/ArchiveImprovements`}
+            href={`/InnerAudits/Archive/ArchiveImprovements`}
             title="Архив несоответствий"
             className={`${styles.archiveButton} menuButton`}
           >

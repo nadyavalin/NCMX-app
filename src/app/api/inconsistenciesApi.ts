@@ -1,19 +1,10 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import api from "@utils/api";
-import { RootState, AppDispatch } from "@store/store";
-import {
-  APIResponse,
-  APICommentsResponse,
-  ItemResponseGET,
-  ItemCommentResponseGET,
-  ItemRequestPOST,
-  ItemCommentRequestPOST,
-} from "../../types/types";
+import { RootState } from "@store/store";
+import { APIResponse, ItemResponseGET, ItemRequestPOST } from "../../types/types";
 
 // Thunk для загрузки списка несоответствий
 export const fetchItems = createAsyncThunk<
@@ -117,99 +108,3 @@ export const updateInconsistencyRequest = createAsyncThunk<
     return rejectWithValue("Ошибка при обновлении несоответствия");
   }
 });
-
-// Thunk для создания комментария
-export const createCommentInconsistencyRequest = createAsyncThunk<
-  ItemCommentResponseGET,
-  ItemCommentRequestPOST,
-  { state: RootState }
->("comments/createCommentInconsistency", async (formData, { rejectWithValue }) => {
-  try {
-    const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
-    return response.data;
-  } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage = error.response?.data?.detail || "Ошибка при создании комментария";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при создании комментария");
-  }
-});
-
-// Thunk для обновления комментария
-export const updateCommentInconsistencyRequest = createAsyncThunk<
-  ItemCommentResponseGET,
-  { id: number; data: ItemCommentRequestPOST },
-  { state: RootState }
->("comments/updateCommentInconsistency", async ({ id, data }, { rejectWithValue }) => {
-  try {
-    const response = await api.patch<ItemCommentResponseGET>(`/ncmx-comments/${id}/`, data);
-    return response.data;
-  } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage = error.response?.data?.detail || "Ошибка при обновлении комментария";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при обновлении комментария");
-  }
-});
-
-// Thunk для удаления комментария
-export const deleteCommentInconsistencyRequest = createAsyncThunk<
-  void,
-  number,
-  { state: RootState }
->("comments/deleteCommentInconsistency", async (commentId, { rejectWithValue }) => {
-  try {
-    await api.delete(`/ncmx-comments/${commentId}/`);
-  } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage = error.response?.data?.detail || "Ошибка при удалении комментария";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при удалении комментария");
-  }
-});
-
-// Thunk для загрузки комментариев
-export const fetchCommentsItems = createAsyncThunk<
-  ItemCommentResponseGET[],
-  number | null,
-  { state: RootState }
->("comments/fetchCommentsItems", async (num_nonconf, { rejectWithValue }) => {
-  if (num_nonconf === null) {
-    return [];
-  }
-  try {
-    const response = await api.get<APICommentsResponse>("/ncmx-comments/", {
-      params: { num_nonconf },
-    });
-    return response.data.results || [];
-  } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage = error.response?.data?.detail || "Ошибка при получении комментариев";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при получении комментариев");
-  }
-});
-
-// Хук для загрузки комментариев
-export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const {
-    comments,
-    commentLoading: loading,
-    commentError: error,
-  } = useSelector((state: RootState) => state.comments);
-
-  const fetchComments = useCallback(async () => {
-    await dispatch(fetchCommentsItems(currentInconsistencyNumber));
-  }, [dispatch, currentInconsistencyNumber]);
-
-  useEffect(() => {
-    fetchComments();
-  }, [fetchComments]);
-
-  return { comments, loading, error, refetch: fetchComments };
-};
