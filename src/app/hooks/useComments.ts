@@ -3,7 +3,7 @@
 import { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@store/store";
-import { fetchCommentsItems } from "@/api/commentsApi";
+import { fetchCommentsItems } from "@/api";
 
 export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
   const dispatch = useDispatch<AppDispatch>();

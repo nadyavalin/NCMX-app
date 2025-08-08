@@ -193,34 +193,34 @@ footer {
 }
 
 .loader {
-  display: block;
   position: relative;
+  display: block;
   width: 150px;
   height: 150px;
   margin: 20px auto;
-  border-radius: 50%;
   border: 3px solid transparent;
   border-top-color: var(--blue-loader);
+  border-radius: 50%;
   animation: preloader-5-spin 2s linear infinite;
 }
 
-.loader:before {
-  content: "";
+.loader::before {
   position: absolute;
   inset: 5px;
-  border-radius: 50%;
+  content: "";
   border: 3px solid transparent;
   border-top-color: var(--blue-light-loader);
+  border-radius: 50%;
   animation: preloader-5-spin 3s linear infinite;
 }
 
-.loader:after {
-  content: "";
+.loader::after {
   position: absolute;
   inset: 15px;
-  border-radius: 50%;
+  content: "";
   border: 3px solid transparent;
   border-top-color: var(--blue-loader);
+  border-radius: 50%;
   animation: preloader-5-spin 1.5s linear infinite;
 }
 
@@ -248,6 +248,7 @@ footer {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

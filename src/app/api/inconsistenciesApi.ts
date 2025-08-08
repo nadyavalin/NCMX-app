@@ -1,9 +1,9 @@
 "use client";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { isAxiosError } from "axios";
 import api from "@utils/api";
 import { RootState } from "@store/store";
+import { handleApiError } from "@utils/handleApiError";
 import { APIResponse, ItemResponseGET, ItemRequestPOST } from "../../types/types";
 
 // Thunk для загрузки списка несоответствий
@@ -18,12 +18,7 @@ export const fetchItems = createAsyncThunk<
     });
     return response.data.results || [];
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data?.detail || "Ошибка при получении списка несоответствий";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при получении списка несоответствий");
+    return rejectWithValue(handleApiError(error, "Ошибка при получении списка несоответствий"));
   }
 });
 
@@ -37,22 +32,9 @@ export const createInconsistencyRequest = createAsyncThunk<
     const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error) && error.response?.status === 400) {
-      const serverMessage =
-        error.response?.data?.num_nonconf?.[0] ||
-        error.response?.data?.detail ||
-        "Ошибка при создании несоответствия";
-      if (
-        serverMessage.toLowerCase().includes("already exists") ||
-        serverMessage.toLowerCase().includes("уже существует") ||
-        serverMessage.toLowerCase().includes("duplicate")
-      ) {
-        const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
-        return rejectWithValue(errorMessage);
-      }
-      return rejectWithValue(serverMessage);
-    }
-    return rejectWithValue("Ошибка при создании несоответствия");
+    return rejectWithValue(
+      handleApiError(error, "Ошибка при создании несоответствия", formData.num_nonconf),
+    );
   }
 });
 
@@ -63,11 +45,7 @@ export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state
     try {
       await api.delete(`/ncmx-table/${num_nonconf}/`);
     } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        const errorMessage = error.response?.data?.detail || "Ошибка при удалении несоответствия";
-        return rejectWithValue(errorMessage);
-      }
-      return rejectWithValue("Ошибка при удалении несоответствия");
+      return rejectWithValue(handleApiError(error, "Ошибка при удалении несоответствия"));
     }
   },
 );
@@ -82,12 +60,7 @@ export const restoreInconsistencyRequest = createAsyncThunk<
     const response = await api.post<ItemResponseGET>(`/ncmx-table/${num_nonconf}/restore/`);
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data?.detail || "Ошибка при восстановлении несоответствия";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при восстановлении несоответствия");
+    return rejectWithValue(handleApiError(error, "Ошибка при восстановлении несоответствия"));
   }
 });
 
@@ -101,10 +74,6 @@ export const updateInconsistencyRequest = createAsyncThunk<
     const response = await api.patch<ItemResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError(error)) {
-      const errorMessage = error.response?.data?.detail || "Ошибка при обновлении несоответствия";
-      return rejectWithValue(errorMessage);
-    }
-    return rejectWithValue("Ошибка при обновлении несоответствия");
+    return rejectWithValue(handleApiError(error, "Ошибка при обновлении несоответствия"));
   }
 });
