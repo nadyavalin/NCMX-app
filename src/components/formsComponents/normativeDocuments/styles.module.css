@@ -16,3 +16,15 @@
   font-size: 0.7rem;
   color: var(--accent-red-color);
 }
+
+.activeLink {
+  width: 80px;
+  padding: 3px;
+}
+
+.disabledLink {
+  width: 80px;
+  padding: 3px;
+  color: var(--link-disabled-color);
+  pointer-events: none;
+}

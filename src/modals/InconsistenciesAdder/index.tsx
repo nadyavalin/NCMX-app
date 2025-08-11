@@ -280,8 +280,11 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать главного аудитора из базы</option>
+            <option value="">...выбрать главного аудитора</option>
             <option value="Разумнева Н.П.">Разумнева Н.П.</option>
+            <option value="Максютенко М.А.">Максютенко М.А.</option>
+            <option value="Погодина С.Б.">Погодина С.Б.</option>
+            <option value="Болкунов О.А.">Болкунов О.А.</option>
           </select>
           <select
             name="auditor"
@@ -290,11 +293,11 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать аудитора из базы</option>
+            <option value="">...выбрать аудитора</option>
             <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
             <option value="Ткачук Н.С.">Ткачук Н.С.</option>
-            <option value="Морозова Е.">Морозова Е.</option>
-            <option value="Зюзева Е.">Зюзева Е.</option>
+            <option value="Морозова Е.">Морозова Е.А.</option>
+            <option value="Зюзева Е.">Зюзева Е.А.</option>
           </select>
           <a href="#">Добавить аудитора</a>
           <textarea
@@ -340,7 +343,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать ответственное лицо из базы</option>
+            <option value="">...выбрать ответственное лицо</option>
             <option value="Матвеева М.А.">Матвеева М.А.</option>
             <option value="Семенов К.С.">Семенов К.С.</option>
             <option value="Курженков С.А.">Курженков С.А.</option>
@@ -353,7 +356,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать ответственное подразделение из базы</option>
+            <option value="">...выбрать ответственное подразделение</option>
             <option value="НПО">НПО</option>
             <option value="НПГС">НПГС</option>
             <option value="ПП СОК">ПП СОК</option>
@@ -394,7 +397,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать ответственное лицо из базы</option>
+            <option value="">...выбрать ответственное лицо</option>
             <option value="Матвеева М.А.">Матвеева М.А.</option>
             <option value="Семенов К.С.">Семенов К.С.</option>
             <option value="Курженков С.А.">Курженков С.А.</option>
@@ -407,7 +410,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={handleChange}
             disabled={createLoading}
           >
-            <option value="">...выбрать ответственное подразделение из базы</option>
+            <option value="">...выбрать ответственное подразделение</option>
             <option value="НПО">НПО</option>
             <option value="НПГС">НПГС</option>
             <option value="ПП СОК">ПП СОК</option>

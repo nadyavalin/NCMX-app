@@ -110,7 +110,7 @@ export const NormativeDocuments = ({
       <a
         href="#"
         onClick={addNormativeDocument}
-        className={createLoading ? styles.disabledLink : ""}
+        className={createLoading ? styles.disabledLink : styles.activeLink}
       >
         Добавить НД
       </a>

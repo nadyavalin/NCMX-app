@@ -25,7 +25,7 @@ export const useFormValidation = ({ formData, numNonconfRef }: UseFormValidation
 
     // Валидация нормативных документов
     if (!formData.normative_documents.some((doc) => doc.norm_doc)) {
-      newErrors.normative_documents = "Укажите хотя бы один нормативный документ";
+      newErrors.normative_documents = "Укажите не менее одного пункта";
     }
 
     return newErrors;
