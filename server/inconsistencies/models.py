@@ -1,10 +1,9 @@
 from django.db import models
-
+from django.db.models import JSONField
 
 class NCMXInconsistencies(models.Model):
     num_nonconf = models.IntegerField(primary_key=True)
-    norm_doc = models.CharField(max_length=100, blank=True, null=True, db_comment='Нормативный документ')
-    point = models.CharField(max_length=50, blank=True, null=True, db_comment='Номер пункта нормативного документа')
+    normative_documents = JSONField(default=list, blank=True, db_comment='Список нормативных документов и пунктов')
     nonconf = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание несоответствия')
     report = models.CharField(max_length=100, blank=True, null=True, db_comment='Источник информации о несоответствии')
     report_date = models.DateField(blank=True, null=True, db_comment='Дата утверждения источника')
@@ -29,7 +28,6 @@ class NCMXInconsistencies(models.Model):
 
     class Meta:
         db_table = 'NCMX_inconsistencies'
-
 
 class NCMXInconsistencyComments(models.Model):
     num_nonconf = models.ForeignKey('NCMXInconsistencies', on_delete=models.CASCADE, db_comment='Номер несоответствия')

@@ -23,6 +23,7 @@
       "@api/*": ["./src/app/api/*"],
       "@pages/*": ["./src/pages/*"],
       "@components/*": ["./src/components/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@modals/*": ["./src/modals/*"],
       "@store/*": ["./src/store/*"],
       "@types/*": ["./src/types/*"],

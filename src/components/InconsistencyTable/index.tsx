@@ -198,7 +198,15 @@ const InconsistencyTable = ({
               sortedItems.map((item) => (
                 <tr key={item.num_nonconf}>
                   <td>{item.num_nonconf}</td>
-                  <td>{item.norm_doc || "-"}</td>
+                  <td>
+                    {item.normative_documents.length > 0
+                      ? item.normative_documents.map((doc, index) => (
+                          <div key={index}>
+                            - {doc.norm_doc}, {doc.point || "-"}
+                          </div>
+                        ))
+                      : "-"}
+                  </td>
                   <td>{item.nonconf || "-"}</td>
                   <td>{item.report || "-"}</td>
                   <td>{item.analysis_finish_date || "-"}</td>

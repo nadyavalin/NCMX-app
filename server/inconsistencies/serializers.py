@@ -1,11 +1,22 @@
 from rest_framework import serializers
 from .models import NCMXInconsistencies, NCMXInconsistencyComments
 
+class NormativeDocumentSerializer(serializers.Serializer):
+    norm_doc = serializers.CharField(max_length=50, allow_blank=False)
+    point = serializers.CharField(max_length=50, allow_blank=True)
+
+    def validate(self, data):
+        if not data.get('norm_doc'):
+            raise serializers.ValidationError({"norm_doc": "Нормативный документ обязателен"})
+        return data
+
 class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
+    normative_documents = NormativeDocumentSerializer(many=True, required=True)
+
     class Meta:
         model = NCMXInconsistencies
         fields = [
-            'num_nonconf', 'norm_doc', 'point', 'nonconf', 'report', 'report_date',
+            'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditor',
             'reason', 'correction', 'correction_date', 'resp_person_correction',
             'department_correction', 'corrective_action', 'corrective_action_date',
@@ -16,6 +27,9 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if not data.get('num_nonconf') and not self.instance:
             raise serializers.ValidationError({"num_nonconf": "Номер несоответствия обязателен"})
+        normative_documents = data.get('normative_documents', [])
+        if not normative_documents or not any(doc.get('norm_doc') for doc in normative_documents):
+            raise serializers.ValidationError({"normative_documents": "Укажите хотя бы один нормативный документ"})
         return data
 
 class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):

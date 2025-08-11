@@ -7,6 +7,8 @@ import { AppDispatch, RootState } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
+import { NormativeDocuments } from "@components/formsComponents/normativeDocuments";
+import { useFormValidation } from "@hooks/useFormValidation";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,8 +18,7 @@ interface ModalProps {
 
 const initialFormData: ItemRequestPOST = {
   num_nonconf: 0,
-  norm_doc: "",
-  point: "",
+  normative_documents: [{ norm_doc: "", point: "" }],
   nonconf: "",
   report: "",
   report_date: null,
@@ -47,6 +48,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const { validateForm } = useFormValidation({ formData, numNonconfRef });
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -62,8 +64,10 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
       if (editItem) {
         setFormData({
           num_nonconf: editItem.num_nonconf,
-          norm_doc: editItem.norm_doc || "",
-          point: editItem.point || "",
+          normative_documents:
+            editItem.normative_documents.length > 0
+              ? editItem.normative_documents
+              : [{ norm_doc: "", point: "" }],
           nonconf: editItem.nonconf || "",
           report: editItem.report || "",
           report_date: editItem.report_date || null,
@@ -98,35 +102,23 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = event.target;
-    let updatedValue: string | number | null = value;
-    if (name === "num_nonconf" || name === "estimate") {
-      updatedValue = value ? parseInt(value, 10) : null;
-    } else if (
-      [
-        "report_date",
-        "analysis_start_date",
-        "analysis_finish_date",
-        "correction_date",
-        "corrective_action_date",
-        "nonconf_closure_date",
-      ].includes(name)
-    ) {
-      updatedValue = value || null;
-    }
+    const updatedValue =
+      name === "num_nonconf" || name === "estimate"
+        ? value
+          ? parseInt(value, 10)
+          : null
+        : [
+              "report_date",
+              "analysis_start_date",
+              "analysis_finish_date",
+              "correction_date",
+              "corrective_action_date",
+              "nonconf_closure_date",
+            ].includes(name)
+          ? value || null
+          : value;
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.num_nonconf || formData.num_nonconf <= 0) {
-      newErrors.num_nonconf = "Укажите номер несоответствия (положительное число)";
-      if (numNonconfRef.current) {
-        numNonconfRef.current.focus();
-        numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }
-    return newErrors;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -135,7 +127,10 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      addSnackbar(SnackbarType.error, validationErrors.num_nonconf);
+      addSnackbar(
+        SnackbarType.error,
+        validationErrors.num_nonconf || validationErrors.normative_documents,
+      );
       return;
     }
 
@@ -146,6 +141,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           value === "" || value === 0 ? null : value,
         ]),
       ),
+      normative_documents: formData.normative_documents.filter((doc) => doc.norm_doc),
       is_archived: false,
     } as ItemRequestPOST;
 
@@ -220,29 +216,12 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
 
         <div className={styles.modalInternalBlocks}>
           <p>1. Основная информация о несоответствии</p>
-          <select
-            name="norm_doc"
-            id="norm_doc"
-            value={formData.norm_doc || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать нормативный документ из базы</option>
-            <option value="А1">А1</option>
-            <option value="А2">А2</option>
-            <option value="А3">А3</option>
-            <option value="А4">А4</option>
-            <option value="А14">А14</option>
-          </select>
-          <input
-            name="point"
-            type="text"
-            value={formData.point || ""}
-            placeholder="Номер пункта нормативного документа"
-            onChange={handleChange}
-            disabled={createLoading}
+          <NormativeDocuments
+            normative_documents={formData.normative_documents}
+            setFormData={setFormData}
+            errors={errors}
+            createLoading={createLoading}
           />
-          <a href="#">Добавить НД</a>
           <textarea
             name="nonconf"
             id="nonconf"
@@ -294,7 +273,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-
           <select
             name="head_auditor"
             id="head_auditor"
@@ -305,7 +283,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="">...выбрать главного аудитора из базы</option>
             <option value="Разумнева Н.П.">Разумнева Н.П.</option>
           </select>
-
           <select
             name="auditor"
             id="auditor"
@@ -356,7 +333,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-
           <select
             name="resp_person_correction"
             id="resp_person_correction"
@@ -370,7 +346,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
           <a href="#">Добавить ответственное лицо</a>
-
           <select
             name="department_correction"
             id="department_correction"
@@ -412,7 +387,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-
           <select
             name="resp_person_corrective_action"
             id="resp_person_corrective_action"
@@ -426,7 +400,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
           <a href="#">Добавить ответственное лицо</a>
-
           <select
             name="department_corrective_action"
             id="department_corrective_action"
