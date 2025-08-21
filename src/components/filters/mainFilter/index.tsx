@@ -1,9 +1,9 @@
 import styles from "../styles.module.css";
 import { useState } from "react";
-import { InnerISORequirementsFilter } from "../innerFilters/ISOrequirements";
-import { InnerRequirementsFilter } from "../innerFilters/requirements";
-import { InnerDepartmentsFilter } from "../innerFilters/departments";
-import { InnerRespPersonsFilter } from "../innerFilters/responsiblePersons";
+import { ISORequirements } from "../../lists/ISOrequirements";
+import { Requirements } from "../../lists/requirements";
+import { Departments } from "../../lists/departments";
+import { RespPersons } from "../../lists/responsiblePersons";
 
 export const MainFilter = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("department");
@@ -22,10 +22,10 @@ export const MainFilter = () => {
       </select>
 
       <div className={styles.innerFilters}>
-        {selectedFilter === "ISOrequirement" && <InnerISORequirementsFilter />}
-        {selectedFilter === "requirement" && <InnerRequirementsFilter />}
-        {selectedFilter === "department" && <InnerDepartmentsFilter />}
-        {selectedFilter === "responsiblePerson" && <InnerRespPersonsFilter />}
+        {selectedFilter === "ISOrequirement" && <ISORequirements />}
+        {selectedFilter === "requirement" && <Requirements />}
+        {selectedFilter === "department" && <Departments />}
+        {selectedFilter === "responsiblePerson" && <RespPersons />}
       </div>
     </div>
   );

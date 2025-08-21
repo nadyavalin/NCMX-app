@@ -1,8 +1,9 @@
-import styles from "../../styles.module.css";
+import styles from "../styles.module.css";
 
-export const InnerRequirementsFilter = () => {
+export const Requirements = () => {
   return (
-    <select className={styles.filter}>
+    <select className={styles.list}>
+      <option value="">...выбрать регламент</option>
       <option value="A1">A1</option>
       <option value="A2">A2</option>
       <option value="A3">A3</option>

@@ -1,8 +1,9 @@
-import styles from "../../styles.module.css";
+import styles from "../styles.module.css";
 
-export const InnerDepartmentsFilter = () => {
+export const Departments = () => {
   return (
-    <select className={styles.filter}>
+    <select className={styles.list}>
+      <option value="">...выбрать подразделение</option>
       <option value="НПО">НПО</option>
       <option value="НПГС">НПГС</option>
       <option value="ПП ФЭИС">ПП ФЭИС</option>

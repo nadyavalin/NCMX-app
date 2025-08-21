@@ -1,8 +1,9 @@
-import styles from "../../styles.module.css";
+import styles from "../styles.module.css";
 
-export const InnerISORequirementsFilter = () => {
+export const ISORequirements = () => {
   return (
-    <select className={styles.filter}>
+    <select className={styles.list}>
+      <option value="">...выбрать пункт ISO</option>
       <option value="4.1">4.1</option>
       <option value="4.2">4.2</option>
       <option value="4.3">4.3</option>

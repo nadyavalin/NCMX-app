@@ -1,8 +1,9 @@
-import styles from "../../styles.module.css";
+import styles from "../styles.module.css";
 
-export const InnerRespPersonsFilter = () => {
+export const RespPersons = () => {
   return (
-    <select className={styles.filter}>
+    <select className={styles.list}>
+      <option value="">...выбрать сотрудника</option>
       <option value="Максютенко А.А.">Максютенко А.А.</option>
       <option value="Максютенко М.А.">Максютенко М.А.</option>
       <option value="Погодина С.Б.">Погодина С.Б.</option>
