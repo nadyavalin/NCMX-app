@@ -5,6 +5,10 @@ export interface NormativeDocument {
   point: string;
 }
 
+export interface Auditors {
+  auditor: string;
+}
+
 export interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
   isModalCommentsOpen: boolean;
@@ -24,13 +28,13 @@ export interface InconsistencyNumberState {
 export interface ItemResponseGET {
   num_nonconf: number;
   normative_documents: NormativeDocument[];
+  head_auditor: string;
+  auditors: Auditors[];
   nonconf?: string;
   report?: string;
   report_date?: DateString;
   analysis_start_date?: DateString;
   analysis_finish_date?: DateString;
-  head_auditor?: string;
-  auditor?: string;
   reason?: string;
   correction?: string;
   correction_date?: DateString;
@@ -66,13 +70,13 @@ export interface APICommentsResponse {
 export interface ItemRequestPOST {
   num_nonconf: number;
   normative_documents: NormativeDocument[];
+  head_auditor: string;
+  auditors: Auditors[];
   nonconf?: string;
   report?: string;
   report_date?: string | null;
   analysis_start_date?: string | null;
   analysis_finish_date?: string | null;
-  head_auditor?: string;
-  auditor?: string;
   reason?: string;
   correction?: string;
   correction_date?: string | null;

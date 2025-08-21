@@ -10,7 +10,7 @@ class NCMXInconsistencies(models.Model):
     analysis_start_date = models.DateField(blank=True, null=True, db_comment='Дата начала проведения анализа')
     analysis_finish_date = models.DateField(blank=True, null=True, db_comment='Дата окончания проведения анализа')
     head_auditor = models.CharField(max_length=50, blank=True, null=True, db_comment='Главный аудитор')
-    auditor = models.CharField(max_length=50, blank=True, null=True, db_comment='Аудитор')
+    auditors = JSONField(default=list, blank=True, db_comment='Список аудиторов')
     reason = models.CharField(max_length=250, blank=True, null=True, db_comment='Причина несоответствия')
     correction = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание коррекции')
     correction_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения коррекции')

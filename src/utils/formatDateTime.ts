@@ -1,4 +1,4 @@
-export const formatDate = (dateString: string | undefined): string => {
+export const formatDateTime = (dateString: string | undefined): string => {
   if (!dateString) return "-";
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return dateString;

@@ -9,6 +9,7 @@ import { ModalComponent } from "../modalComponent";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
 import { NormativeDocuments } from "@components/formsComponents/normativeDocuments";
 import { useFormValidation } from "@hooks/useFormValidation";
+import Auditors from "@components/formsComponents/auditors";
 
 interface ModalProps {
   isOpen: boolean;
@@ -25,7 +26,7 @@ const initialFormData: ItemRequestPOST = {
   analysis_start_date: null,
   analysis_finish_date: null,
   head_auditor: "",
-  auditor: "",
+  auditors: [{ auditor: "" }],
   reason: "",
   correction: "",
   correction_date: null,
@@ -74,7 +75,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           analysis_start_date: editItem.analysis_start_date || null,
           analysis_finish_date: editItem.analysis_finish_date || null,
           head_auditor: editItem.head_auditor || "",
-          auditor: editItem.auditor || "",
+          auditors: editItem.auditors.length > 0 ? editItem.auditors : [{ auditor: "" }],
           reason: editItem.reason || "",
           correction: editItem.correction || "",
           correction_date: editItem.correction_date || null,
@@ -127,10 +128,10 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      addSnackbar(
-        SnackbarType.error,
-        validationErrors.num_nonconf || validationErrors.normative_documents,
-      );
+      const errorMessages = Object.values(validationErrors).filter(Boolean);
+      if (errorMessages.length > 0) {
+        addSnackbar(SnackbarType.error, errorMessages.join("; "));
+      }
       return;
     }
 
@@ -142,6 +143,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         ]),
       ),
       normative_documents: formData.normative_documents.filter((doc) => doc.norm_doc),
+      auditors: formData.auditors.filter((person) => person.auditor),
       is_archived: false,
     } as ItemRequestPOST;
 
@@ -286,20 +288,13 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Погодина С.Б.">Погодина С.Б.</option>
             <option value="Болкунов О.А.">Болкунов О.А.</option>
           </select>
-          <select
-            name="auditor"
-            id="auditor"
-            value={formData.auditor || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать аудитора</option>
-            <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
-            <option value="Ткачук Н.С.">Ткачук Н.С.</option>
-            <option value="Морозова Е.">Морозова Е.А.</option>
-            <option value="Зюзева Е.">Зюзева Е.А.</option>
-          </select>
-          <a href="#">Добавить аудитора</a>
+          {errors.head_auditor && <p className={styles.submitError}>{errors.head_auditor}</p>}
+          <Auditors
+            auditors={formData.auditors}
+            setFormData={setFormData}
+            errors={errors}
+            createLoading={createLoading}
+          />
           <textarea
             name="reason"
             id="reason"

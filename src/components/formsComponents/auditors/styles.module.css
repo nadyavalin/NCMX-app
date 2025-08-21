@@ -1,0 +1,18 @@
+.auditorsBlock {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.auditorsBlock select {
+  width: 100%;
+}
+
+.removeButton {
+  min-width: 100px;
+}
+
+.submitError {
+  font-size: 0.7rem;
+  color: var(--accent-red-color);
+}

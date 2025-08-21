@@ -9,26 +9,13 @@ import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext"
 import { ModalComponent } from "../modalComponent";
 import InconsistenciesCommentsModal from "../commentsAdder";
 import { ItemCommentResponseGET } from "../../types/types";
+import { formatDateTime } from "@utils/formatDateTime";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
   isOpen: boolean;
   onClose: () => void;
 }
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) {
-    return dateString;
-  }
-  return date.toLocaleString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
 
 const InconsistenciesHistoryCommentsModal = ({
   currentInconsistencyNumber,
@@ -146,7 +133,7 @@ const InconsistenciesHistoryCommentsModal = ({
                   Автор: <b>{comment.comment_author}</b>
                 </p>
                 <p>
-                  Дата: <b>{formatDate(comment.created_at)}</b>
+                  Дата: <b>{formatDateTime(comment.created_at)}</b>
                 </p>
               </div>
               <p>{comment.comment_text}</p>

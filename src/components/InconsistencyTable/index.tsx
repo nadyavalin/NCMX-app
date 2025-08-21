@@ -9,7 +9,7 @@ import {
   toggleModalHistoryComments,
   toggleModalEdit,
 } from "@store/uiSlice";
-import { formatDate } from "@utils/formatData";
+import { formatDate } from "@utils/formatDate";
 import InconsistenciesModal from "@modals/InconsistenciesAdder";
 import InconsistenciesCommentsModal from "@modals/commentsAdder";
 import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
@@ -19,6 +19,7 @@ import { MainFilter } from "@components/filters/mainFilter";
 import { SearchInput } from "@components/searchInput";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ItemResponseGET, SnackbarType } from "../../types/types";
+import { formatDateTime } from "@utils/formatDateTime";
 
 interface InconsistencyTableProps {
   title: string;
@@ -201,16 +202,26 @@ const InconsistencyTable = ({
                   <td>
                     {item.normative_documents.length > 0
                       ? item.normative_documents.map((doc, index) => (
-                          <div key={index}>
+                          <p key={index}>
                             - {doc.norm_doc}, {doc.point || "-"}
-                          </div>
+                          </p>
                         ))
                       : "-"}
                   </td>
                   <td>{item.nonconf || "-"}</td>
-                  <td>{item.report || "-"}</td>
-                  <td>{item.analysis_finish_date || "-"}</td>
-                  <td>{item.head_auditor || "-"}</td>
+                  <td>
+                    {item.report || "-"} от {formatDate(item.report_date)}
+                  </td>
+                  <td>
+                    {formatDate(item.analysis_start_date) || "-"} -{" "}
+                    {formatDate(item.analysis_finish_date) || "-"}
+                  </td>
+                  <td>
+                    <p>{item.head_auditor}</p>
+                    {item.auditors.length > 0
+                      ? item.auditors.map((person, index) => <p key={index}> {person.auditor}</p>)
+                      : "-"}
+                  </td>
                   <td>{item.reason || "-"}</td>
                   <td>{item.correction || "-"}</td>
                   <td>{item.correction_date || "-"}</td>
@@ -224,7 +235,7 @@ const InconsistencyTable = ({
                         <>
                           <p>
                             Дата проведения оценки и переноса в архив: <br />
-                            <b>{formatDate(item.nonconf_closure_date)}</b>
+                            <b>{formatDateTime(item.nonconf_closure_date)}</b>
                           </p>
                           <p
                             className={

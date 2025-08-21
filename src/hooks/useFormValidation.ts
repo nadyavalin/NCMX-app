@@ -28,6 +28,16 @@ export const useFormValidation = ({ formData, numNonconfRef }: UseFormValidation
       newErrors.normative_documents = "Укажите не менее одного пункта";
     }
 
+    // Валидация главного аудитора
+    if (!formData.head_auditor) {
+      newErrors.head_auditor = "Укажите главного аудитора";
+    }
+
+    // Валидация аудиторов
+    if (!formData.auditors.some((person) => person.auditor)) {
+      newErrors.auditors = "Укажите не менее одного аудитора";
+    }
+
     return newErrors;
   }, [formData, numNonconfRef]);
 

@@ -4,16 +4,16 @@ export const InnerDepartmentsFilter = () => {
   return (
     <select className={styles.filter}>
       <option value="НПО">НПО</option>
-      <option value="ОКТП НПО">ОКТП НПО</option>
-      <option value="ОПиД НПО">ОПиД НПО</option>
-      <option value="Тех. дир НПО">Тех. дир НПО</option>
+      <option value="НПГС">НПГС</option>
       <option value="ПП ФЭИС">ПП ФЭИС</option>
       <option value="ПП СОК">ПП СОК</option>
-      <option value="НПГС">НПГС</option>
-      <option value="ОПиД НПГС">НПГС</option>
-      <option value="ОТП НПГС">ОТП НПГС</option>
-      <option value="Тех. дир НПГС">Тех. дир НПГС</option>
       <option value="ППГС">ППГС</option>
+      <option value="ОКТП НПО">ОКТП НПО</option>
+      <option value="ОПиД НПО">ОПиД НПО</option>
+      <option value="ОТП НПГС">ОТП НПГС</option>
+      <option value="ОПиД НПГС">ОПиД НПГС</option>
+      <option value="Тех. дир НПО">Тех. дир НПО</option>
+      <option value="Тех. дир НПГС">Тех. дир НПГС</option>
       <option value="СС">СС</option>
       <option value="СЛиВЭД">СЛиВЭД</option>
       <option value="СМиП">СМиП</option>

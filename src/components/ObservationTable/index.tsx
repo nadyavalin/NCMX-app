@@ -4,7 +4,7 @@ import "@/globals.css";
 import styles from "./styles.module.css";
 import { MainFilter } from "@components/filters/mainFilter";
 import { SearchInput } from "@components/searchInput";
-import { formatDate } from "@utils/formatData";
+import { formatDateTime } from "@utils/formatDateTime";
 import React from "react";
 
 interface ObservationTableProps {
@@ -91,7 +91,7 @@ export const ObservationTable = ({
                       <>
                         <p>
                           Дата переноса в архив: <br />
-                          <b>{formatDate(`дата`)}</b>
+                          <b>{formatDateTime(`дата`)}</b>
                         </p>
                       </>
                     )}
