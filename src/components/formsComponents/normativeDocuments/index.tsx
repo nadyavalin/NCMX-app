@@ -1,18 +1,16 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST } from "../../../types/types";
+import { ItemRequestPOST, NormativeDocument } from "../../../types/types";
 
 interface NormativeDocumentsProps {
-  normative_documents: { norm_doc: string; point: string }[];
+  normative_documents: NormativeDocument[];
   setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
-  errors: { [key: string]: string };
   createLoading: boolean;
 }
 
 export const NormativeDocuments = ({
   normative_documents,
   setFormData,
-  errors,
   createLoading,
 }: NormativeDocumentsProps) => {
   const handleChange = (
@@ -21,7 +19,7 @@ export const NormativeDocuments = ({
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => {
-      const updatedDocuments = [...prevData.normative_documents];
+      const updatedDocuments = [...(prevData.normative_documents || [])];
       updatedDocuments[index] = {
         ...updatedDocuments[index],
         [name]: value || "",
@@ -34,13 +32,13 @@ export const NormativeDocuments = ({
     e.preventDefault();
     setFormData((prevData) => ({
       ...prevData,
-      normative_documents: [...prevData.normative_documents, { norm_doc: "", point: "" }],
+      normative_documents: [...(prevData.normative_documents || []), { norm_doc: "", point: "" }],
     }));
   };
 
   const removeNormativeDocument = (index: number) => {
     setFormData((prevData) => {
-      const updatedDocuments = prevData.normative_documents.filter((_, i) => i !== index);
+      const updatedDocuments = (prevData.normative_documents || []).filter((_, i) => i !== index);
       return {
         ...prevData,
         normative_documents:
@@ -56,7 +54,7 @@ export const NormativeDocuments = ({
           <select
             name="norm_doc"
             id={`norm_doc_${index}`}
-            value={doc.norm_doc}
+            value={doc.norm_doc || ""}
             onChange={(e) => handleChange(e, index)}
             disabled={createLoading}
             title="Нормативный документ"
@@ -86,7 +84,7 @@ export const NormativeDocuments = ({
             name="point"
             id={`point_${index}`}
             type="text"
-            value={doc.point}
+            value={doc.point || ""}
             placeholder="Номер(а) пункта(ов) ISO/НД"
             onChange={(e) => handleChange(e, index)}
             disabled={createLoading}
@@ -104,9 +102,6 @@ export const NormativeDocuments = ({
           )}
         </div>
       ))}
-      {errors.normative_documents && (
-        <p className={styles.submitError}>{errors.normative_documents}</p>
-      )}
       <a
         href="#"
         onClick={addNormativeDocument}

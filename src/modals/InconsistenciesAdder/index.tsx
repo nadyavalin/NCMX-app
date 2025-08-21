@@ -9,7 +9,7 @@ import { ModalComponent } from "../modalComponent";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
 import { NormativeDocuments } from "@components/formsComponents/normativeDocuments";
 import { useFormValidation } from "@hooks/useFormValidation";
-import Auditors from "@components/formsComponents/auditors";
+import { Auditors as AuditorsComponent } from "@components/formsComponents/auditors";
 
 interface ModalProps {
   isOpen: boolean;
@@ -66,7 +66,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         setFormData({
           num_nonconf: editItem.num_nonconf,
           normative_documents:
-            editItem.normative_documents.length > 0
+            editItem.normative_documents && editItem.normative_documents.length > 0
               ? editItem.normative_documents
               : [{ norm_doc: "", point: "" }],
           nonconf: editItem.nonconf || "",
@@ -75,7 +75,10 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           analysis_start_date: editItem.analysis_start_date || null,
           analysis_finish_date: editItem.analysis_finish_date || null,
           head_auditor: editItem.head_auditor || "",
-          auditors: editItem.auditors.length > 0 ? editItem.auditors : [{ auditor: "" }],
+          auditors:
+            editItem.auditors && editItem.auditors.length > 0
+              ? editItem.auditors
+              : [{ auditor: "" }],
           reason: editItem.reason || "",
           correction: editItem.correction || "",
           correction_date: editItem.correction_date || null,
@@ -128,22 +131,14 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      const errorMessages = Object.values(validationErrors).filter(Boolean);
-      if (errorMessages.length > 0) {
-        addSnackbar(SnackbarType.error, errorMessages.join("; "));
-      }
+      addSnackbar(SnackbarType.error, validationErrors.num_nonconf);
       return;
     }
 
     const payload = {
-      ...Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [
-          key,
-          value === "" || value === 0 ? null : value,
-        ]),
-      ),
-      normative_documents: formData.normative_documents.filter((doc) => doc.norm_doc),
-      auditors: formData.auditors.filter((person) => person.auditor),
+      ...formData,
+      normative_documents: formData.normative_documents?.filter((doc) => doc.norm_doc) || [],
+      auditors: formData.auditors?.filter((person) => person.auditor) || [],
       is_archived: false,
     } as ItemRequestPOST;
 
@@ -166,18 +161,16 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         onClose();
       }, 300);
     } catch (error: unknown) {
-      if (isAxiosError(error) && error.response?.status === 400) {
-        const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
-        setErrors({ num_nonconf: errorMessage });
-        if (numNonconfRef.current) {
-          numNonconfRef.current.focus();
-          numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-        addSnackbar(SnackbarType.error, errorMessage);
-        return;
-      }
-      const errorMessage = `Несоответствие с номером ${formData.num_nonconf} уже существует`;
+      const errorMessage =
+        isAxiosError(error) && error.response?.data?.num_nonconf
+          ? error.response.data.num_nonconf[0]
+          : "Ошибка при сохранении несоответствия";
+      setErrors({ num_nonconf: errorMessage });
       addSnackbar(SnackbarType.error, errorMessage);
+      if (numNonconfRef.current) {
+        numNonconfRef.current.focus();
+        numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
   };
 
@@ -207,7 +200,6 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               id="num_nonconf"
               value={formData.num_nonconf || ""}
               onChange={handleChange}
-              required
               ref={numNonconfRef}
               className={errors.num_nonconf ? styles.inputError : ""}
               disabled={!!editItem}
@@ -219,9 +211,8 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         <div className={styles.modalInternalBlocks}>
           <p>1. Основная информация о несоответствии</p>
           <NormativeDocuments
-            normative_documents={formData.normative_documents}
+            normative_documents={formData.normative_documents || [{ norm_doc: "", point: "" }]}
             setFormData={setFormData}
-            errors={errors}
             createLoading={createLoading}
           />
           <textarea
@@ -288,11 +279,9 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Погодина С.Б.">Погодина С.Б.</option>
             <option value="Болкунов О.А.">Болкунов О.А.</option>
           </select>
-          {errors.head_auditor && <p className={styles.submitError}>{errors.head_auditor}</p>}
-          <Auditors
-            auditors={formData.auditors}
+          <AuditorsComponent
+            auditors={formData.auditors || [{ auditor: "" }]}
             setFormData={setFormData}
-            errors={errors}
             createLoading={createLoading}
           />
           <textarea
@@ -309,7 +298,19 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         <div className={styles.modalInternalBlocks}>
           <div className={styles.oneLineText}>
             <p>3. Коррекция</p>
-            <a href="#">Добавить коррекцию</a>
+            <a
+              href="#"
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  correction: prev.correction
+                    ? `${prev.correction}\nНовая коррекция`
+                    : "Новая коррекция",
+                }))
+              }
+            >
+              Добавить коррекцию
+            </a>
           </div>
           <textarea
             name="correction"
@@ -343,7 +344,14 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Семенов К.С.">Семенов К.С.</option>
             <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
-          <a href="#">Добавить ответственное лицо</a>
+          <a
+            href="#"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, resp_person_correction: "Новое лицо" }))
+            }
+          >
+            Добавить ответственное лицо
+          </a>
           <select
             name="department_correction"
             id="department_correction"
@@ -357,13 +365,32 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="ПП СОК">ПП СОК</option>
             <option value="ПП ФЭИС">ПП ФЭИС</option>
           </select>
-          <a href="#">Добавить ответственное подразделение</a>
+          <a
+            href="#"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, department_correction: "Новое подразделение" }))
+            }
+          >
+            Добавить ответственное подразделение
+          </a>
         </div>
 
         <div className={styles.modalInternalBlocks}>
           <div className={styles.oneLineText}>
             <p>4. Корректирующее действие</p>
-            <a href="#">Добавить кор. действие</a>
+            <a
+              href="#"
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  corrective_action: prev.corrective_action
+                    ? `${prev.corrective_action}\nНовое действие`
+                    : "Новое действие",
+                }))
+              }
+            >
+              Добавить кор. действие
+            </a>
           </div>
           <textarea
             name="corrective_action"
@@ -397,7 +424,14 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Семенов К.С.">Семенов К.С.</option>
             <option value="Курженков С.А.">Курженков С.А.</option>
           </select>
-          <a href="#">Добавить ответственное лицо</a>
+          <a
+            href="#"
+            onClick={() =>
+              setFormData((prev) => ({ ...prev, resp_person_corrective_action: "Новое лицо" }))
+            }
+          >
+            Добавить ответственное лицо
+          </a>
           <select
             name="department_corrective_action"
             id="department_corrective_action"
@@ -411,7 +445,17 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="ПП СОК">ПП СОК</option>
             <option value="ПП ФЭИС">ПП ФЭИС</option>
           </select>
-          <a href="#">Добавить ответственное подразделение</a>
+          <a
+            href="#"
+            onClick={() =>
+              setFormData((prev) => ({
+                ...prev,
+                department_corrective_action: "Новое подразделение",
+              }))
+            }
+          >
+            Добавить ответственное подразделение
+          </a>
         </div>
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={createLoading}>

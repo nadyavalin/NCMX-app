@@ -1,22 +1,21 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST } from "../../../types/types";
+import { ItemRequestPOST, IAuditors } from "../../../types/types";
 
 interface AuditorProps {
-  auditors: { auditor: string }[];
+  auditors: IAuditors[];
   setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
-  errors: { [key: string]: string };
   createLoading: boolean;
 }
 
-export const Auditors = ({ auditors, setFormData, errors, createLoading }: AuditorProps) => {
+export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number,
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => {
-      const updateAuditors = [...prevData.auditors];
+      const updateAuditors = [...(prevData.auditors || [])];
       updateAuditors[index] = {
         ...updateAuditors[index],
         [name]: value || "",
@@ -29,13 +28,13 @@ export const Auditors = ({ auditors, setFormData, errors, createLoading }: Audit
     e.preventDefault();
     setFormData((prevData) => ({
       ...prevData,
-      auditors: [...prevData.auditors, { auditor: "" }],
+      auditors: [...(prevData.auditors || []), { auditor: "" }],
     }));
   };
 
   const removeAuditor = (index: number) => {
     setFormData((prevData) => {
-      const updateAuditors = prevData.auditors.filter((_, i) => i !== index);
+      const updateAuditors = (prevData.auditors || []).filter((_, i) => i !== index);
       return {
         ...prevData,
         auditors: updateAuditors.length > 0 ? updateAuditors : [{ auditor: "" }],
@@ -50,7 +49,7 @@ export const Auditors = ({ auditors, setFormData, errors, createLoading }: Audit
           <select
             name="auditor"
             id={`auditor_${index}`}
-            value={person.auditor}
+            value={person.auditor || ""}
             onChange={(e) => handleChange(e, index)}
             disabled={createLoading}
             title="Аудитор"
@@ -73,7 +72,6 @@ export const Auditors = ({ auditors, setFormData, errors, createLoading }: Audit
           )}
         </div>
       ))}
-      {errors.auditors && <p className={styles.submitError}>{errors.auditors}</p>}
       <a href="#" onClick={addAuditor} className={createLoading ? styles.disabledLink : ""}>
         Добавить аудитора
       </a>

@@ -1,12 +1,12 @@
 export type DateString = string;
 
 export interface NormativeDocument {
-  norm_doc: string;
-  point: string;
+  norm_doc?: string;
+  point?: string;
 }
 
-export interface Auditors {
-  auditor: string;
+export interface IAuditors {
+  auditor?: string;
 }
 
 export interface InconsistencyNumberState {
@@ -27,9 +27,9 @@ export interface InconsistencyNumberState {
 
 export interface ItemResponseGET {
   num_nonconf: number;
-  normative_documents: NormativeDocument[];
-  head_auditor: string;
-  auditors: Auditors[];
+  normative_documents?: NormativeDocument[];
+  head_auditor?: string;
+  auditors?: IAuditors[];
   nonconf?: string;
   report?: string;
   report_date?: DateString;
@@ -69,9 +69,9 @@ export interface APICommentsResponse {
 
 export interface ItemRequestPOST {
   num_nonconf: number;
-  normative_documents: NormativeDocument[];
-  head_auditor: string;
-  auditors: Auditors[];
+  normative_documents?: NormativeDocument[];
+  head_auditor?: string;
+  auditors?: IAuditors[];
   nonconf?: string;
   report?: string;
   report_date?: string | null;

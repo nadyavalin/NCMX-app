@@ -13,8 +13,6 @@ interface UseFormValidationProps {
 export const useFormValidation = ({ formData, numNonconfRef }: UseFormValidationProps) => {
   const validateForm = useCallback(() => {
     const newErrors: ValidationErrors = {};
-
-    // Валидация номера несоответствия
     if (!formData.num_nonconf || formData.num_nonconf <= 0) {
       newErrors.num_nonconf = "Укажите номер несоответствия (положительное число)";
       if (numNonconfRef.current) {
@@ -22,22 +20,6 @@ export const useFormValidation = ({ formData, numNonconfRef }: UseFormValidation
         numNonconfRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }
-
-    // Валидация нормативных документов
-    if (!formData.normative_documents.some((doc) => doc.norm_doc)) {
-      newErrors.normative_documents = "Укажите не менее одного пункта";
-    }
-
-    // Валидация главного аудитора
-    if (!formData.head_auditor) {
-      newErrors.head_auditor = "Укажите главного аудитора";
-    }
-
-    // Валидация аудиторов
-    if (!formData.auditors.some((person) => person.auditor)) {
-      newErrors.auditors = "Укажите не менее одного аудитора";
-    }
-
     return newErrors;
   }, [formData, numNonconfRef]);
 

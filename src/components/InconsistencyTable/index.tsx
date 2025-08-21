@@ -200,10 +200,10 @@ const InconsistencyTable = ({
                 <tr key={item.num_nonconf}>
                   <td>{item.num_nonconf}</td>
                   <td>
-                    {item.normative_documents.length > 0
+                    {item.normative_documents && item.normative_documents.length > 0
                       ? item.normative_documents.map((doc, index) => (
                           <p key={index}>
-                            - {doc.norm_doc}, {doc.point || "-"}
+                            - {doc.norm_doc || "-"}, {doc.point || "-"}
                           </p>
                         ))
                       : "-"}
@@ -217,9 +217,11 @@ const InconsistencyTable = ({
                     {formatDate(item.analysis_finish_date) || "-"}
                   </td>
                   <td>
-                    <p>{item.head_auditor}</p>
-                    {item.auditors.length > 0
-                      ? item.auditors.map((person, index) => <p key={index}> {person.auditor}</p>)
+                    <p>{item.head_auditor || "-"}</p>
+                    {item.auditors && item.auditors.length > 0
+                      ? item.auditors.map((person, index) => (
+                          <p key={index}> {person.auditor || "-"}</p>
+                        ))
                       : "-"}
                   </td>
                   <td>{item.reason || "-"}</td>
