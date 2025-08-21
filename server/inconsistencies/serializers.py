@@ -17,10 +17,10 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         fields = [
             'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditors',
-            'reason', 'correction', 'correction_date', 'resp_person_correction',
-            'department_correction', 'corrective_action', 'corrective_action_date',
-            'resp_person_corrective_action', 'department_corrective_action', 'estimate',
-            'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data', 'is_archived'
+            'reason', 'correction', 'correction_date', 'responsible_department_for_correction',
+            'responsible_person_for_correction', 'corrective_action', 'corrective_action_date',
+            'responsible_department_for_corrective_action', 'responsible_person_for_corrective_action',
+            'estimate', 'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data', 'is_archived'
         ]
 
     def validate(self, data):

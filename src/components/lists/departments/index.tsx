@@ -1,8 +1,34 @@
+import React from "react";
 import styles from "../styles.module.css";
 
-export const Departments = () => {
+interface DepartmentsProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  name?: string;
+  id?: string;
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  disabled?: boolean;
+  className?: string;
+}
+
+export const Departments: React.FC<DepartmentsProps> = ({
+  name,
+  id,
+  value = "",
+  onChange,
+  disabled = false,
+  className = styles.list,
+  ...rest
+}) => {
   return (
-    <select className={styles.list}>
+    <select
+      name={name}
+      id={id}
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className={className}
+      {...rest}
+    >
       <option value="">...выбрать подразделение</option>
       <option value="НПО">НПО</option>
       <option value="НПГС">НПГС</option>
@@ -21,10 +47,10 @@ export const Departments = () => {
       <option value="ИТС">ИТС</option>
       <option value="IT">IT</option>
       <option value="СОР">СОР</option>
-      <option value="A10">ФС</option>
-      <option value="A11">КС</option>
-      <option value="A12">все подразделения</option>
-      <option value="A13">все менеджеры проектов</option>
+      <option value="ФС">ФС</option>
+      <option value="КС">КС</option>
+      <option value="все подразделения">все подразделения</option>
+      <option value="все менеджеры проектов">все менеджеры проектов</option>
     </select>
   );
 };

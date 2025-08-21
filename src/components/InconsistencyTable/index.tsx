@@ -226,11 +226,17 @@ const InconsistencyTable = ({
                   </td>
                   <td>{item.reason || "-"}</td>
                   <td>{item.correction || "-"}</td>
-                  <td>{item.correction_date || "-"}</td>
-                  <td>{item.resp_person_correction || "-"}</td>
+                  <td>{formatDate(item.correction_date) || "-"}</td>
+                  <td>
+                    {item.responsible_department_for_correction}:{" "}
+                    {item.responsible_person_for_correction || "-"}
+                  </td>
                   <td>{item.corrective_action || "-"}</td>
-                  <td>{item.corrective_action_date || "-"}</td>
-                  <td>{item.resp_person_corrective_action || "-"}</td>
+                  <td>{formatDate(item.corrective_action_date) || "-"}</td>
+                  <td>
+                    {item.responsible_department_for_corrective_action}:{" "}
+                    {item.responsible_person_for_corrective_action || "-"}
+                  </td>
                   <td>
                     <div className={styles.inconsistenciesActions}>
                       {isArchived && (

@@ -60,3 +60,12 @@
   font-size: 0.7rem;
   color: var(--accent-red-color);
 }
+
+.respCorrectArea {
+  display: flex;
+  gap: 10px;
+}
+
+.respCorrectArea select {
+  width: 100%;
+}

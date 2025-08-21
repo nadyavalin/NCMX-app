@@ -10,6 +10,9 @@ import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/type
 import { NormativeDocuments } from "@components/formsComponents/normativeDocuments";
 import { useFormValidation } from "@hooks/useFormValidation";
 import { Auditors as AuditorsComponent } from "@components/formsComponents/auditors";
+import { Departments } from "@components/lists/departments";
+import { departmentToPersonsMap } from "@components/lists/ResponsiblePersonsByDepartment/departmentToPersonsMap";
+import { ResponsiblePersonsByDepartment } from "@components/lists/ResponsiblePersonsByDepartment";
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,12 +33,12 @@ const initialFormData: ItemRequestPOST = {
   reason: "",
   correction: "",
   correction_date: null,
-  resp_person_correction: "",
-  department_correction: "",
+  responsible_person_for_correction: "",
+  responsible_department_for_correction: "",
   corrective_action: "",
   corrective_action_date: null,
-  resp_person_corrective_action: "",
-  department_corrective_action: "",
+  responsible_person_for_corrective_action: "",
+  responsible_department_for_corrective_action: "",
   estimate: null,
   nonconf_closure_date: null,
   resp_person_nonconf_closure: "",
@@ -82,12 +85,15 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           reason: editItem.reason || "",
           correction: editItem.correction || "",
           correction_date: editItem.correction_date || null,
-          resp_person_correction: editItem.resp_person_correction || "",
-          department_correction: editItem.department_correction || "",
+          responsible_person_for_correction: editItem.responsible_person_for_correction || "",
+          responsible_department_for_correction:
+            editItem.responsible_department_for_correction || "",
           corrective_action: editItem.corrective_action || "",
           corrective_action_date: editItem.corrective_action_date || null,
-          resp_person_corrective_action: editItem.resp_person_corrective_action || "",
-          department_corrective_action: editItem.department_corrective_action || "",
+          responsible_person_for_corrective_action:
+            editItem.responsible_person_for_corrective_action || "",
+          responsible_department_for_corrective_action:
+            editItem.responsible_department_for_corrective_action || "",
           estimate: editItem.estimate || null,
           nonconf_closure_date: editItem.nonconf_closure_date || null,
           resp_person_nonconf_closure: editItem.resp_person_nonconf_closure || "",
@@ -121,7 +127,17 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             ].includes(name)
           ? value || null
           : value;
-    setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: updatedValue,
+      // Сбрасываем ответственных лиц при смене подразделения
+      ...(name === "responsible_department_for_correction"
+        ? { responsible_person_for_correction: "" }
+        : {}),
+      ...(name === "responsible_department_for_corrective_action"
+        ? { responsible_person_for_corrective_action: "" }
+        : {}),
+    }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -332,46 +348,37 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <select
-            name="resp_person_correction"
-            id="resp_person_correction"
-            value={formData.resp_person_correction || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать ответственное лицо</option>
-            <option value="Матвеева М.А.">Матвеева М.А.</option>
-            <option value="Семенов К.С.">Семенов К.С.</option>
-            <option value="Курженков С.А.">Курженков С.А.</option>
-          </select>
+          <div className={styles.respCorrectArea}>
+            <Departments
+              name="responsible_department_for_correction"
+              id="responsible_department_for_correction"
+              value={formData.responsible_department_for_correction || ""}
+              onChange={handleChange}
+              disabled={createLoading}
+            />
+            {formData.responsible_department_for_correction &&
+              departmentToPersonsMap[formData.responsible_department_for_correction]?.length >
+                0 && (
+                <ResponsiblePersonsByDepartment
+                  name="responsible_person_for_correction"
+                  id="responsible_person_for_correction"
+                  value={formData.responsible_person_for_correction || ""}
+                  onChange={handleChange}
+                  disabled={createLoading}
+                  persons={departmentToPersonsMap[formData.responsible_department_for_correction]}
+                />
+              )}
+          </div>
           <a
             href="#"
             onClick={() =>
-              setFormData((prev) => ({ ...prev, resp_person_correction: "Новое лицо" }))
+              setFormData((prev) => ({
+                ...prev,
+                responsible_department_for_correction: "Новое подразделение",
+              }))
             }
           >
-            Добавить ответственное лицо
-          </a>
-          <select
-            name="department_correction"
-            id="department_correction"
-            value={formData.department_correction || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать ответственное подразделение</option>
-            <option value="НПО">НПО</option>
-            <option value="НПГС">НПГС</option>
-            <option value="ПП СОК">ПП СОК</option>
-            <option value="ПП ФЭИС">ПП ФЭИС</option>
-          </select>
-          <a
-            href="#"
-            onClick={() =>
-              setFormData((prev) => ({ ...prev, department_correction: "Новое подразделение" }))
-            }
-          >
-            Добавить ответственное подразделение
+            Добавить ответственного
           </a>
         </div>
 
@@ -412,49 +419,39 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <select
-            name="resp_person_corrective_action"
-            id="resp_person_corrective_action"
-            value={formData.resp_person_corrective_action || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать ответственное лицо</option>
-            <option value="Матвеева М.А.">Матвеева М.А.</option>
-            <option value="Семенов К.С.">Семенов К.С.</option>
-            <option value="Курженков С.А.">Курженков С.А.</option>
-          </select>
-          <a
-            href="#"
-            onClick={() =>
-              setFormData((prev) => ({ ...prev, resp_person_corrective_action: "Новое лицо" }))
-            }
-          >
-            Добавить ответственное лицо
-          </a>
-          <select
-            name="department_corrective_action"
-            id="department_corrective_action"
-            value={formData.department_corrective_action || ""}
-            onChange={handleChange}
-            disabled={createLoading}
-          >
-            <option value="">...выбрать ответственное подразделение</option>
-            <option value="НПО">НПО</option>
-            <option value="НПГС">НПГС</option>
-            <option value="ПП СОК">ПП СОК</option>
-            <option value="ПП ФЭИС">ПП ФЭИС</option>
-          </select>
+          <div className={styles.respCorrectArea}>
+            <Departments
+              name="responsible_department_for_corrective_action"
+              id="responsible_department_for_corrective_action"
+              value={formData.responsible_department_for_corrective_action || ""}
+              onChange={handleChange}
+              disabled={createLoading}
+            />
+            {formData.responsible_department_for_corrective_action &&
+              departmentToPersonsMap[formData.responsible_department_for_corrective_action]
+                ?.length > 0 && (
+                <ResponsiblePersonsByDepartment
+                  name="responsible_person_for_corrective_action"
+                  id="responsible_person_for_corrective_action"
+                  value={formData.responsible_person_for_corrective_action || ""}
+                  onChange={handleChange}
+                  disabled={createLoading}
+                  persons={
+                    departmentToPersonsMap[formData.responsible_department_for_corrective_action]
+                  }
+                />
+              )}
+          </div>
           <a
             href="#"
             onClick={() =>
               setFormData((prev) => ({
                 ...prev,
-                department_corrective_action: "Новое подразделение",
+                responsible_department_for_corrective_action: "Новое подразделение",
               }))
             }
           >
-            Добавить ответственное подразделение
+            Добавить ответственного
           </a>
         </div>
         <div className={styles.buttonsBlock}>

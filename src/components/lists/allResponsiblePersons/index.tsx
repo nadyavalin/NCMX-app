@@ -1,8 +1,33 @@
 import styles from "../styles.module.css";
 
-export const RespPersons = () => {
+interface AllResponsiblePersonsProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  name?: string;
+  id?: string;
+  value?: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  disabled?: boolean;
+  className?: string;
+}
+
+export const AllResponsiblePersons: React.FC<AllResponsiblePersonsProps> = ({
+  name,
+  id,
+  value = "",
+  onChange,
+  disabled = false,
+  className = styles.list,
+  ...rest
+}) => {
   return (
-    <select className={styles.list}>
+    <select
+      name={name}
+      id={id}
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className={className}
+      {...rest}
+    >
       <option value="">...выбрать сотрудника</option>
       <option value="Максютенко А.А.">Максютенко А.А.</option>
       <option value="Максютенко М.А.">Максютенко М.А.</option>
@@ -12,6 +37,9 @@ export const RespPersons = () => {
       <option value="Черкасов А.С.">Черкасов А.С.</option>
       <option value="Мелентьев Д.В.">Мелентьев Д.В.</option>
       <option value="Бабыничев В.В.">Бабыничев В.В.</option>
+      <option value="Крылова М.В.">Крылова М.В.</option>
+      <option value="Суворов С.К.">Суворов С.К.</option>
+      <option value="Андрианов С.В.">Андрианов С.В.</option>
       <option value="Нурмухамедов В.А.">Нурмухамедов В.А.</option>
       <option value="Матвеева М.А.">Матвеева М.А.</option>
       <option value="Разумнева Н.П.">Разумнева Н.П.</option>
