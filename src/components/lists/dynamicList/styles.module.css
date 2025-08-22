@@ -1,0 +1,15 @@
+.removeButton {
+  min-width: 100px;
+}
+
+.activeLink {
+  width: 120px;
+  padding: 3px;
+}
+
+.disabledLink {
+  width: 120px;
+  padding: 3px;
+  color: var(--link-disabled-color);
+  pointer-events: none;
+}

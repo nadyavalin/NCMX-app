@@ -1,0 +1,9 @@
+.normativeDocumentBlock {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.pointInput {
+  width: 100%;
+}

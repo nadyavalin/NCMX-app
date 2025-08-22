@@ -7,12 +7,12 @@ import { AppDispatch, RootState } from "@store/store";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ModalComponent } from "../modalComponent";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
-import { NormativeDocuments } from "@components/formsComponents/normativeDocuments";
+import { NormativeDocuments } from "@components/lists/normativeDocuments";
 import { useFormValidation } from "@hooks/useFormValidation";
-import { Auditors as AuditorsComponent } from "@components/formsComponents/auditors";
+import { Auditors as AuditorsComponent } from "@components/lists/auditors";
 import { Departments } from "@components/lists/departments";
-import { departmentToPersonsMap } from "@components/lists/ResponsiblePersonsByDepartment/departmentToPersonsMap";
-import { ResponsiblePersonsByDepartment } from "@components/lists/ResponsiblePersonsByDepartment";
+import { departmentToPersonsMap } from "@components/lists/responsiblePersonsByDepartment/departmentToPersonsMap";
+import { ResponsiblePersonsByDepartment } from "@components/lists/responsiblePersonsByDepartment";
 
 interface ModalProps {
   isOpen: boolean;
