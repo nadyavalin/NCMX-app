@@ -32,7 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 45%;
+  width: 46%;
   padding: 20px;
   background-color: var(--bg-color);
   border-radius: 10px;
@@ -61,11 +61,8 @@
   color: var(--accent-red-color);
 }
 
-.respCorrectArea {
-  display: flex;
-  gap: 10px;
-}
-
-.respCorrectArea select {
+/* .respArea {
   width: 100%;
-}
+  display: flex;
+  flex-direction: column;
+} */

@@ -228,14 +228,25 @@ const InconsistencyTable = ({
                   <td>{item.correction || "-"}</td>
                   <td>{formatDate(item.correction_date) || "-"}</td>
                   <td>
-                    {item.responsible_department_for_correction}:{" "}
-                    {item.responsible_person_for_correction || "-"}
+                    {item.responsible_for_correction && item.responsible_for_correction.length > 0
+                      ? item.responsible_for_correction.map((resp, index) => (
+                          <p key={index}>
+                            {resp.department || "-"}: {resp.person || "-"}
+                          </p>
+                        ))
+                      : "-"}
                   </td>
                   <td>{item.corrective_action || "-"}</td>
                   <td>{formatDate(item.corrective_action_date) || "-"}</td>
                   <td>
-                    {item.responsible_department_for_corrective_action}:{" "}
-                    {item.responsible_person_for_corrective_action || "-"}
+                    {item.responsible_for_corrective_action &&
+                    item.responsible_for_corrective_action.length > 0
+                      ? item.responsible_for_corrective_action.map((resp, index) => (
+                          <p key={index}>
+                            {resp.department || "-"}: {resp.person || "-"}
+                          </p>
+                        ))
+                      : "-"}
                   </td>
                   <td>
                     <div className={styles.inconsistenciesActions}>

@@ -14,12 +14,13 @@ class NCMXInconsistencies(models.Model):
     reason = models.CharField(max_length=250, blank=True, null=True, db_comment='Причина несоответствия')
     correction = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание коррекции')
     correction_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения коррекции')
-    responsible_department_for_correction = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное подразделение для коррекции')
-    responsible_person_for_correction = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо для коррекции')
     corrective_action = models.CharField(max_length=1000, blank=True, null=True, db_comment='Корректирующее действие')
     corrective_action_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения корр. действия')
-    responsible_department_for_corrective_action = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное подразделение для корр. действия')  
-    responsible_person_for_corrective_action = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо для корр. действия')
+   
+    responsible_for_correction = JSONField(default=list, blank=True, db_comment='Список ответственных за коррекцию (подразделение + сотрудник)')
+    
+    responsible_for_corrective_action = JSONField(default=list, blank=True, db_comment='Список ответственных за корр. действие (подразделение + сотрудник)')
+    
     estimate = models.IntegerField(blank=True, null=True, db_comment='Оценка')
     nonconf_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия несоответствия')
     resp_person_nonconf_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')

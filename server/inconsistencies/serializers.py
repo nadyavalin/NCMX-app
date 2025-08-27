@@ -8,18 +8,23 @@ class NormativeDocumentSerializer(serializers.Serializer):
 class AuditorsSerializer(serializers.Serializer):
     auditor = serializers.CharField(max_length=50, allow_blank=True)    
 
+class ResponsibleSerializer(serializers.Serializer):
+    department = serializers.CharField(max_length=50, allow_blank=True)
+    person = serializers.CharField(max_length=50, allow_blank=True)
+
 class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
-    auditors = AuditorsSerializer(many = True, required=False)
+    auditors = AuditorsSerializer(many=True, required=False)
+    responsible_for_correction = ResponsibleSerializer(many=True, required=False)
+    responsible_for_corrective_action = ResponsibleSerializer(many=True, required=False)
 
     class Meta:
         model = NCMXInconsistencies
         fields = [
             'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditors',
-            'reason', 'correction', 'correction_date', 'responsible_department_for_correction',
-            'responsible_person_for_correction', 'corrective_action', 'corrective_action_date',
-            'responsible_department_for_corrective_action', 'responsible_person_for_corrective_action',
+            'reason', 'correction', 'correction_date', 'responsible_for_correction',
+            'corrective_action', 'corrective_action_date', 'responsible_for_corrective_action',
             'estimate', 'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data', 'is_archived'
         ]
 

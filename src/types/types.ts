@@ -9,6 +9,11 @@ export interface IAuditors {
   auditor?: string;
 }
 
+export interface Responsible {
+  department?: string;
+  person?: string;
+}
+
 export interface InconsistencyNumberState {
   currentInconsistencyNumber: number | null;
   isModalCommentsOpen: boolean;
@@ -38,12 +43,10 @@ export interface ItemResponseGET {
   reason?: string;
   correction?: string;
   correction_date?: DateString;
-  responsible_department_for_correction?: string;
-  responsible_person_for_correction?: string;
+  responsible_for_correction?: Responsible[];
   corrective_action?: string;
   corrective_action_date?: DateString;
-  responsible_department_for_corrective_action?: string;
-  responsible_person_for_corrective_action?: string;
+  responsible_for_corrective_action?: Responsible[];
   estimate?: number;
   nonconf_closure_date?: DateString;
   resp_person_nonconf_closure?: string;
@@ -80,12 +83,10 @@ export interface ItemRequestPOST {
   reason?: string;
   correction?: string;
   correction_date?: string | null;
-  responsible_department_for_correction?: string;
-  responsible_person_for_correction?: string;
+  responsible_for_correction?: Responsible[];
   corrective_action?: string;
   corrective_action_date?: string | null;
-  responsible_department_for_corrective_action?: string;
-  responsible_person_for_corrective_action?: string;
+  responsible_for_corrective_action?: Responsible[];
   estimate?: number | null;
   nonconf_closure_date?: string | null;
   resp_person_nonconf_closure?: string;

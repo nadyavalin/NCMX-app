@@ -9,10 +9,8 @@ import { ModalComponent } from "../modalComponent";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "../../types/types";
 import { NormativeDocuments } from "@components/lists/normativeDocuments";
 import { useFormValidation } from "@hooks/useFormValidation";
-import { Auditors as AuditorsComponent } from "@components/lists/auditors";
-import { Departments } from "@components/lists/departments";
-import { departmentToPersonsMap } from "@components/lists/responsiblePersonsByDepartment/departmentToPersonsMap";
-import { ResponsiblePersonsByDepartment } from "@components/lists/responsiblePersonsByDepartment";
+import { Auditors } from "@components/lists/auditors";
+import { ResponsibleGroup } from "@components/lists/responsibleGroup";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,12 +31,10 @@ const initialFormData: ItemRequestPOST = {
   reason: "",
   correction: "",
   correction_date: null,
-  responsible_person_for_correction: "",
-  responsible_department_for_correction: "",
+  responsible_for_correction: [{ department: "", person: "" }],
   corrective_action: "",
   corrective_action_date: null,
-  responsible_person_for_corrective_action: "",
-  responsible_department_for_corrective_action: "",
+  responsible_for_corrective_action: [{ department: "", person: "" }],
   estimate: null,
   nonconf_closure_date: null,
   resp_person_nonconf_closure: "",
@@ -85,15 +81,17 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           reason: editItem.reason || "",
           correction: editItem.correction || "",
           correction_date: editItem.correction_date || null,
-          responsible_person_for_correction: editItem.responsible_person_for_correction || "",
-          responsible_department_for_correction:
-            editItem.responsible_department_for_correction || "",
+          responsible_for_correction:
+            editItem.responsible_for_correction && editItem.responsible_for_correction.length > 0
+              ? editItem.responsible_for_correction
+              : [{ department: "", person: "" }],
           corrective_action: editItem.corrective_action || "",
           corrective_action_date: editItem.corrective_action_date || null,
-          responsible_person_for_corrective_action:
-            editItem.responsible_person_for_corrective_action || "",
-          responsible_department_for_corrective_action:
-            editItem.responsible_department_for_corrective_action || "",
+          responsible_for_corrective_action:
+            editItem.responsible_for_corrective_action &&
+            editItem.responsible_for_corrective_action.length > 0
+              ? editItem.responsible_for_corrective_action
+              : [{ department: "", person: "" }],
           estimate: editItem.estimate || null,
           nonconf_closure_date: editItem.nonconf_closure_date || null,
           resp_person_nonconf_closure: editItem.resp_person_nonconf_closure || "",
@@ -127,17 +125,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             ].includes(name)
           ? value || null
           : value;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: updatedValue,
-      // Сбрасываем ответственных лиц при смене подразделения
-      ...(name === "responsible_department_for_correction"
-        ? { responsible_person_for_correction: "" }
-        : {}),
-      ...(name === "responsible_department_for_corrective_action"
-        ? { responsible_person_for_corrective_action: "" }
-        : {}),
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -155,6 +143,10 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
       ...formData,
       normative_documents: formData.normative_documents?.filter((doc) => doc.norm_doc) || [],
       auditors: formData.auditors?.filter((person) => person.auditor) || [],
+      responsible_for_correction:
+        formData.responsible_for_correction?.filter((resp) => resp.department) || [],
+      responsible_for_corrective_action:
+        formData.responsible_for_corrective_action?.filter((resp) => resp.department) || [],
       is_archived: false,
     } as ItemRequestPOST;
 
@@ -295,7 +287,7 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             <option value="Погодина С.Б.">Погодина С.Б.</option>
             <option value="Болкунов О.А.">Болкунов О.А.</option>
           </select>
-          <AuditorsComponent
+          <Auditors
             auditors={formData.auditors || [{ auditor: "" }]}
             setFormData={setFormData}
             createLoading={createLoading}
@@ -348,38 +340,13 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <div className={styles.respCorrectArea}>
-            <Departments
-              name="responsible_department_for_correction"
-              id="responsible_department_for_correction"
-              value={formData.responsible_department_for_correction || ""}
-              onChange={handleChange}
-              disabled={createLoading}
-            />
-            {formData.responsible_department_for_correction &&
-              departmentToPersonsMap[formData.responsible_department_for_correction]?.length >
-                0 && (
-                <ResponsiblePersonsByDepartment
-                  name="responsible_person_for_correction"
-                  id="responsible_person_for_correction"
-                  value={formData.responsible_person_for_correction || ""}
-                  onChange={handleChange}
-                  disabled={createLoading}
-                  persons={departmentToPersonsMap[formData.responsible_department_for_correction]}
-                />
-              )}
-          </div>
-          <a
-            href="#"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                responsible_department_for_correction: "Новое подразделение",
-              }))
-            }
-          >
-            Добавить ответственного
-          </a>
+          <ResponsibleGroup
+            formData={formData}
+            setFormData={setFormData}
+            createLoading={createLoading}
+            fieldName="responsible_for_correction"
+            addText="Добавить ответственного"
+          />
         </div>
 
         <div className={styles.modalInternalBlocks}>
@@ -419,40 +386,13 @@ const InconsistenciesModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <div className={styles.respCorrectArea}>
-            <Departments
-              name="responsible_department_for_corrective_action"
-              id="responsible_department_for_corrective_action"
-              value={formData.responsible_department_for_corrective_action || ""}
-              onChange={handleChange}
-              disabled={createLoading}
-            />
-            {formData.responsible_department_for_corrective_action &&
-              departmentToPersonsMap[formData.responsible_department_for_corrective_action]
-                ?.length > 0 && (
-                <ResponsiblePersonsByDepartment
-                  name="responsible_person_for_corrective_action"
-                  id="responsible_person_for_corrective_action"
-                  value={formData.responsible_person_for_corrective_action || ""}
-                  onChange={handleChange}
-                  disabled={createLoading}
-                  persons={
-                    departmentToPersonsMap[formData.responsible_department_for_corrective_action]
-                  }
-                />
-              )}
-          </div>
-          <a
-            href="#"
-            onClick={() =>
-              setFormData((prev) => ({
-                ...prev,
-                responsible_department_for_corrective_action: "Новое подразделение",
-              }))
-            }
-          >
-            Добавить ответственного
-          </a>
+          <ResponsibleGroup
+            formData={formData}
+            setFormData={setFormData}
+            createLoading={createLoading}
+            fieldName="responsible_for_corrective_action"
+            addText="Добавить ответственного"
+          />
         </div>
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={createLoading}>

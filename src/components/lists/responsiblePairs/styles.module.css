@@ -1,0 +1,9 @@
+.respCorrectArea {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.respCorrectArea select {
+  width: 100%;
+}
