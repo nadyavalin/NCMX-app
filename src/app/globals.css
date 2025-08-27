@@ -120,6 +120,11 @@ button {
   transition: all 0.3s ease;
 }
 
+select,
+input {
+  font-size: 0.7rem;
+}
+
 .menuButton {
   padding: 10px 15px;
   margin: 20px;

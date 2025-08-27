@@ -4,16 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
-import { useSnackbar } from "@components/snackbar/snackbarContext";
-import { ModalComponent } from "../modalComponent";
-import { SnackbarType } from "../../types/types";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { ModalComponent } from "../ModalComponent";
+import { SnackbarType } from "@appTypes/types";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
+const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { currentInconsistencyNumber } = useSelector((state: RootState) => state.ui);
   const { commentLoading, commentError } = useSelector((state: RootState) => state.comments);
@@ -200,4 +200,4 @@ const InconsistenciesEstimateModal = ({ isOpen, onClose }: ModalProps) => {
   );
 };
 
-export default React.memo(InconsistenciesEstimateModal);
+export default React.memo(EstimateModal);

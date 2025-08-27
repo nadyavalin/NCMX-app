@@ -2,8 +2,8 @@
 
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { MainFilter } from "@components/lists/headFilters/mainFilter";
-import { SearchInput } from "@components/searchInput";
+import { MainFilter } from "@components/lists/headFilters/MainFilter";
+import { SearchInput } from "@components/SearchInput";
 import { formatDateTime } from "@utils/formatDateTime";
 import React from "react";
 

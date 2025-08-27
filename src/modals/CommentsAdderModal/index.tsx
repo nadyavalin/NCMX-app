@@ -3,9 +3,9 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
-import { useSnackbar } from "@components/snackbar/snackbarContext";
-import { ModalComponent } from "../modalComponent";
-import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "../../types/types";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { ModalComponent } from "../ModalComponent";
+import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
@@ -20,7 +20,7 @@ const initialCommentFormData: ItemCommentRequestPOST = {
   comment_text: "",
 };
 
-const InconsistenciesCommentsModal = ({
+const CommentsAdderModal = ({
   currentInconsistencyNumber,
   isOpen,
   onClose,
@@ -160,4 +160,4 @@ const InconsistenciesCommentsModal = ({
   );
 };
 
-export default React.memo(InconsistenciesCommentsModal);
+export default React.memo(CommentsAdderModal);

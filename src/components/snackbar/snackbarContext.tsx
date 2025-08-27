@@ -1,10 +1,10 @@
 import styles from "./styles.module.css";
 import React, { createContext, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Snackbar from "./snackbar";
+import Snackbar from ".";
 import { RootState, AppDispatch } from "@store/store";
 import { addSnackbar, removeSnackbar } from "@store/snackbarSlice";
-import { SnackbarType } from "../../types/types";
+import { SnackbarType } from "@appTypes/types";
 
 interface SnackbarContextType {
   addSnackbar: (type: SnackbarType, text: string) => void;

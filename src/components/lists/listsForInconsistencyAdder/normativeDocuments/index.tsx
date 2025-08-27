@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST, NormativeDocument } from "../../../../types/types";
-import { DynamicList } from "../helpers/dynamicList";
+import { ItemRequestPOST, NormativeDocument } from "@appTypes/types";
+import { DynamicList } from "../helpers/DynamicList";
 
 interface NormativeDocumentsProps {
   normative_documents: NormativeDocument[];

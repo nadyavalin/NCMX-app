@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
 import { handleApiError } from "@utils/handleApiError";
-import { APIResponse, ItemResponseGET, ItemRequestPOST } from "../../types/types";
+import { APIResponse, ItemResponseGET, ItemRequestPOST } from "@appTypes/types";
 
 // Thunk для загрузки списка несоответствий
 export const fetchItems = createAsyncThunk<

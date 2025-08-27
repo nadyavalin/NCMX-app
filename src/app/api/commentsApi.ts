@@ -6,7 +6,7 @@ import {
   APICommentsResponse,
   ItemCommentResponseGET,
   ItemCommentRequestPOST,
-} from "../../types/types";
+} from "@appTypes/types";
 
 // Thunk для создания комментария
 export const createCommentInconsistencyRequest = createAsyncThunk<

@@ -1,9 +1,9 @@
 import styles from "./styles.module.css";
 import { useState } from "react";
 import { ISORequirements } from "../ISOrequirements";
-import { Regulations } from "../regulations";
-import { Departments } from "../departments";
-import { AllResponsiblePersons } from "../allResponsiblePersons";
+import { Regulations } from "../Regulations";
+import { Departments } from "../Departments";
+import { AllResponsiblePersons } from "../AllResponsiblePersons";
 
 export const MainFilter = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("department");

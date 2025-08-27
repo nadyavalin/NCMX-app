@@ -4,7 +4,7 @@ import {
   createCommentInconsistencyRequest,
   deleteCommentInconsistencyRequest,
 } from "@/api";
-import { ItemCommentResponseGET } from "../types/types";
+import { ItemCommentResponseGET } from "@appTypes/types";
 
 interface CommentsState {
   comments: ItemCommentResponseGET[];

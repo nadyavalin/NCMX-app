@@ -26,7 +26,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@modals/*": ["./src/modals/*"],
       "@store/*": ["./src/store/*"],
-      "@types/*": ["./src/types/*"],
+      "@appTypes/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
       "@public/*": ["./public/*"]
     }

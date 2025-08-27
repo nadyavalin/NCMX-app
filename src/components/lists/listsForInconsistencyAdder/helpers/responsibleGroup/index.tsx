@@ -1,6 +1,6 @@
 import React from "react";
-import { ItemRequestPOST } from "../../../../../types/types";
-import { ResponsiblePairs } from "../../responsiblePairs";
+import { ItemRequestPOST } from "@appTypes/types";
+import { ResponsiblePairs } from "../../ResponsiblePairs";
 
 interface ResponsibleGroupProps {
   formData: ItemRequestPOST;

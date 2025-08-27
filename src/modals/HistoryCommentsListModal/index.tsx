@@ -5,10 +5,10 @@ import { useDispatch } from "react-redux";
 import { deleteCommentInconsistencyRequest } from "@/api";
 import { useFetchCommentsItems } from "@hooks/useComments";
 import { AppDispatch } from "@store/store";
-import { useSnackbar, SnackbarType } from "@components/snackbar/snackbarContext";
-import { ModalComponent } from "../modalComponent";
-import InconsistenciesCommentsModal from "../commentsAdder";
-import { ItemCommentResponseGET } from "../../types/types";
+import { useSnackbar, SnackbarType } from "@components/Snackbar/snackbarContext";
+import { ModalComponent } from "../ModalComponent";
+import CommentsAdderModal from "../CommentsAdderModal";
+import { ItemCommentResponseGET } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
 
 interface ModalProps {
@@ -17,11 +17,7 @@ interface ModalProps {
   onClose: () => void;
 }
 
-const InconsistenciesHistoryCommentsModal = ({
-  currentInconsistencyNumber,
-  isOpen,
-  onClose,
-}: ModalProps) => {
+const HistoryCommentsListModal = ({ currentInconsistencyNumber, isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { comments, loading, error, refetch } = useFetchCommentsItems(currentInconsistencyNumber);
   const addSnackbar = useSnackbar();
@@ -161,7 +157,7 @@ const InconsistenciesHistoryCommentsModal = ({
         </div>
       </ModalComponent>
       {isEditModalOpen && editingComment && (
-        <InconsistenciesCommentsModal
+        <CommentsAdderModal
           currentInconsistencyNumber={currentInconsistencyNumber}
           isOpen={isEditModalOpen}
           onClose={handleEditModalClose}
@@ -172,4 +168,4 @@ const InconsistenciesHistoryCommentsModal = ({
   );
 };
 
-export default React.memo(InconsistenciesHistoryCommentsModal);
+export default React.memo(HistoryCommentsListModal);

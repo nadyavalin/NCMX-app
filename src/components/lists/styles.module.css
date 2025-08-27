@@ -1,6 +1,5 @@
 .list {
   width: 300px;
-  font-size: 0.7rem;
   cursor: pointer;
   outline: none;
   background-color: var(--bg-filter-search-color);

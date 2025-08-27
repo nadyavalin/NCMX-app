@@ -6,7 +6,7 @@ import {
   updateInconsistencyRequest,
   restoreInconsistencyRequest,
 } from "@/api";
-import { ItemResponseGET, ItemRequestPOST } from "../types/types";
+import { ItemResponseGET, ItemRequestPOST } from "@appTypes/types";
 
 interface InconsistenciesState {
   activeItems: ItemResponseGET[];

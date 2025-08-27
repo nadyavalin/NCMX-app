@@ -10,15 +10,15 @@ import {
   toggleModalEdit,
 } from "@store/uiSlice";
 import { formatDate } from "@utils/formatDate";
-import InconsistenciesModal from "@modals/InconsistenciesAdder";
-import InconsistenciesCommentsModal from "@modals/commentsAdder";
-import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
-import InconsistenciesEstimateModal from "@modals/estimate";
-import { ConfirmDeleteModal } from "@modals/confirmDelete";
-import { MainFilter } from "@components/lists/headFilters/mainFilter";
-import { SearchInput } from "@components/searchInput";
-import { useSnackbar } from "@components/snackbar/snackbarContext";
-import { ItemResponseGET, SnackbarType } from "../../types/types";
+import InconsistencyAdderModal from "@modals/InconsistencyAdderModal";
+import CommentsAdderModal from "@modals/CommentsAdderModal";
+import HistoryCommentsListModal from "@modals/HistoryCommentsListModal";
+import EstimateModal from "@modals/EstimateModal";
+import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
+import { MainFilter } from "@components/lists/headFilters/MainFilter";
+import { SearchInput } from "@components/SearchInput";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { ItemResponseGET, SnackbarType } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
 
 interface InconsistencyTableProps {
@@ -36,7 +36,7 @@ interface InconsistencyTableProps {
   showEstimateAction?: boolean;
 }
 
-const InconsistencyTable = ({
+export const InconsistencyTable = ({
   title,
   items,
   isLoading,
@@ -332,7 +332,7 @@ const InconsistencyTable = ({
       {showAddButton && (
         <section className={styles.addButton}>
           <button onClick={openModal}>Добавить несоответствие</button>
-          <InconsistenciesModal
+          <InconsistencyAdderModal
             isOpen={isModalEditOpen}
             onClose={() => handleCloseModal("edit")}
             editItem={editItem}
@@ -340,17 +340,17 @@ const InconsistencyTable = ({
         </section>
       )}
 
-      <InconsistenciesCommentsModal
+      <CommentsAdderModal
         currentInconsistencyNumber={currentInconsistencyNumber}
         isOpen={isModalCommentsOpen}
         onClose={() => handleCloseModal("comments")}
       />
-      <InconsistenciesHistoryCommentsModal
+      <HistoryCommentsListModal
         currentInconsistencyNumber={currentInconsistencyNumber}
         isOpen={isModalHistoryCommentsOpen}
         onClose={() => handleCloseModal("historyComments")}
       />
-      <InconsistenciesEstimateModal
+      <EstimateModal
         isOpen={isModalEstimateResultOpen}
         onClose={() => handleCloseModal("estimateResult")}
       />

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { ItemRequestPOST } from "../types/types";
+import { ItemRequestPOST } from "@appTypes/types";
 
 interface ValidationErrors {
   [key: string]: string;

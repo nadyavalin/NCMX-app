@@ -1,7 +1,11 @@
 .normativeDocumentBlock {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
+}
+
+.normativeDocumentBlock select {
+  width: 70%;
 }
 
 .pointInput {

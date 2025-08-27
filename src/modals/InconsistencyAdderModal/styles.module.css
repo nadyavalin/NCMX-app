@@ -1,8 +1,6 @@
 .modalContentSpec {
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: space-between;
-  width: 65%;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -22,17 +20,22 @@
   text-align: left;
 }
 
+.form {
+  width: 100%;
+}
+
 .modalForm {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .modalInternalBlocks {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 46%;
+  width: 45%;
   padding: 20px;
   background-color: var(--bg-color);
   border-radius: 10px;
@@ -60,9 +63,3 @@
   font-size: 0.7rem;
   color: var(--accent-red-color);
 }
-
-/* .respArea {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-} */
