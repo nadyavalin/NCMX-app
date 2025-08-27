@@ -3,7 +3,7 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
-import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { useSnackbar } from "@components/Snackbars/snackbarContext";
 import { ModalComponent } from "../ModalComponent";
 import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
 

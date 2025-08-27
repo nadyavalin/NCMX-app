@@ -2,8 +2,8 @@
 
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { MainFilter } from "@components/lists/headFilters/MainFilter";
-import { SearchInput } from "@components/SearchInput";
+import { MainFilter } from "@components/lists/headFilters/MainFilters";
+import { SearchInput } from "@components/SearchInputs";
 
 export const Improvements = () => {
   return (

@@ -6,9 +6,9 @@ import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api";
 import { AppDispatch, RootState } from "@store/store";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "@appTypes/types";
 import { useFormValidation } from "@hooks/useFormValidation";
-import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditors";
-import { NormativeDocuments } from "@components/lists/listsForInconsistencyAdder/NormativeDocuments";
+import { useSnackbar } from "@components/Snackbars/snackbarContext";
+import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditorss";
+import { NormativeDocuments } from "@components/lists/listsForInconsistencyAdder/NormativeDocumentss";
 import ResponsibleGroup from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroup";
 import { ModalComponent } from "../ModalComponent";
 

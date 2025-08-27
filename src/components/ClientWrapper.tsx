@@ -2,7 +2,7 @@
 
 import { Provider } from "react-redux";
 import { store } from "@store/store";
-import { SnackbarProvider } from "@components/Snackbar/snackbarContext";
+import { SnackbarProvider } from "@components/Snackbars/snackbarContext";
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
   return (

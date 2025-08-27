@@ -1,6 +1,6 @@
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { SearchInput } from "@components/SearchInput";
+import { SearchInput } from "@components/SearchInputs";
 
 export const ArchiveImprovements = () => {
   return (

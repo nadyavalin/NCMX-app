@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { deleteCommentInconsistencyRequest } from "@/api";
 import { useFetchCommentsItems } from "@hooks/useComments";
 import { AppDispatch } from "@store/store";
-import { useSnackbar, SnackbarType } from "@components/Snackbar/snackbarContext";
+import { useSnackbar, SnackbarType } from "@components/Snackbars/snackbarContext";
 import { ModalComponent } from "../ModalComponent";
 import CommentsAdderModal from "../CommentsAdderModal";
 import { ItemCommentResponseGET } from "@appTypes/types";

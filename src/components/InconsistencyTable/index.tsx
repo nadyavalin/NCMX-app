@@ -15,9 +15,9 @@ import CommentsAdderModal from "@modals/CommentsAdderModal";
 import HistoryCommentsListModal from "@modals/HistoryCommentsListModal";
 import EstimateModal from "@modals/EstimateModal";
 import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
-import { MainFilter } from "@components/lists/headFilters/MainFilter";
-import { SearchInput } from "@components/SearchInput";
-import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { MainFilter } from "@components/lists/headFilters/MainFilters";
+import { SearchInput } from "@components/SearchInputs";
+import { useSnackbar } from "@components/Snackbars/snackbarContext";
 import { ItemResponseGET, SnackbarType } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
 
