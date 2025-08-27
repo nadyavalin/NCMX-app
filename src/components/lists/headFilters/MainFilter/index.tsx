@@ -1,8 +1,8 @@
 import styles from "./styles.module.css";
 import { useState } from "react";
 import { ISORequirements } from "../ISOrequirements";
-import { Regulations } from "../Regulationss";
-import { Departments } from "../Departmentss";
+import { Regulations } from "../Regulations";
+import { Departments } from "../Departments";
 import { AllResponsiblePersons } from "../AllResponsiblePersonss";
 
 export const MainFilter = () => {

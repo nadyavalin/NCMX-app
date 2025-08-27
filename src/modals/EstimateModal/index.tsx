@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
-import { useSnackbar } from "@components/Snackbars/snackbarContext";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { ModalComponent } from "../ModalComponent";
 import { SnackbarType } from "@appTypes/types";
 
