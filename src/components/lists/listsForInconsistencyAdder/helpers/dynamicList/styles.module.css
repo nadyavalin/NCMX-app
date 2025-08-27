@@ -3,13 +3,12 @@
 }
 
 .activeLink {
-  width: 120px;
-  padding: 3px;
+  white-space: nowrap;
 }
 
 .disabledLink {
-  width: 120px;
-  padding: 3px;
   color: var(--link-disabled-color);
+  white-space: nowrap;
   pointer-events: none;
+  cursor: not-allowed;
 }

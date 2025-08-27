@@ -15,7 +15,7 @@ import InconsistenciesCommentsModal from "@modals/commentsAdder";
 import InconsistenciesHistoryCommentsModal from "@modals/historyCommentsList";
 import InconsistenciesEstimateModal from "@modals/estimate";
 import { ConfirmDeleteModal } from "@modals/confirmDelete";
-import { MainFilter } from "@components/filters/mainFilter";
+import { MainFilter } from "@components/lists/headFilters/mainFilter";
 import { SearchInput } from "@components/searchInput";
 import { useSnackbar } from "@components/snackbar/snackbarContext";
 import { ItemResponseGET, SnackbarType } from "../../types/types";

@@ -1,6 +1,6 @@
-import styles from "../styles.module.css";
+import styles from "../../styles.module.css";
 
-export const Requirements = () => {
+export const Regulations = () => {
   return (
     <select className={styles.list}>
       <option value="">...выбрать регламент</option>

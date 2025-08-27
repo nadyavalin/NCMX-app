@@ -16,12 +16,7 @@
 }
 
 .submitError {
-  font-size: 12px;
+  font-size: 0.6rem;
   color: var(--accent-red-color);
   text-align: start;
-}
-
-/* временная мера */
-.div_area {
-  width: 97%;
 }

@@ -1,9 +1,9 @@
-import styles from "../styles.module.css";
+import styles from "./styles.module.css";
 import { useState } from "react";
-import { ISORequirements } from "../../lists/ISOrequirements";
-import { Requirements } from "../../lists/requirements";
-import { Departments } from "../../lists/departments";
-import { AllResponsiblePersons } from "../../lists/allResponsiblePersons";
+import { ISORequirements } from "../ISOrequirements";
+import { Regulations } from "../regulations";
+import { Departments } from "../departments";
+import { AllResponsiblePersons } from "../allResponsiblePersons";
 
 export const MainFilter = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("department");
@@ -27,7 +27,7 @@ export const MainFilter = () => {
 
       <div className={styles.innerFilters}>
         {selectedFilter === "ISOrequirement" && <ISORequirements />}
-        {selectedFilter === "requirement" && <Requirements />}
+        {selectedFilter === "requirement" && <Regulations />}
         {selectedFilter === "department" && (
           <Departments value={department} onChange={(e) => setDepartment(e.target.value)} />
         )}

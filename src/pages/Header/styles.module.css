@@ -14,7 +14,7 @@
 
 .auditTitle {
   padding: 10px 22px 25px 0;
-  font-size: 16px;
+  font-size: 0.9rem;
   color: var(--text-button-color);
   text-align: right;
 }

@@ -1,4 +1,4 @@
-import styles from "../styles.module.css";
+import styles from "../../styles.module.css";
 
 interface AllResponsiblePersonsProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   name?: string;
@@ -41,13 +41,17 @@ export const AllResponsiblePersons: React.FC<AllResponsiblePersonsProps> = ({
       <option value="Суворов С.К.">Суворов С.К.</option>
       <option value="Андрианов С.В.">Андрианов С.В.</option>
       <option value="Нурмухамедов В.А.">Нурмухамедов В.А.</option>
+      <option value="Плотников В.В.">Плотников В.В.</option>
+      <option value="Зорин В.Н.">Зорин В.Н.</option>
+      <option value="Вольхин В.">Вольхин В.</option>
+      <option value="Валеева А.Р.">Валеева А.Р.</option>
       <option value="Матвеева М.А.">Матвеева М.А.</option>
+      <option value="Грибова Ю.А.">Грибова Ю.А.</option>
       <option value="Разумнева Н.П.">Разумнева Н.П.</option>
       <option value="Егорова И.В.">Егорова И.В.</option>
       <option value="Павлов Ф.Б.">Павлов Ф.Б.</option>
       <option value="Годунов Б.В.">Годунов Б.В.</option>
       <option value="Хохлёнков Д.В.">Хохлёнков Д.В.</option>
-      <option value="Плотников В.В.">Плотников В.В.</option>
     </select>
   );
 };

@@ -2,7 +2,7 @@
 
 import "@/globals.css";
 import styles from "./styles.module.css";
-import { MainFilter } from "@components/filters/mainFilter";
+import { MainFilter } from "@components/lists/headFilters/mainFilter";
 import { SearchInput } from "@components/searchInput";
 
 export const Improvements = () => {

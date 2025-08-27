@@ -1,6 +1,6 @@
 import React, { JSX } from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST } from "../../../types/types";
+import { ItemRequestPOST } from "../../../../../types/types";
 
 interface DynamicListProps<T extends object> {
   items: T[];

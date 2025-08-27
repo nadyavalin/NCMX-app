@@ -28,7 +28,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmModalProps> = ({
   return (
     <ModalComponent isOpen={open} onClose={onClose} additionalClass={styles.confirmModal}>
       <div className={styles.deleteContainer}>
-        <h2 className={styles.title}>{title}</h2>
+        <h2>{title}</h2>
         <p className={styles.message}>{localMessage}</p>
         <div className={styles.actions}>
           <button onClick={onClose}>Отмена</button>

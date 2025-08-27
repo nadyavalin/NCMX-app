@@ -1,10 +1,10 @@
 import React from "react";
-import { ItemRequestPOST, Responsible } from "../../../types/types";
-import { DynamicList } from "../dynamicList";
-import { Departments } from "@components/lists/departments";
-import { ResponsiblePersonsByDepartment } from "@components/lists/responsiblePersonsByDepartment";
-import { departmentToPersonsMap } from "../responsiblePersonsByDepartment/departmentToPersonsMap";
 import styles from "./styles.module.css";
+import { ItemRequestPOST, Responsible } from "../../../../types/types";
+import { DynamicList } from "../helpers/dynamicList";
+import { Departments } from "@components/lists/headFilters/departments";
+import { ResponsiblePersonsByDepartment } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment";
+import { departmentToPersonsMap } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment/departmentToPersonsMap";
 
 interface ResponsiblePairsProps {
   items: Responsible[];

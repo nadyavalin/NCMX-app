@@ -21,7 +21,7 @@
 }
 
 .inconsistenciesActions a {
-  font-size: 11px;
+  font-size: 0.55rem;
 }
 
 .redText {
@@ -42,5 +42,5 @@
 
 .errorMessage {
   margin-bottom: 1rem;
-  color: red;
+  color: var(--accent-red-color);
 }
