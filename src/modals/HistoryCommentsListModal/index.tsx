@@ -8,7 +8,7 @@ import { ItemCommentResponseGET } from "@appTypes/types";
 import { useFetchCommentsItems } from "@hooks/useComments";
 import { formatDateTime } from "@utils/formatDateTime";
 import { useSnackbar, SnackbarType } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "@modals/ModalComponents";
+import { ModalComponent } from "@modals/ModalComponent";
 import CommentsAdderModal from "../CommentsAdderModal";
 
 interface ModalProps {

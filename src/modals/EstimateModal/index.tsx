@@ -6,7 +6,7 @@ import { SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "@modals/ModalComponents";
+import { ModalComponent } from "@modals/ModalComponent";
 
 interface ModalProps {
   isOpen: boolean;

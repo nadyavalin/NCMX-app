@@ -15,9 +15,9 @@ import { useFormValidation } from "@hooks/useFormValidation";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditors";
 import { NormativeDocuments } from "@components/lists/listsForInconsistencyAdder/NormativeDocuments";
-import { ModalComponent } from "@modals/ModalComponents";
-import { ResponsibleGroup } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroupS";
-import { DynamicList } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicLists";
+import { ModalComponent } from "@modals/ModalComponent";
+import { ResponsibleGroup } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroup";
+import { DynamicList } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicList";
 
 interface ModalProps {
   isOpen: boolean;
