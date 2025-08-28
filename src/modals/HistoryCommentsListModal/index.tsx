@@ -3,13 +3,13 @@ import styles from "./styles.module.css";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { deleteCommentInconsistencyRequest } from "@/api";
-import { useFetchCommentsItems } from "@hooks/useComments";
 import { AppDispatch } from "@store/store";
-import { useSnackbar, SnackbarType } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "../ModalComponent";
-import CommentsAdderModal from "../CommentsAdderModal";
 import { ItemCommentResponseGET } from "@appTypes/types";
+import { useFetchCommentsItems } from "@hooks/useComments";
 import { formatDateTime } from "@utils/formatDateTime";
+import { useSnackbar, SnackbarType } from "@components/Snackbar/snackbarContext";
+import { ModalComponent } from "@modals/modalComponent";
+import CommentsAdderModal from "../CommentsAdderModal";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

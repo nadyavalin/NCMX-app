@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
 import { ItemRequestPOST, IAuditors } from "@appTypes/types";
-import { DynamicList } from "../helpers/DynamicList";
+import { DynamicList } from "../helpers/dynamicLists";
 
 interface AuditorProps {
   auditors: IAuditors[];

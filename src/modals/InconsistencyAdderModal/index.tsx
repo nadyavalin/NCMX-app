@@ -7,10 +7,10 @@ import { AppDispatch, RootState } from "@store/store";
 import { ItemRequestPOST, ItemResponseGET, SnackbarType } from "@appTypes/types";
 import { useFormValidation } from "@hooks/useFormValidation";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditorss";
-import { NormativeDocuments } from "@components/lists/listsForInconsistencyAdder/NormativeDocumentss";
-import ResponsibleGroup from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroup";
-import { ModalComponent } from "../ModalComponent";
+import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditors";
+import { NormativeDocuments } from "@components/lists/listsForInconsistencyAdder/NormativeDocuments";
+import { ModalComponent } from "@modals/modalComponent";
+import { ResponsibleGroup } from "@components/lists/listsForInconsistencyAdder/helpers/responsibleGroup";
 
 interface ModalProps {
   isOpen: boolean;

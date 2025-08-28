@@ -5,9 +5,9 @@
 }
 
 .normativeDocumentBlock select {
-  width: 70%;
+  width: 50%;
 }
 
-.pointInput {
+.normativeDocumentBlock input {
   width: 100%;
 }

@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 import React, { useEffect, useState } from "react";
-import { ModalComponent } from "../ModalComponent";
+import { ModalComponent } from "@modals/modalComponent";
 
 interface ConfirmModalProps {
   open: boolean;

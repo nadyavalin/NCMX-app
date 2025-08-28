@@ -2,10 +2,10 @@ import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api";
+import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "../ModalComponent";
-import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
+import { ModalComponent } from "@modals/modalComponent";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;

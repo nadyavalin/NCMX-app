@@ -2,11 +2,11 @@ import styles from "./styles.module.css";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@/api";
+import { SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "../ModalComponent";
-import { SnackbarType } from "@appTypes/types";
+import { ModalComponent } from "@modals/modalComponent";
 
 interface ModalProps {
   isOpen: boolean;
