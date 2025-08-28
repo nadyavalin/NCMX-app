@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
 import { ItemRequestPOST, Responsible } from "@appTypes/types";
-import { DynamicList } from "../helpers/dynamicList";
+import { DynamicList } from "../helpers/DynamicLists";
 import { Departments } from "@components/lists/headFilters/Departments";
 import { ResponsiblePersonsByDepartment } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment";
 import { departmentToPersonsMap } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment/departmentToPersonsMap";

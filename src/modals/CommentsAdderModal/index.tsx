@@ -5,7 +5,7 @@ import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } 
 import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { ModalComponent } from "@modals/modalComponent";
+import { ModalComponent } from "@modals/ModalComponents";
 
 interface ModalProps {
   currentInconsistencyNumber: number | null;
