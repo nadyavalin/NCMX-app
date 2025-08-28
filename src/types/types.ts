@@ -14,62 +14,6 @@ export interface Responsible {
   person?: string;
 }
 
-export interface InconsistencyNumberState {
-  currentInconsistencyNumber: number | null;
-  isModalCommentsOpen: boolean;
-  isModalHistoryCommentsOpen: boolean;
-  isModalEstimateResultOpen: boolean;
-  isModalEditOpen: boolean;
-  items: ItemResponseGET[];
-  itemsLoading: boolean;
-  itemsError: string | null;
-  createLoading: boolean;
-  createError: string | null;
-  commentLoading: boolean;
-  commentError: string | null;
-  comments: ItemCommentResponseGET[];
-}
-
-export interface ItemResponseGET {
-  num_nonconf: number;
-  normative_documents?: NormativeDocument[];
-  head_auditor?: string;
-  auditors?: IAuditors[];
-  nonconf?: string;
-  report?: string;
-  report_date?: DateString;
-  analysis_start_date?: DateString;
-  analysis_finish_date?: DateString;
-  reason?: string;
-  correction?: string;
-  correction_date?: DateString;
-  responsible_for_correction?: Responsible[];
-  corrective_action?: string;
-  corrective_action_date?: DateString;
-  responsible_for_corrective_action?: Responsible[];
-  estimate?: number;
-  nonconf_closure_date?: DateString;
-  resp_person_nonconf_closure?: string;
-  auto_data?: DateString;
-  is_archived?: boolean;
-}
-
-export interface APIResponse {
-  results: ItemResponseGET[];
-}
-
-export interface ItemCommentResponseGET {
-  id: number;
-  num_nonconf: number;
-  comment_author: string;
-  comment_text: string;
-  created_at: DateString;
-}
-
-export interface APICommentsResponse {
-  results: ItemCommentResponseGET[];
-}
-
 export interface ItemRequestPOST {
   num_nonconf: number;
   normative_documents?: NormativeDocument[];
@@ -91,6 +35,42 @@ export interface ItemRequestPOST {
   nonconf_closure_date?: string | null;
   resp_person_nonconf_closure?: string;
   is_archived?: boolean;
+}
+
+export interface ItemResponseGET extends ItemRequestPOST {
+  auto_data?: DateString;
+}
+
+export interface InconsistencyNumberState {
+  currentInconsistencyNumber: number | null;
+  isModalCommentsOpen: boolean;
+  isModalHistoryCommentsOpen: boolean;
+  isModalEstimateResultOpen: boolean;
+  isModalEditOpen: boolean;
+  items: ItemResponseGET[];
+  itemsLoading: boolean;
+  itemsError: string | null;
+  createLoading: boolean;
+  createError: string | null;
+  commentLoading: boolean;
+  commentError: string | null;
+  comments: ItemCommentResponseGET[];
+}
+
+export interface APIResponse {
+  results: ItemResponseGET[];
+}
+
+export interface ItemCommentResponseGET {
+  id: number;
+  num_nonconf: number;
+  comment_author: string;
+  comment_text: string;
+  created_at: DateString;
+}
+
+export interface APICommentsResponse {
+  results: ItemCommentResponseGET[];
 }
 
 export interface ItemCommentRequestPOST {

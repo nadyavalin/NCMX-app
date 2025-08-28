@@ -307,19 +307,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           <div className={styles.modalInternalBlocks}>
             <div className={styles.oneLineText}>
               <p>3. Коррекция</p>
-              <a
-                href="#"
-                onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    correction: prev.correction
-                      ? `${prev.correction}\nНовая коррекция`
-                      : "Новая коррекция",
-                  }))
-                }
-              >
-                Добавить коррекцию
-              </a>
+              <a href="#">Добавить коррекцию</a>
             </div>
             <textarea
               name="correction"
@@ -353,19 +341,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           <div className={styles.modalInternalBlocks}>
             <div className={styles.oneLineText}>
               <p>4. Корректирующее действие</p>
-              <a
-                href="#"
-                onClick={() =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    corrective_action: prev.corrective_action
-                      ? `${prev.corrective_action}\nНовое действие`
-                      : "Новое действие",
-                  }))
-                }
-              >
-                Добавить кор. действие
-              </a>
+              <a href="#">Добавить корр. действие</a>
             </div>
             <textarea
               name="corrective_action"
