@@ -12,15 +12,8 @@ class NCMXInconsistencies(models.Model):
     head_auditor = models.CharField(max_length=50, blank=True, null=True, db_comment='Главный аудитор')
     auditors = JSONField(default=list, blank=True, db_comment='Список аудиторов')
     reason = models.CharField(max_length=250, blank=True, null=True, db_comment='Причина несоответствия')
-    correction = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание коррекции')
-    correction_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения коррекции')
-    corrective_action = models.CharField(max_length=1000, blank=True, null=True, db_comment='Корректирующее действие')
-    corrective_action_date = models.DateField(blank=True, null=True, db_comment='Дата внедрения корр. действия')
-   
-    responsible_for_correction = JSONField(default=list, blank=True, db_comment='Список ответственных за коррекцию (подразделение + сотрудник)')
-    
-    responsible_for_corrective_action = JSONField(default=list, blank=True, db_comment='Список ответственных за корр. действие (подразделение + сотрудник)')
-    
+    corrections = JSONField(default=list, blank=True, db_comment='Список коррекций (описание, дата, ответственные)')
+    corrective_actions = JSONField(default=list, blank=True, db_comment='Список корректирующих действий (описание, дата, ответственные)')
     estimate = models.IntegerField(blank=True, null=True, db_comment='Оценка')
     nonconf_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия несоответствия')
     resp_person_nonconf_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')

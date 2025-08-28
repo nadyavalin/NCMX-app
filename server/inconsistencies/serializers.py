@@ -4,27 +4,36 @@ from .models import NCMXInconsistencies, NCMXInconsistencyComments
 class NormativeDocumentSerializer(serializers.Serializer):
     norm_doc = serializers.CharField(max_length=50, allow_blank=True)
     point = serializers.CharField(max_length=50, allow_blank=True)
-    
+
 class AuditorsSerializer(serializers.Serializer):
-    auditor = serializers.CharField(max_length=50, allow_blank=True)    
+    auditor = serializers.CharField(max_length=50, allow_blank=True)
 
 class ResponsibleSerializer(serializers.Serializer):
     department = serializers.CharField(max_length=50, allow_blank=True)
     person = serializers.CharField(max_length=50, allow_blank=True)
 
+class CorrectionSerializer(serializers.Serializer):
+    correction = serializers.CharField(max_length=1000, allow_blank=True)
+    correction_date = serializers.DateField(allow_null=True)
+    responsible_for_correction = ResponsibleSerializer(many=True, required=False)
+
+class CorrectiveActionSerializer(serializers.Serializer):
+    corrective_action = serializers.CharField(max_length=1000, allow_blank=True)
+    corrective_action_date = serializers.DateField(allow_null=True)
+    responsible_for_corrective_action = ResponsibleSerializer(many=True, required=False)
+
 class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
     auditors = AuditorsSerializer(many=True, required=False)
-    responsible_for_correction = ResponsibleSerializer(many=True, required=False)
-    responsible_for_corrective_action = ResponsibleSerializer(many=True, required=False)
+    corrections = CorrectionSerializer(many=True, required=False)
+    corrective_actions = CorrectiveActionSerializer(many=True, required=False)
 
     class Meta:
         model = NCMXInconsistencies
         fields = [
             'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditors',
-            'reason', 'correction', 'correction_date', 'responsible_for_correction',
-            'corrective_action', 'corrective_action_date', 'responsible_for_corrective_action',
+            'reason', 'corrections', 'corrective_actions',
             'estimate', 'nonconf_closure_date', 'resp_person_nonconf_closure', 'auto_data', 'is_archived'
         ]
 
@@ -62,7 +71,6 @@ class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):
             NCMXInconsistencies.objects.get(num_nonconf=data['num_nonconf'])
         except NCMXInconsistencies.DoesNotExist:
             raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
-        
         return data
 
     def create(self, validated_data):

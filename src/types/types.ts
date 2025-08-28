@@ -1,44 +1,67 @@
 export type DateString = string;
 
 export interface NormativeDocument {
-  norm_doc?: string;
-  point?: string;
+  norm_doc: string;
+  point: string;
 }
 
 export interface IAuditors {
-  auditor?: string;
+  auditor: string;
 }
 
 export interface Responsible {
-  department?: string;
-  person?: string;
+  department: string;
+  person: string;
+}
+
+export interface Correction {
+  correction: string | undefined;
+  correction_date: string | null | undefined;
+  responsible_for_correction: Responsible[];
+}
+
+export interface CorrectiveAction {
+  corrective_action: string | undefined;
+  corrective_action_date: string | null | undefined;
+  responsible_for_corrective_action: Responsible[];
 }
 
 export interface ItemRequestPOST {
-  num_nonconf: number;
-  normative_documents?: NormativeDocument[];
-  head_auditor?: string;
-  auditors?: IAuditors[];
-  nonconf?: string;
-  report?: string;
-  report_date?: string | null;
-  analysis_start_date?: string | null;
-  analysis_finish_date?: string | null;
-  reason?: string;
-  correction?: string;
-  correction_date?: string | null;
-  responsible_for_correction?: Responsible[];
-  corrective_action?: string;
-  corrective_action_date?: string | null;
-  responsible_for_corrective_action?: Responsible[];
-  estimate?: number | null;
-  nonconf_closure_date?: string | null;
-  resp_person_nonconf_closure?: string;
+  num_nonconf: number | null;
+  normative_documents: NormativeDocument[] | undefined;
+  nonconf: string;
+  report: string;
+  report_date: string | null | undefined;
+  analysis_start_date: string | null | undefined;
+  analysis_finish_date: string | null | undefined;
+  head_auditor: string;
+  auditors: IAuditors[] | undefined;
+  reason: string;
+  corrections: Correction[] | undefined;
+  corrective_actions: CorrectiveAction[] | undefined;
+  estimate: number | null;
+  nonconf_closure_date: string | null | undefined;
+  resp_person_nonconf_closure: string;
   is_archived?: boolean;
 }
 
-export interface ItemResponseGET extends ItemRequestPOST {
-  auto_data?: DateString;
+export interface ItemResponseGET {
+  num_nonconf: number;
+  normative_documents: NormativeDocument[];
+  nonconf: string;
+  report: string;
+  report_date: string | null;
+  analysis_start_date: string | null;
+  analysis_finish_date: string | null;
+  head_auditor: string;
+  auditors: IAuditors[];
+  reason: string;
+  corrections: Correction[];
+  corrective_actions: CorrectiveAction[];
+  estimate: number | null;
+  nonconf_closure_date: string | null;
+  resp_person_nonconf_closure: string;
+  is_archived: boolean;
 }
 
 export interface InconsistencyNumberState {

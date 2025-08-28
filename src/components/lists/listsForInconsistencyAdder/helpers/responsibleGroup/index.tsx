@@ -8,6 +8,7 @@ interface ResponsibleGroupProps {
   createLoading: boolean;
   fieldName: "responsible_for_correction" | "responsible_for_corrective_action";
   addText: string;
+  correctionIndex: number;
 }
 
 export const ResponsibleGroup = ({
@@ -16,14 +17,25 @@ export const ResponsibleGroup = ({
   createLoading,
   fieldName,
   addText,
+  correctionIndex,
 }: ResponsibleGroupProps) => {
+  const items =
+    fieldName === "responsible_for_correction"
+      ? formData.corrections?.[correctionIndex]?.responsible_for_correction || [
+          { department: "", person: "" },
+        ]
+      : formData.corrective_actions?.[correctionIndex]?.responsible_for_corrective_action || [
+          { department: "", person: "" },
+        ];
+
   return (
     <ResponsiblePairs
-      items={formData[fieldName] || [{ department: "", person: "" }]}
+      items={items}
       setFormData={setFormData}
       createLoading={createLoading}
       fieldName={fieldName}
       addText={addText}
+      correctionIndex={correctionIndex}
     />
   );
 };

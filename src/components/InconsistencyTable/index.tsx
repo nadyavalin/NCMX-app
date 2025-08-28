@@ -225,26 +225,63 @@ export const InconsistencyTable = ({
                       : "-"}
                   </td>
                   <td>{item.reason || "-"}</td>
-                  <td>{item.correction || "-"}</td>
-                  <td>{formatDate(item.correction_date) || "-"}</td>
                   <td>
-                    {item.responsible_for_correction && item.responsible_for_correction.length > 0
-                      ? item.responsible_for_correction.map((resp, index) => (
-                          <p key={index}>
-                            {resp.department || "-"}: {resp.person || "-"}
-                          </p>
+                    {item.corrections && item.corrections.length > 0
+                      ? item.corrections.map((corr, index) => (
+                          <p key={index}>{corr.correction || "-"}</p>
                         ))
                       : "-"}
                   </td>
-                  <td>{item.corrective_action || "-"}</td>
-                  <td>{formatDate(item.corrective_action_date) || "-"}</td>
                   <td>
-                    {item.responsible_for_corrective_action &&
-                    item.responsible_for_corrective_action.length > 0
-                      ? item.responsible_for_corrective_action.map((resp, index) => (
-                          <p key={index}>
-                            {resp.department || "-"}: {resp.person || "-"}
-                          </p>
+                    {item.corrections && item.corrections.length > 0
+                      ? item.corrections.map((corr, index) => (
+                          <p key={index}>{formatDate(corr.correction_date) || "-"}</p>
+                        ))
+                      : "-"}
+                  </td>
+                  <td>
+                    {item.corrections && item.corrections.length > 0
+                      ? item.corrections.map((corr, index) => (
+                          <div key={index}>
+                            {corr.responsible_for_correction &&
+                            corr.responsible_for_correction.length > 0
+                              ? corr.responsible_for_correction.map((resp, respIndex) => (
+                                  <p key={respIndex}>
+                                    {resp.department || "-"}: {resp.person || "-"}
+                                  </p>
+                                ))
+                              : "-"}
+                          </div>
+                        ))
+                      : "-"}
+                  </td>
+                  <td>
+                    {item.corrective_actions && item.corrective_actions.length > 0
+                      ? item.corrective_actions.map((act, index) => (
+                          <p key={index}>{act.corrective_action || "-"}</p>
+                        ))
+                      : "-"}
+                  </td>
+                  <td>
+                    {item.corrective_actions && item.corrective_actions.length > 0
+                      ? item.corrective_actions.map((act, index) => (
+                          <p key={index}>{formatDate(act.corrective_action_date) || "-"}</p>
+                        ))
+                      : "-"}
+                  </td>
+                  <td>
+                    {item.corrective_actions && item.corrective_actions.length > 0
+                      ? item.corrective_actions.map((act, index) => (
+                          <div key={index}>
+                            {act.responsible_for_corrective_action &&
+                            act.responsible_for_corrective_action.length > 0
+                              ? act.responsible_for_corrective_action.map((resp, respIndex) => (
+                                  <p key={respIndex}>
+                                    {resp.department || "-"}: {resp.person || "-"}
+                                  </p>
+                                ))
+                              : "-"}
+                          </div>
                         ))
                       : "-"}
                   </td>
