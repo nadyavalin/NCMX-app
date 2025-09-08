@@ -1,8 +1,25 @@
+.selectInputButtonBlock {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.selectInputButtonBlock input {
+  width: 100%;
+}
+
+.selectInputBlock {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
 .removeButton {
   min-width: 100px;
 }
 
 .activeLink {
+  width: 100px;
   white-space: nowrap;
 }
 

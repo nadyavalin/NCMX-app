@@ -1,10 +1,14 @@
-export const formatDate = (dateString: string | undefined): string => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return dateString;
-  return date.toLocaleString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+export const formatDate = (date: string | null | undefined): string => {
+  if (!date) return "-";
+  try {
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) return "-";
+    return parsedDate.toLocaleDateString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  } catch {
+    return "-";
+  }
 };

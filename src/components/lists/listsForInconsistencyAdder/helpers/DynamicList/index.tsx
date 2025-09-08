@@ -1,34 +1,34 @@
 import React, { JSX } from "react";
+import { ItemRequestPOST, Correction, CorrectiveAction, Responsible } from "@appTypes/types";
 import styles from "./styles.module.css";
-import { ItemRequestPOST } from "@appTypes/types";
+
+type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface DynamicListProps<T extends object> {
   items: T[];
   setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
   createLoading: boolean;
-  fieldName: keyof ItemRequestPOST;
+  fieldName: FieldName;
   renderItem: (
     item: T,
     index: number,
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
-      fieldName: keyof ItemRequestPOST,
+      fieldName: FieldName,
     ) => void,
     createLoading: boolean,
-    fieldName: keyof ItemRequestPOST,
+    fieldName: FieldName,
   ) => JSX.Element;
   addItemText: string;
   newItem: T;
   minItems?: number;
   listBlockClassName?: string;
-  parentFieldName?: keyof ItemRequestPOST;
+  parentFieldName?: "corrections" | "corrective_actions";
   parentIndex?: number;
 }
 
-export const DynamicList: <T extends object>(props: DynamicListProps<T>) => JSX.Element = <
-  T extends object,
->({
+export const DynamicList = <T extends object>({
   items,
   setFormData,
   createLoading,
@@ -37,36 +37,43 @@ export const DynamicList: <T extends object>(props: DynamicListProps<T>) => JSX.
   addItemText,
   newItem,
   minItems = 1,
-  listBlockClassName = styles.listBlock,
+  listBlockClassName = styles.selectInputButtonBlock,
   parentFieldName,
   parentIndex,
 }: DynamicListProps<T>) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     index: number,
-    fieldName: keyof ItemRequestPOST,
+    fieldName: FieldName,
   ) => {
     const { name, value } = event.target;
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
-        const parentItems = [...(prevData[parentFieldName] as unknown[])];
-        const updatedItems = [...((parentItems[parentIndex] as unknown)[fieldName] || [])];
+        const parentItems = Array.isArray(prevData[parentFieldName])
+          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          : [];
+        const parentItem = parentItems[parentIndex] || {};
+        const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
+          ? [...(parentItem[fieldName as keyof typeof parentItem] as Responsible[])]
+          : [];
         updatedItems[index] = {
           ...updatedItems[index],
-          [name]: value || "",
+          [name]: name.includes("date") ? value || null : value,
         };
         parentItems[parentIndex] = {
-          ...parentItems[parentIndex],
-          [fieldName]: updatedItems,
+          ...parentItem,
+          [fieldName as keyof typeof parentItem]: updatedItems,
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = [...(prevData[fieldName] as T[])];
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
+          ? [...(prevData[fieldName as keyof ItemRequestPOST]! as T[])]
+          : [];
         updatedItems[index] = {
           ...updatedItems[index],
-          [name]: value || "",
+          [name]: name.includes("date") ? value || null : value,
         };
-        return { ...prevData, [fieldName]: updatedItems };
+        return { ...prevData, [fieldName as keyof ItemRequestPOST]: updatedItems };
       }
     });
   };
@@ -75,19 +82,23 @@ export const DynamicList: <T extends object>(props: DynamicListProps<T>) => JSX.
     e.preventDefault();
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
-        const parentItems = [...(prevData[parentFieldName] as unknown[])];
-        const updatedItems = [...((parentItems[parentIndex] as unknown)[fieldName] || [])];
-        updatedItems.push(newItem);
+        const parentItems = Array.isArray(prevData[parentFieldName])
+          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          : [];
+        const parentItem = parentItems[parentIndex] || {};
+        const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
+          ? [...(parentItem[fieldName as keyof typeof parentItem] as Responsible[]), newItem]
+          : [newItem];
         parentItems[parentIndex] = {
-          ...parentItems[parentIndex],
-          [fieldName]: updatedItems,
+          ...parentItem,
+          [fieldName as keyof typeof parentItem]: updatedItems,
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        return {
-          ...prevData,
-          [fieldName]: [...(prevData[fieldName] as T[]), newItem],
-        };
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
+          ? [...(prevData[fieldName as keyof ItemRequestPOST]! as T[]), newItem]
+          : [newItem];
+        return { ...prevData, [fieldName as keyof ItemRequestPOST]: updatedItems };
       }
     });
   };
@@ -95,20 +106,31 @@ export const DynamicList: <T extends object>(props: DynamicListProps<T>) => JSX.
   const removeItem = (index: number) => {
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
-        const parentItems = [...(prevData[parentFieldName] as unknown[])];
-        const updatedItems = ((parentItems[parentIndex] as unknown)[fieldName] || []).filter(
-          (_: unknown, i: number) => i !== index,
-        );
+        const parentItems = Array.isArray(prevData[parentFieldName])
+          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          : [];
+        const parentItem = parentItems[parentIndex] || {};
+        const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
+          ? (parentItem[fieldName as keyof typeof parentItem] as Responsible[]).filter(
+              (_: unknown, i: number) => i !== index,
+            )
+          : [];
         parentItems[parentIndex] = {
-          ...parentItems[parentIndex],
-          [fieldName]: updatedItems.length >= minItems ? updatedItems : [newItem],
+          ...parentItem,
+          [fieldName as keyof typeof parentItem]:
+            updatedItems.length >= minItems ? updatedItems : [newItem],
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = (prevData[fieldName] as T[]).filter((_, i) => i !== index);
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
+          ? (prevData[fieldName as keyof ItemRequestPOST]! as T[]).filter(
+              (_: unknown, i: number) => i !== index,
+            )
+          : [];
         return {
           ...prevData,
-          [fieldName]: updatedItems.length >= minItems ? updatedItems : [newItem],
+          [fieldName as keyof ItemRequestPOST]:
+            updatedItems.length >= minItems ? updatedItems : [newItem],
         };
       }
     });
@@ -118,7 +140,9 @@ export const DynamicList: <T extends object>(props: DynamicListProps<T>) => JSX.
     <>
       {items.map((item, index) => (
         <div key={index} className={listBlockClassName}>
-          {renderItem(item, index, handleChange, createLoading, fieldName)}
+          <div className={styles.selectInputBlock}>
+            {renderItem(item, index, handleChange, createLoading, fieldName)}
+          </div>
           {items.length > minItems && (
             <button
               type="button"

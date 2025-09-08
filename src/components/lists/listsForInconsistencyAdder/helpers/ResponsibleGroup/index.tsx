@@ -6,7 +6,7 @@ interface ResponsibleGroupProps {
   formData: ItemRequestPOST;
   setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
   createLoading: boolean;
-  fieldName: "responsible_for_correction" | "responsible_for_corrective_action";
+  fieldName: "corrections" | "corrective_actions";
   addText: string;
   correctionIndex: number;
 }
@@ -20,7 +20,7 @@ export const ResponsibleGroup = ({
   correctionIndex,
 }: ResponsibleGroupProps) => {
   const items =
-    fieldName === "responsible_for_correction"
+    fieldName === "corrections"
       ? formData.corrections?.[correctionIndex]?.responsible_for_correction || [
           { department: "", person: "" },
         ]
@@ -33,7 +33,11 @@ export const ResponsibleGroup = ({
       items={items}
       setFormData={setFormData}
       createLoading={createLoading}
-      fieldName={fieldName}
+      fieldName={
+        fieldName === "corrections"
+          ? "responsible_for_correction"
+          : "responsible_for_corrective_action"
+      }
       addText={addText}
       correctionIndex={correctionIndex}
     />

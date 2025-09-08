@@ -12,6 +12,10 @@
   margin: 20px 0;
 }
 
+.corrText {
+  padding-bottom: 10px;
+}
+
 .inconsistenciesActions {
   display: flex;
   flex-direction: column;

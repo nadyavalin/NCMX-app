@@ -1,10 +1,12 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST, Responsible } from "@appTypes/types";
+import { Correction, CorrectiveAction, ItemRequestPOST, Responsible } from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
 import { Departments } from "@components/lists/headFilters/Departments";
 import { ResponsiblePersonsByDepartment } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment";
 import { departmentToPersonsMap } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment/departmentToPersonsMap";
+
+type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface ResponsiblePairsProps {
   items: Responsible[];
@@ -29,60 +31,17 @@ export const ResponsiblePairs = ({
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
-      fieldName: keyof ItemRequestPOST,
+      fieldName: FieldName,
     ) => void,
     createLoading: boolean,
-    // parentFieldName: keyof ItemRequestPOST,
+    fieldName: FieldName,
   ) => {
     const handleDepartmentChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-      const { value } = event.target;
-      setFormData((prevData) => {
-        const parentItems = [
-          ...(prevData[
-            fieldName === "responsible_for_correction" ? "corrections" : "corrective_actions"
-          ] as unknown[]),
-        ];
-        const updatedItems = [...((parentItems[correctionIndex] as unknown)[fieldName] || [])];
-        updatedItems[index] = {
-          ...updatedItems[index],
-          department: value || "",
-          person: "",
-        };
-        parentItems[correctionIndex] = {
-          ...parentItems[correctionIndex],
-          [fieldName]: updatedItems,
-        };
-        return {
-          ...prevData,
-          [fieldName === "responsible_for_correction" ? "corrections" : "corrective_actions"]:
-            parentItems,
-        };
-      });
+      handleChange(event, index, fieldName);
     };
 
     const handlePersonChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-      const { value } = event.target;
-      setFormData((prevData) => {
-        const parentItems = [
-          ...(prevData[
-            fieldName === "responsible_for_correction" ? "corrections" : "corrective_actions"
-          ] as unknown[]),
-        ];
-        const updatedItems = [...((parentItems[correctionIndex] as unknown)[fieldName] || [])];
-        updatedItems[index] = {
-          ...updatedItems[index],
-          person: value || "",
-        };
-        parentItems[correctionIndex] = {
-          ...parentItems[correctionIndex],
-          [fieldName]: updatedItems,
-        };
-        return {
-          ...prevData,
-          [fieldName === "responsible_for_correction" ? "corrections" : "corrective_actions"]:
-            parentItems,
-        };
-      });
+      handleChange(event, index, fieldName);
     };
 
     return (

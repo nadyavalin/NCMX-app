@@ -50,9 +50,9 @@ export interface ItemResponseGET {
   normative_documents: NormativeDocument[];
   nonconf: string;
   report: string;
-  report_date: string | null;
-  analysis_start_date: string | null;
-  analysis_finish_date: string | null;
+  report_date: string | null | undefined;
+  analysis_start_date: string | null | undefined;
+  analysis_finish_date: string | null | undefined;
   head_auditor: string;
   auditors: IAuditors[];
   reason: string;

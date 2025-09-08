@@ -1,7 +1,8 @@
 import React from "react";
-import styles from "./styles.module.css";
-import { ItemRequestPOST, NormativeDocument } from "@appTypes/types";
+import { Correction, CorrectiveAction, ItemRequestPOST, NormativeDocument } from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
+
+type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface NormativeDocumentsProps {
   normative_documents: NormativeDocument[];
@@ -18,17 +19,19 @@ export const NormativeDocuments = ({
     item: NormativeDocument,
     index: number,
     handleChange: (
-      event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+      event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
+      fieldName: FieldName,
     ) => void,
     createLoading: boolean,
+    fieldName: FieldName,
   ) => (
     <>
       <select
         name="norm_doc"
         id={`norm_doc_${index}`}
         value={item.norm_doc || ""}
-        onChange={(e) => handleChange(e, index)}
+        onChange={(e) => handleChange(e, index, fieldName)}
         disabled={createLoading}
         title="Нормативный документ"
       >
@@ -59,7 +62,7 @@ export const NormativeDocuments = ({
         type="text"
         value={item.point || ""}
         placeholder="Номер(а) пункта(ов) ISO/НД"
-        onChange={(e) => handleChange(e, index)}
+        onChange={(e) => handleChange(e, index, fieldName)}
         disabled={createLoading}
       />
     </>
@@ -75,7 +78,6 @@ export const NormativeDocuments = ({
       addItemText="Добавить НД"
       newItem={{ norm_doc: "", point: "" }}
       minItems={1}
-      listBlockClassName={styles.normativeDocumentBlock}
     />
   );
 };

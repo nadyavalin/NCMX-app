@@ -228,14 +228,18 @@ export const InconsistencyTable = ({
                   <td>
                     {item.corrections && item.corrections.length > 0
                       ? item.corrections.map((corr, index) => (
-                          <p key={index}>{corr.correction || "-"}</p>
+                          <p key={index} className={styles.corrText}>
+                            {index + 1}. {corr.correction || "-"}
+                          </p>
                         ))
                       : "-"}
                   </td>
                   <td>
                     {item.corrections && item.corrections.length > 0
                       ? item.corrections.map((corr, index) => (
-                          <p key={index}>{formatDate(corr.correction_date) || "-"}</p>
+                          <p key={index} className={styles.corrText}>
+                            {index + 1}. {formatDate(corr.correction_date) || "-"}
+                          </p>
                         ))
                       : "-"}
                   </td>
@@ -243,14 +247,17 @@ export const InconsistencyTable = ({
                     {item.corrections && item.corrections.length > 0
                       ? item.corrections.map((corr, index) => (
                           <div key={index}>
+                            <p>{index + 1}.</p>
                             {corr.responsible_for_correction &&
-                            corr.responsible_for_correction.length > 0
-                              ? corr.responsible_for_correction.map((resp, respIndex) => (
-                                  <p key={respIndex}>
-                                    {resp.department || "-"}: {resp.person || "-"}
-                                  </p>
-                                ))
-                              : "-"}
+                            corr.responsible_for_correction.length > 0 ? (
+                              corr.responsible_for_correction.map((resp, respIndex) => (
+                                <p key={respIndex} className={styles.corrText}>
+                                  {resp.department || "-"}: {resp.person || "-"}
+                                </p>
+                              ))
+                            ) : (
+                              <p className={styles.corrText}>-</p>
+                            )}
                           </div>
                         ))
                       : "-"}
@@ -258,14 +265,18 @@ export const InconsistencyTable = ({
                   <td>
                     {item.corrective_actions && item.corrective_actions.length > 0
                       ? item.corrective_actions.map((act, index) => (
-                          <p key={index}>{act.corrective_action || "-"}</p>
+                          <p key={index} className={styles.corrText}>
+                            {index + 1}. {act.corrective_action || "-"}
+                          </p>
                         ))
                       : "-"}
                   </td>
                   <td>
                     {item.corrective_actions && item.corrective_actions.length > 0
                       ? item.corrective_actions.map((act, index) => (
-                          <p key={index}>{formatDate(act.corrective_action_date) || "-"}</p>
+                          <p key={index} className={styles.corrText}>
+                            {index + 1}. {formatDate(act.corrective_action_date) || "-"}
+                          </p>
                         ))
                       : "-"}
                   </td>
@@ -273,14 +284,17 @@ export const InconsistencyTable = ({
                     {item.corrective_actions && item.corrective_actions.length > 0
                       ? item.corrective_actions.map((act, index) => (
                           <div key={index}>
+                            <p>{index + 1}.</p>
                             {act.responsible_for_corrective_action &&
-                            act.responsible_for_corrective_action.length > 0
-                              ? act.responsible_for_corrective_action.map((resp, respIndex) => (
-                                  <p key={respIndex}>
-                                    {resp.department || "-"}: {resp.person || "-"}
-                                  </p>
-                                ))
-                              : "-"}
+                            act.responsible_for_corrective_action.length > 0 ? (
+                              act.responsible_for_corrective_action.map((resp, respIndex) => (
+                                <p key={respIndex} className={styles.corrText}>
+                                  {resp.department || "-"}: {resp.person || "-"}
+                                </p>
+                              ))
+                            ) : (
+                              <p className={styles.corrText}>-</p>
+                            )}
                           </div>
                         ))
                       : "-"}

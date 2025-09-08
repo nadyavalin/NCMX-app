@@ -19,6 +19,8 @@ import { ModalComponent } from "@modals/ModalComponent";
 import { ResponsibleGroup } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroup";
 import { DynamicList } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicList";
 
+type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -78,7 +80,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     if (isOpen) {
       if (editItem) {
         setFormData({
-          num_nonconf: editItem.num_nonconf,
+          num_nonconf: editItem.num_nonconf || 0,
           normative_documents:
             editItem.normative_documents && editItem.normative_documents.length > 0
               ? editItem.normative_documents
@@ -97,7 +99,8 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           corrections:
             editItem.corrections && editItem.corrections.length > 0
               ? editItem.corrections.map((corr) => ({
-                  ...corr,
+                  correction: corr.correction || "",
+                  correction_date: corr.correction_date || null,
                   responsible_for_correction:
                     corr.responsible_for_correction && corr.responsible_for_correction.length > 0
                       ? corr.responsible_for_correction
@@ -113,7 +116,8 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           corrective_actions:
             editItem.corrective_actions && editItem.corrective_actions.length > 0
               ? editItem.corrective_actions.map((act) => ({
-                  ...act,
+                  corrective_action: act.corrective_action || "",
+                  corrective_action_date: act.corrective_action_date || null,
                   responsible_for_corrective_action:
                     act.responsible_for_corrective_action &&
                     act.responsible_for_corrective_action.length > 0
@@ -168,45 +172,47 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
-      fieldName: keyof ItemRequestPOST,
+      fieldName: FieldName,
     ) => void,
     createLoading: boolean,
-    fieldName: keyof ItemRequestPOST,
+    fieldName: FieldName,
   ) => {
-    const sectionNumber = formData.corrections.length === 1 ? "3" : `3.${index + 1}`;
+    const sectionNumber = formData.corrections?.length === 1 ? "3" : `3.${index + 1}`;
     return (
       <div className={styles.modalInternalBlocks}>
-        <div className={styles.oneLineText}>
-          <p>{sectionNumber}. Коррекция</p>
-        </div>
-        <textarea
-          name="correction"
-          id={`correction_${index}`}
-          value={item.correction || ""}
-          placeholder="Описание коррекции"
-          rows={10}
-          onChange={(e) => handleChange(e, index, fieldName)}
-          disabled={createLoading}
-        />
-        <div className={styles.oneLineText}>
-          <input
-            type="date"
-            name="correction_date"
-            id={`correction_date_${index}`}
-            title="Выберите дату внедрения коррекции"
-            value={item.correction_date || ""}
+        <div className={styles.internalBlocks}>
+          <div className={styles.oneLineText}>
+            <p>{sectionNumber}. Коррекция</p>
+          </div>
+          <textarea
+            name="correction"
+            id={`correction_${index}`}
+            value={item.correction || ""}
+            placeholder="Описание коррекции"
+            rows={10}
             onChange={(e) => handleChange(e, index, fieldName)}
             disabled={createLoading}
           />
+          <div className={styles.oneLineText}>
+            <input
+              type="date"
+              name="correction_date"
+              id={`correction_date_${index}`}
+              title="Выберите дату внедрения коррекции"
+              value={item.correction_date || ""}
+              onChange={(e) => handleChange(e, index, fieldName)}
+              disabled={createLoading}
+            />
+          </div>
+          <ResponsibleGroup
+            formData={formData}
+            setFormData={setFormData}
+            createLoading={createLoading}
+            fieldName="corrections"
+            addText="Добавить ответственного"
+            correctionIndex={index}
+          />
         </div>
-        <ResponsibleGroup
-          formData={formData}
-          setFormData={setFormData}
-          createLoading={createLoading}
-          fieldName="responsible_for_correction"
-          addText="Добавить ответственного"
-          correctionIndex={index}
-        />
       </div>
     );
   };
@@ -217,45 +223,47 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
-      fieldName: keyof ItemRequestPOST,
+      fieldName: FieldName,
     ) => void,
     createLoading: boolean,
-    fieldName: keyof ItemRequestPOST,
+    fieldName: FieldName,
   ) => {
-    const sectionNumber = formData.corrective_actions.length === 1 ? "4" : `4.${index + 1}`;
+    const sectionNumber = formData.corrective_actions?.length === 1 ? "4" : `4.${index + 1}`;
     return (
       <div className={styles.modalInternalBlocks}>
-        <div className={styles.oneLineText}>
-          <p>{sectionNumber}. Корректирующее действие</p>
-        </div>
-        <textarea
-          name="corrective_action"
-          id={`corrective_action_${index}`}
-          value={item.corrective_action || ""}
-          placeholder="Описание корректирующего действия"
-          rows={10}
-          onChange={(e) => handleChange(e, index, fieldName)}
-          disabled={createLoading}
-        />
-        <div className={styles.oneLineText}>
-          <input
-            type="date"
-            name="corrective_action_date"
-            id={`corrective_action_date_${index}`}
-            title="Выберите дату внедрения корректирующего действия"
-            value={item.corrective_action_date || ""}
+        <div className={styles.internalBlocks}>
+          <div className={styles.oneLineText}>
+            <p>{sectionNumber}. Корректирующее действие</p>
+          </div>
+          <textarea
+            name="corrective_action"
+            id={`corrective_action_${index}`}
+            value={item.corrective_action || ""}
+            placeholder="Описание корректирующего действия"
+            rows={10}
             onChange={(e) => handleChange(e, index, fieldName)}
             disabled={createLoading}
           />
+          <div className={styles.oneLineText}>
+            <input
+              type="date"
+              name="corrective_action_date"
+              id={`corrective_action_date_${index}`}
+              title="Выберите дату внедрения корректирующего действия"
+              value={item.corrective_action_date || ""}
+              onChange={(e) => handleChange(e, index, fieldName)}
+              disabled={createLoading}
+            />
+          </div>
+          <ResponsibleGroup
+            formData={formData}
+            setFormData={setFormData}
+            createLoading={createLoading}
+            fieldName="corrective_actions"
+            addText="Добавить ответственного"
+            correctionIndex={index}
+          />
         </div>
-        <ResponsibleGroup
-          formData={formData}
-          setFormData={setFormData}
-          createLoading={createLoading}
-          fieldName="responsible_for_corrective_action"
-          addText="Добавить ответственного"
-          correctionIndex={index}
-        />
       </div>
     );
   };
@@ -266,33 +274,42 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      addSnackbar(SnackbarType.error, validationErrors.num_nonconf);
+      addSnackbar(
+        SnackbarType.error,
+        validationErrors.num_nonconf || validationErrors.form || "Ошибка валидации формы",
+      );
       return;
     }
 
     const payload = {
       ...formData,
-      normative_documents: formData.normative_documents?.filter((doc) => doc.norm_doc) || [],
+      normative_documents:
+        formData.normative_documents?.filter((doc) => doc.norm_doc && doc.point) || [],
       auditors: formData.auditors?.filter((person) => person.auditor) || [],
       corrections:
-        formData.corrections?.filter(
-          (corr) =>
-            corr.correction ||
-            corr.correction_date ||
-            corr.responsible_for_correction?.some((r) => r.department),
-        ) || [],
+        formData.corrections?.map((corr) => ({
+          ...corr,
+          correction: corr.correction?.trim() || "",
+          correction_date: corr.correction_date
+            ? new Date(corr.correction_date).toISOString().split("T")[0]
+            : null,
+          responsible_for_correction:
+            corr.responsible_for_correction?.filter((r) => r.department && r.person) || [],
+        })) || [],
       corrective_actions:
-        formData.corrective_actions?.filter(
-          (act) =>
-            act.corrective_action ||
-            act.corrective_action_date ||
-            act.responsible_for_corrective_action?.some((r) => r.department),
-        ) || [],
+        formData.corrective_actions?.map((act) => ({
+          ...act,
+          corrective_action: act.corrective_action?.trim() || "",
+          corrective_action_date: act.corrective_action_date
+            ? new Date(act.corrective_action_date).toISOString().split("T")[0]
+            : null,
+          responsible_for_corrective_action:
+            act.responsible_for_corrective_action?.filter((r) => r.department && r.person) || [],
+        })) || [],
       is_archived: false,
     } as ItemRequestPOST;
 
     try {
-      console.log("Sending payload:", JSON.stringify(payload, null, 2)); // Debug
       if (editItem) {
         const result = await dispatch(
           updateInconsistencyRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
@@ -311,9 +328,10 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         onClose();
       }, 300);
     } catch (error: unknown) {
+      console.error("Error during submit:", error);
       const errorMessage =
-        isAxiosError(error) && error.response?.data?.num_nonconf
-          ? error.response.data.num_nonconf[0]
+        isAxiosError(error) && error.response?.data
+          ? Object.values(error.response.data).join(", ")
           : "Ошибка при сохранении несоответствия";
       setErrors({ num_nonconf: errorMessage });
       addSnackbar(SnackbarType.error, errorMessage);
@@ -446,36 +464,40 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             />
           </div>
 
-          <DynamicList
-            items={formData.corrections || []}
-            setFormData={setFormData}
-            createLoading={createLoading}
-            fieldName="corrections"
-            renderItem={renderCorrection}
-            addItemText="Добавить коррекцию"
-            newItem={{
-              correction: "",
-              correction_date: null,
-              responsible_for_correction: [{ department: "", person: "" }],
-            }}
-            minItems={1}
-          />
-
-          <DynamicList
-            items={formData.corrective_actions || []}
-            setFormData={setFormData}
-            createLoading={createLoading}
-            fieldName="corrective_actions"
-            renderItem={renderCorrectiveAction}
-            addItemText="Добавить корр. действие"
-            newItem={{
-              corrective_action: "",
-              corrective_action_date: null,
-              responsible_for_corrective_action: [{ department: "", person: "" }],
-            }}
-            minItems={1}
-          />
-
+          <div className={styles.modalInternalBlocks}>
+            <DynamicList
+              items={formData.corrections || []}
+              setFormData={setFormData}
+              createLoading={createLoading}
+              fieldName="corrections"
+              renderItem={renderCorrection}
+              addItemText="Добавить коррекцию"
+              newItem={{
+                correction: "",
+                correction_date: null,
+                responsible_for_correction: [{ department: "", person: "" }],
+              }}
+              minItems={1}
+              listBlockClassName={styles.listCorrectionBlock}
+            />
+          </div>
+          <div className={styles.modalInternalBlocks}>
+            <DynamicList
+              items={formData.corrective_actions || []}
+              setFormData={setFormData}
+              createLoading={createLoading}
+              fieldName="corrective_actions"
+              renderItem={renderCorrectiveAction}
+              addItemText="Добавить корр. действие"
+              newItem={{
+                corrective_action: "",
+                corrective_action_date: null,
+                responsible_for_corrective_action: [{ department: "", person: "" }],
+              }}
+              minItems={1}
+              listBlockClassName={styles.listCorrectiveActionBlock}
+            />
+          </div>
           <div className={styles.buttonsBlock}>
             <button type="submit" disabled={createLoading}>
               {createLoading ? "Сохранение..." : "Сохранить и закрыть"}
