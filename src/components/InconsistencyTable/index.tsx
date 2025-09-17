@@ -104,7 +104,6 @@ export const InconsistencyTable = ({
           break;
         case "edit":
           dispatch(toggleModalEdit(false));
-          setEditItem(null);
           break;
       }
     },

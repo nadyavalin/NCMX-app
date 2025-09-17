@@ -344,7 +344,6 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
 
   const handleClose = () => {
     setTimeout(() => {
-      setFormData(initialFormData);
       setErrors({});
       onClose();
     }, 300);
