@@ -96,11 +96,7 @@ export const ObservationTable = ({
                       </>
                     )}
                     {showEditAction && (
-                      <a
-                        href="#"
-                        title="Изменить наблюдение может только администратор"
-                        className={styles.redText}
-                      >
+                      <a href="#" className={styles.redText}>
                         Изменить наблюдение
                       </a>
                     )}
@@ -118,18 +114,14 @@ export const ObservationTable = ({
                     {showDeleteAction && (
                       <a
                         href="#"
-                        title="Удалить несоответствие может только администратор"
+                        title="Удалить наблюдение может только администратор"
                         className={styles.redText}
                       >
                         Удалить наблюдение
                       </a>
                     )}
                     {onRestore && (
-                      <a
-                        href="#"
-                        title="Восстановить несоответствие может только администратор"
-                        className={styles.redText}
-                      >
+                      <a href="#" className={styles.redText}>
                         Восстановить
                       </a>
                     )}

@@ -360,7 +360,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.modalForm}>
           <div className={styles.nonConfNumberBlock}>
-            <h4>{editItem ? "Редактировать несоответствие" : "Внести новое несоответствие"}</h4>
+            <h4>{editItem ? "Редактировать несоответствие" : "Добавить новое несоответствие"}</h4>
             <div className={styles.nonConfNumberInputBlock}>
               <label htmlFor="num_nonconf">Номер несоответствия:</label>
               <input

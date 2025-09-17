@@ -324,7 +324,6 @@ export const InconsistencyTable = ({
                       {showEditAction && (
                         <a
                           href="#"
-                          title="Изменить несоответствие может только администратор"
                           className={styles.redText}
                           onClick={() => handleOpenModal("edit", item.num_nonconf)}
                         >
@@ -364,7 +363,7 @@ export const InconsistencyTable = ({
                       {onRestore && (
                         <a
                           href="#"
-                          title="Восстановить несоответствие может только администратор"
+                          title="Восстановить несоответствие может только главный аудитор и администратор"
                           className={styles.redText}
                           onClick={() => onRestore(item.num_nonconf)}
                         >

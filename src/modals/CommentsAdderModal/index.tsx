@@ -124,7 +124,7 @@ const CommentsAdderModal = ({
         <h3>
           {editComment
             ? "Редактировать комментарий"
-            : `Внести комментарий к несоответствию № ${currentInconsistencyNumber}`}
+            : `Добавить комментарий к несоответствию № ${currentInconsistencyNumber}`}
         </h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {commentError && <p className={styles.submitError}>{commentError}</p>}
