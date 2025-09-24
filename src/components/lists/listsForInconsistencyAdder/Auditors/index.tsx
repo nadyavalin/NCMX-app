@@ -2,6 +2,8 @@ import React from "react";
 import styles from "./styles.module.css";
 import { ItemRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import { SnackbarType } from "@appTypes/types";
 
 type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
 
@@ -12,6 +14,8 @@ interface AuditorProps {
 }
 
 export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps) => {
+  const addSnackbar = useSnackbar();
+
   const renderItem = (
     item: IAuditors,
     index: number,
@@ -30,6 +34,18 @@ export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps)
           id={`auditor_${index}`}
           value={item.auditor || ""}
           onChange={(e) => {
+            const selectedAuditor = e.target.value;
+            const isDuplicate = auditors.some(
+              (auditor, i) =>
+                i !== index && auditor.auditor === selectedAuditor && selectedAuditor !== "",
+            );
+            if (isDuplicate) {
+              addSnackbar(
+                SnackbarType.error,
+                `Аудитор ${selectedAuditor} уже присутствует в группе аудиторов`,
+              );
+              return;
+            }
             handleChange(e, index, fieldName);
           }}
           disabled={createLoading}

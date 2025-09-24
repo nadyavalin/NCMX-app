@@ -19,4 +19,6 @@
 
 button:disabled {
   background-color: var(--button-disabled-color);
+  pointer-events: none;
+  cursor: not-allowed;
 }
