@@ -1,15 +1,15 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { ItemRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
+import { InconsistencyRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { SnackbarType } from "@appTypes/types";
 
-type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface AuditorProps {
   auditors: IAuditors[];
-  setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
 }
 

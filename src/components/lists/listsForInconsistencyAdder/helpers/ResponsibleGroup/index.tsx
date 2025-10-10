@@ -1,10 +1,10 @@
 import React from "react";
-import { ItemRequestPOST } from "@appTypes/types";
+import { InconsistencyRequestPOST } from "@appTypes/types";
 import { ResponsiblePairs } from "../../ResponsiblePairs";
 
 interface ResponsibleGroupProps {
-  formData: ItemRequestPOST;
-  setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
+  formData: InconsistencyRequestPOST;
+  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
   fieldName: "corrections" | "corrective_actions";
   addText: string;

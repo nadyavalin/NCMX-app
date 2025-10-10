@@ -18,12 +18,12 @@ import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
 import { SearchInput } from "@components/SearchInput";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { ItemResponseGET, SnackbarType } from "@appTypes/types";
+import { InconsistencyResponseGET, SnackbarType } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
 
 interface InconsistencyTableProps {
   title: string;
-  items: ItemResponseGET[];
+  items: InconsistencyResponseGET[];
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
@@ -61,7 +61,7 @@ export const InconsistencyTable = ({
   } = useSelector((state: RootState) => state.ui);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
-  const [editItem, setEditItem] = useState<ItemResponseGET | null>(null);
+  const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
 
   const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
 

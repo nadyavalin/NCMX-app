@@ -2,11 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
 import { handleApiError } from "@utils/handleApiError";
-import { APIResponse, ItemResponseGET, ItemRequestPOST } from "@appTypes/types";
+import { APIResponse, InconsistencyResponseGET, InconsistencyRequestPOST } from "@appTypes/types";
 
 // Thunk для загрузки списка несоответствий
 export const fetchItems = createAsyncThunk<
-  ItemResponseGET[],
+  InconsistencyResponseGET[],
   { is_archived?: boolean } | void,
   { state: RootState }
 >("inconsistencies/fetchItems", async (params, { rejectWithValue }) => {
@@ -22,12 +22,12 @@ export const fetchItems = createAsyncThunk<
 
 // Thunk для создания несоответствия
 export const createInconsistencyRequest = createAsyncThunk<
-  ItemResponseGET,
-  ItemRequestPOST,
+  InconsistencyResponseGET,
+  InconsistencyRequestPOST,
   { state: RootState }
 >("inconsistencies/createInconsistency", async (formData, { rejectWithValue }) => {
   try {
-    const response = await api.post<ItemResponseGET>("/ncmx-table/", formData);
+    const response = await api.post<InconsistencyResponseGET>("/ncmx-table/", formData);
     return response.data;
   } catch (error: unknown) {
     return rejectWithValue(
@@ -50,12 +50,14 @@ export const deleteInconsistencyRequest = createAsyncThunk<void, number, { state
 
 // Thunk для восстановления несоответствия
 export const restoreInconsistencyRequest = createAsyncThunk<
-  ItemResponseGET,
+  InconsistencyResponseGET,
   number,
   { state: RootState }
 >("inconsistencies/restoreInconsistency", async (num_nonconf, { rejectWithValue }) => {
   try {
-    const response = await api.post<ItemResponseGET>(`/ncmx-table/${num_nonconf}/restore/`);
+    const response = await api.post<InconsistencyResponseGET>(
+      `/ncmx-table/${num_nonconf}/restore/`,
+    );
     return response.data;
   } catch (error: unknown) {
     return rejectWithValue(handleApiError(error, "Ошибка при восстановлении несоответствия"));
@@ -64,12 +66,12 @@ export const restoreInconsistencyRequest = createAsyncThunk<
 
 // Thunk для обновления несоответствия
 export const updateInconsistencyRequest = createAsyncThunk<
-  ItemResponseGET,
-  { num_nonconf: number; data: Partial<ItemRequestPOST> },
+  InconsistencyResponseGET,
+  { num_nonconf: number; data: Partial<InconsistencyRequestPOST> },
   { state: RootState }
 >("inconsistencies/updateInconsistency", async ({ num_nonconf, data }, { rejectWithValue }) => {
   try {
-    const response = await api.patch<ItemResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
+    const response = await api.patch<InconsistencyResponseGET>(`/ncmx-table/${num_nonconf}/`, data);
     return response.data;
   } catch (error: unknown) {
     return rejectWithValue(handleApiError(error, "Ошибка при обновлении несоответствия"));

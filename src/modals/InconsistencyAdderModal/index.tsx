@@ -7,8 +7,8 @@ import { AppDispatch, RootState } from "@store/store";
 import {
   Correction,
   CorrectiveAction,
-  ItemRequestPOST,
-  ItemResponseGET,
+  InconsistencyRequestPOST,
+  InconsistencyResponseGET,
   SnackbarType,
 } from "@appTypes/types";
 import { useFormValidation } from "@hooks/useFormValidation";
@@ -19,15 +19,15 @@ import { ModalComponent } from "@modals/ModalComponent";
 import { ResponsibleGroup } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroup";
 import { DynamicList } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicList";
 
-type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editItem: ItemResponseGET | null;
+  editItem: InconsistencyResponseGET | null;
 }
 
-const initialFormData: ItemRequestPOST = {
+const initialFormData: InconsistencyRequestPOST = {
   num_nonconf: 0,
   normative_documents: [{ norm_doc: "", point: "" }],
   nonconf: "",
@@ -61,7 +61,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
   const { createLoading } = useSelector((state: RootState) => state.inconsistencies);
-  const [formData, setFormData] = useState<ItemRequestPOST>(initialFormData);
+  const [formData, setFormData] = useState<InconsistencyRequestPOST>(initialFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
@@ -307,7 +307,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             act.responsible_for_corrective_action?.filter((r) => r.department && r.person) || [],
         })) || [],
       is_archived: false,
-    } as ItemRequestPOST;
+    } as InconsistencyRequestPOST;
 
     try {
       if (editItem) {

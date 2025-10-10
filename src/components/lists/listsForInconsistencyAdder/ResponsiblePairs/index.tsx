@@ -1,16 +1,21 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { Correction, CorrectiveAction, ItemRequestPOST, Responsible } from "@appTypes/types";
+import {
+  Correction,
+  CorrectiveAction,
+  InconsistencyRequestPOST,
+  Responsible,
+} from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
 import { Departments } from "@components/lists/headFilters/Departments";
 import { ResponsiblePersonsByDepartment } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment";
 import { departmentToPersonsMap } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment/departmentToPersonsMap";
 
-type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface ResponsiblePairsProps {
   items: Responsible[];
-  setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
   fieldName: "responsible_for_correction" | "responsible_for_corrective_action";
   addText: string;

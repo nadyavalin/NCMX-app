@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import { ItemRequestPOST } from "@appTypes/types";
+import { InconsistencyRequestPOST } from "@appTypes/types";
 
 interface ValidationErrors {
   [key: string]: string;
 }
 
 interface UseFormValidationProps {
-  formData: ItemRequestPOST;
+  formData: InconsistencyRequestPOST;
   numNonconfRef: React.RefObject<HTMLInputElement | null>;
 }
 

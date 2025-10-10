@@ -6,11 +6,11 @@ import {
   updateInconsistencyRequest,
   restoreInconsistencyRequest,
 } from "@/api";
-import { ItemResponseGET, ItemRequestPOST } from "@appTypes/types";
+import { InconsistencyResponseGET, InconsistencyRequestPOST } from "@appTypes/types";
 
 interface InconsistenciesState {
-  activeItems: ItemResponseGET[];
-  archivedItems: ItemResponseGET[];
+  activeItems: InconsistencyResponseGET[];
+  archivedItems: InconsistencyResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
@@ -41,7 +41,7 @@ const inconsistenciesSlice = createSlice({
         (
           state,
           action: PayloadAction<
-            ItemResponseGET[],
+            InconsistencyResponseGET[],
             string,
             { arg: { is_archived?: boolean } | void }
           >,
@@ -68,7 +68,7 @@ const inconsistenciesSlice = createSlice({
       })
       .addCase(
         createInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<ItemResponseGET>) => {
+        (state, action: PayloadAction<InconsistencyResponseGET>) => {
           state.activeItems = [...state.activeItems, { ...action.payload, is_archived: false }];
           state.createLoading = false;
         },
@@ -100,9 +100,9 @@ const inconsistenciesSlice = createSlice({
         (
           state,
           action: PayloadAction<
-            ItemResponseGET,
+            InconsistencyResponseGET,
             string,
-            { arg: { num_nonconf: number; data: Partial<ItemRequestPOST> } }
+            { arg: { num_nonconf: number; data: Partial<InconsistencyRequestPOST> } }
           >,
         ) => {
           const isArchived = action.meta.arg.data.is_archived ?? false;
@@ -142,7 +142,7 @@ const inconsistenciesSlice = createSlice({
       })
       .addCase(
         restoreInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<ItemResponseGET>) => {
+        (state, action: PayloadAction<InconsistencyResponseGET>) => {
           state.archivedItems = state.archivedItems.filter(
             (item) => item.num_nonconf !== action.payload.num_nonconf,
           );

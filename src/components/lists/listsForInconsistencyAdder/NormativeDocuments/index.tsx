@@ -1,12 +1,17 @@
 import React from "react";
-import { Correction, CorrectiveAction, ItemRequestPOST, NormativeDocument } from "@appTypes/types";
+import {
+  Correction,
+  CorrectiveAction,
+  InconsistencyRequestPOST,
+  NormativeDocument,
+} from "@appTypes/types";
 import { DynamicList } from "../helpers/DynamicList";
 
-type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface NormativeDocumentsProps {
   normative_documents: NormativeDocument[];
-  setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
 }
 

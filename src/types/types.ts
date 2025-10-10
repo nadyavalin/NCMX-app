@@ -26,7 +26,7 @@ export interface CorrectiveAction {
   responsible_for_corrective_action: Responsible[];
 }
 
-export interface ItemRequestPOST {
+export interface InconsistencyRequestPOST {
   num_nonconf: number | null;
   normative_documents: NormativeDocument[] | undefined;
   nonconf: string;
@@ -45,7 +45,7 @@ export interface ItemRequestPOST {
   is_archived?: boolean;
 }
 
-export interface ItemResponseGET {
+export interface InconsistencyResponseGET {
   num_nonconf: number;
   normative_documents: NormativeDocument[];
   nonconf: string;
@@ -70,7 +70,7 @@ export interface InconsistencyNumberState {
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
   isModalEditOpen: boolean;
-  items: ItemResponseGET[];
+  items: InconsistencyResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
@@ -81,7 +81,7 @@ export interface InconsistencyNumberState {
 }
 
 export interface APIResponse {
-  results: ItemResponseGET[];
+  results: InconsistencyResponseGET[];
 }
 
 export interface ItemCommentResponseGET {

@@ -1,12 +1,17 @@
 import React, { JSX } from "react";
-import { ItemRequestPOST, Correction, CorrectiveAction, Responsible } from "@appTypes/types";
+import {
+  InconsistencyRequestPOST,
+  Correction,
+  CorrectiveAction,
+  Responsible,
+} from "@appTypes/types";
 import styles from "./styles.module.css";
 
-type FieldName = keyof ItemRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface DynamicListProps<T extends object> {
   items: T[];
-  setFormData: React.Dispatch<React.SetStateAction<ItemRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
   fieldName: FieldName;
   renderItem: (
@@ -66,14 +71,14 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
-          ? [...(prevData[fieldName as keyof ItemRequestPOST]! as T[])]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
+          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[])]
           : [];
         updatedItems[index] = {
           ...updatedItems[index],
           [name]: name.includes("date") ? value || null : value,
         };
-        return { ...prevData, [fieldName as keyof ItemRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
       }
     });
   };
@@ -95,10 +100,10 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
-          ? [...(prevData[fieldName as keyof ItemRequestPOST]! as T[]), newItem]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
+          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]), newItem]
           : [newItem];
-        return { ...prevData, [fieldName as keyof ItemRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
       }
     });
   };
@@ -122,14 +127,14 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof ItemRequestPOST])
-          ? (prevData[fieldName as keyof ItemRequestPOST]! as T[]).filter(
+        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
+          ? (prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]).filter(
               (_: unknown, i: number) => i !== index,
             )
           : [];
         return {
           ...prevData,
-          [fieldName as keyof ItemRequestPOST]:
+          [fieldName as keyof InconsistencyRequestPOST]:
             updatedItems.length >= minItems ? updatedItems : [newItem],
         };
       }
