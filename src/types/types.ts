@@ -27,7 +27,7 @@ export interface CorrectiveAction {
 }
 
 export interface InconsistencyRequestPOST {
-  num_nonconf: number | null;
+  num_nonconf: number | undefined;
   normative_documents: NormativeDocument[] | undefined;
   nonconf: string;
   report: string;
@@ -78,6 +78,40 @@ export interface InconsistencyNumberState {
   commentLoading: boolean;
   commentError: string | null;
   comments: ItemCommentResponseGET[];
+}
+
+export interface Solution {
+  solution: string | undefined;
+  solution_date: string | null | undefined;
+  responsible_for_solution: Responsible[];
+}
+
+export interface ObservationRequestPOST {
+  num_observation: number | undefined;
+  normative_documents: NormativeDocument[] | undefined;
+  observation: string;
+  report: string;
+  report_date: string | null | undefined;
+  analysis_start_date: string | null | undefined;
+  analysis_finish_date: string | null | undefined;
+  solutions: Solution[] | undefined;
+  observation_closure_date: string | null | undefined;
+  resp_person_observation_closure: string;
+  is_archived?: boolean;
+}
+
+export interface ObservationResponseGET {
+  num_observation: number;
+  normative_documents: NormativeDocument[];
+  observation: string;
+  report: string;
+  report_date: string | null | undefined;
+  analysis_start_date: string | null | undefined;
+  analysis_finish_date: string | null | undefined;
+  solutions: Solution[];
+  observation_closure_date: string | null;
+  resp_person_observation_closure: string;
+  is_archived: boolean;
 }
 
 export interface APIResponse {

@@ -166,7 +166,6 @@ class Observations(APIView):
         logger.error(f"Serializer validation errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class Observations(APIView):
     def patch(self, request, num_observation):
         observation = get_object_or_404(NCMXObservations, num_observation=num_observation)
         serializer = NCMXObservationsSerializer(observation, data=request.data, partial=True)

@@ -1,17 +1,12 @@
 import React, { JSX } from "react";
-import {
-  InconsistencyRequestPOST,
-  Correction,
-  CorrectiveAction,
-  Responsible,
-} from "@appTypes/types";
-import styles from "./styles.module.css";
+import { ObservationRequestPOST, Solution, Responsible } from "@appTypes/types";
+import styles from "./../styles.module.css";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof ObservationRequestPOST | keyof Solution;
 
-interface DynamicListProps<T extends object> {
+interface DynamicListForObservationProps<T extends object> {
   items: T[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<ObservationRequestPOST>>;
   createLoading: boolean;
   fieldName: FieldName;
   renderItem: (
@@ -29,11 +24,11 @@ interface DynamicListProps<T extends object> {
   newItem: T;
   minItems?: number;
   listBlockClassName?: string;
-  parentFieldName?: "corrections" | "corrective_actions";
+  parentFieldName?: "solutions";
   parentIndex?: number;
 }
 
-export const DynamicList = <T extends object>({
+export const DynamicListForObservation = <T extends object>({
   items,
   setFormData,
   createLoading,
@@ -45,7 +40,7 @@ export const DynamicList = <T extends object>({
   listBlockClassName = styles.selectInputButtonBlock,
   parentFieldName,
   parentIndex,
-}: DynamicListProps<T>) => {
+}: DynamicListForObservationProps<T>) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     index: number,
@@ -55,7 +50,7 @@ export const DynamicList = <T extends object>({
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
         const parentItems = Array.isArray(prevData[parentFieldName])
-          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          ? [...(prevData[parentFieldName]! as Solution[])]
           : [];
         const parentItem = parentItems[parentIndex] || {};
         const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
@@ -71,14 +66,14 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[])]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ObservationRequestPOST])
+          ? [...(prevData[fieldName as keyof ObservationRequestPOST]! as T[])]
           : [];
         updatedItems[index] = {
           ...updatedItems[index],
           [name]: name.includes("date") ? value || null : value,
         };
-        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof ObservationRequestPOST]: updatedItems };
       }
     });
   };
@@ -88,7 +83,7 @@ export const DynamicList = <T extends object>({
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
         const parentItems = Array.isArray(prevData[parentFieldName])
-          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          ? [...(prevData[parentFieldName]! as Solution[])]
           : [];
         const parentItem = parentItems[parentIndex] || {};
         const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
@@ -100,10 +95,10 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]), newItem]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ObservationRequestPOST])
+          ? [...(prevData[fieldName as keyof ObservationRequestPOST]! as T[]), newItem]
           : [newItem];
-        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof ObservationRequestPOST]: updatedItems };
       }
     });
   };
@@ -112,7 +107,7 @@ export const DynamicList = <T extends object>({
     setFormData((prevData) => {
       if (parentFieldName && parentIndex !== undefined) {
         const parentItems = Array.isArray(prevData[parentFieldName])
-          ? [...(prevData[parentFieldName]! as (Correction | CorrectiveAction)[])]
+          ? [...(prevData[parentFieldName]! as Solution[])]
           : [];
         const parentItem = parentItems[parentIndex] || {};
         const updatedItems = Array.isArray(parentItem[fieldName as keyof typeof parentItem])
@@ -127,14 +122,14 @@ export const DynamicList = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? (prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]).filter(
+        const updatedItems = Array.isArray(prevData[fieldName as keyof ObservationRequestPOST])
+          ? (prevData[fieldName as keyof ObservationRequestPOST]! as T[]).filter(
               (_: unknown, i: number) => i !== index,
             )
           : [];
         return {
           ...prevData,
-          [fieldName as keyof InconsistencyRequestPOST]:
+          [fieldName as keyof ObservationRequestPOST]:
             updatedItems.length >= minItems ? updatedItems : [newItem],
         };
       }
@@ -171,4 +166,4 @@ export const DynamicList = <T extends object>({
   );
 };
 
-export default React.memo(DynamicList);
+export default React.memo(DynamicListForObservation);

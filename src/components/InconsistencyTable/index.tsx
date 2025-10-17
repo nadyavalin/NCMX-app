@@ -23,7 +23,7 @@ import { formatDateTime } from "@utils/formatDateTime";
 
 interface InconsistencyTableProps {
   title: string;
-  items: InconsistencyResponseGET[];
+  inconsistencies: InconsistencyResponseGET[];
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
@@ -38,7 +38,7 @@ interface InconsistencyTableProps {
 
 export const InconsistencyTable = ({
   title,
-  items,
+  inconsistencies: inconsistencies,
   isLoading,
   error,
   isArchived,
@@ -63,7 +63,7 @@ export const InconsistencyTable = ({
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
   const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
 
-  const sortedItems = [...items].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  const sortedInconsistencies = [...inconsistencies].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   const handleOpenModal = useCallback(
     (modalType: "comments" | "historyComments" | "estimateResult" | "edit", num: number) => {
@@ -79,7 +79,7 @@ export const InconsistencyTable = ({
           dispatch(toggleModalEstimateResult(true));
           break;
         case "edit":
-          const item = items.find((item) => item.num_nonconf === num);
+          const item = inconsistencies.find((item) => item.num_nonconf === num);
           if (item) {
             setEditItem(item);
             dispatch(toggleModalEdit(true));
@@ -87,7 +87,7 @@ export const InconsistencyTable = ({
           break;
       }
     },
-    [dispatch, items],
+    [dispatch, inconsistencies],
   );
 
   const handleCloseModal = useCallback(
@@ -188,14 +188,14 @@ export const InconsistencyTable = ({
             </tr>
           </thead>
           <tbody>
-            {sortedItems.length === 0 ? (
+            {sortedInconsistencies.length === 0 ? (
               <tr>
                 <td colSpan={15} className="error">
                   Нет данных для отображения.
                 </td>
               </tr>
             ) : (
-              sortedItems.map((item) => (
+              sortedInconsistencies.map((item) => (
                 <tr key={item.num_nonconf}>
                   <td>{item.num_nonconf}</td>
                   <td>

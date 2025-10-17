@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
 import { InconsistencyRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
-import { DynamicList } from "../helpers/DynamicList";
+import { DynamicListForInconsistency } from "../helpers/DynamicList/forInconsistency";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { SnackbarType } from "@appTypes/types";
 
@@ -62,7 +62,7 @@ export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps)
   };
 
   return (
-    <DynamicList<IAuditors>
+    <DynamicListForInconsistency<IAuditors>
       items={auditors}
       setFormData={setFormData}
       createLoading={createLoading}

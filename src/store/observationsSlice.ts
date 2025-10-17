@@ -1,23 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  fetchInconsistencies,
-  createInconsistencyRequest,
-  deleteInconsistencyRequest,
-  updateInconsistencyRequest,
-  restoreInconsistencyRequest,
+  fetchObservations,
+  createObservationRequest,
+  deleteObservationRequest,
+  updateObservationRequest,
+  restoreObservationRequest,
 } from "@/api";
-import { InconsistencyResponseGET, InconsistencyRequestPOST } from "@appTypes/types";
+import { ObservationResponseGET, ObservationRequestPOST } from "@appTypes/types";
 
-interface InconsistenciesState {
-  activeItems: InconsistencyResponseGET[];
-  archivedItems: InconsistencyResponseGET[];
+interface ObservationState {
+  activeItems: ObservationResponseGET[];
+  archivedItems: ObservationResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
   createError: string | null;
 }
 
-const initialState: InconsistenciesState = {
+const initialState: ObservationState = {
   activeItems: [],
   archivedItems: [],
   itemsLoading: false,
@@ -26,22 +26,22 @@ const initialState: InconsistenciesState = {
   createError: null,
 };
 
-const inconsistenciesSlice = createSlice({
-  name: "inconsistencies",
+const observationsSlice = createSlice({
+  name: "observations",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchInconsistencies.pending, (state) => {
+      .addCase(fetchObservations.pending, (state) => {
         state.itemsLoading = true;
         state.itemsError = null;
       })
       .addCase(
-        fetchInconsistencies.fulfilled,
+        fetchObservations.fulfilled,
         (
           state,
           action: PayloadAction<
-            InconsistencyResponseGET[],
+            ObservationResponseGET[],
             string,
             { arg: { is_archived?: boolean } | void }
           >,
@@ -58,76 +58,76 @@ const inconsistenciesSlice = createSlice({
           state.itemsLoading = false;
         },
       )
-      .addCase(fetchInconsistencies.rejected, (state, action) => {
+      .addCase(fetchObservations.rejected, (state, action) => {
         state.itemsError = (action.payload as string) || "Ошибка при загрузке данных";
         state.itemsLoading = false;
       })
-      .addCase(createInconsistencyRequest.pending, (state) => {
+      .addCase(createObservationRequest.pending, (state) => {
         state.createLoading = true;
         state.createError = null;
       })
       .addCase(
-        createInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<InconsistencyResponseGET>) => {
+        createObservationRequest.fulfilled,
+        (state, action: PayloadAction<ObservationResponseGET>) => {
           state.activeItems = [...state.activeItems, { ...action.payload, is_archived: false }];
           state.createLoading = false;
         },
       )
-      .addCase(createInconsistencyRequest.rejected, (state, action) => {
+      .addCase(createObservationRequest.rejected, (state, action) => {
         if (
           typeof action.payload === "string" &&
-          action.payload.includes("Несоответствие с номером") &&
+          action.payload.includes("Наблюдение с номером") &&
           action.payload.includes("уже существует")
         ) {
         } else {
-          state.createError = (action.payload as string) || "Ошибка при создании несоответствия";
+          state.createError = (action.payload as string) || "Ошибка при создании наблюдения";
         }
         state.createLoading = false;
       })
       .addCase(
-        deleteInconsistencyRequest.fulfilled,
+        deleteObservationRequest.fulfilled,
         (state, action: PayloadAction<void, string, { arg: number }>) => {
           state.activeItems = state.activeItems.filter(
-            (item) => item.num_nonconf !== action.meta.arg,
+            (item) => item.num_observation !== action.meta.arg,
           );
         },
       )
-      .addCase(deleteInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = (action.payload as string) || "Ошибка при удалении несоответствия";
+      .addCase(deleteObservationRequest.rejected, (state, action) => {
+        state.itemsError = (action.payload as string) || "Ошибка при удалении наблюдения";
       })
       .addCase(
-        updateInconsistencyRequest.fulfilled,
+        updateObservationRequest.fulfilled,
         (
           state,
           action: PayloadAction<
-            InconsistencyResponseGET,
+            ObservationResponseGET,
             string,
-            { arg: { num_nonconf: number; data: Partial<InconsistencyRequestPOST> } }
+            { arg: { num_observation: number; data: Partial<ObservationRequestPOST> } }
           >,
         ) => {
           const isArchived = action.meta.arg.data.is_archived ?? false;
           if (isArchived) {
             state.activeItems = state.activeItems.filter(
-              (item) => item.num_nonconf !== action.payload.num_nonconf,
+              (item) => item.num_observation !== action.payload.num_observation,
             );
             state.archivedItems = state.archivedItems.some(
-              (item) => item.num_nonconf === action.payload.num_nonconf,
+              (item) => item.num_observation === action.payload.num_observation,
             )
               ? state.archivedItems.map((item) =>
-                  item.num_nonconf === action.payload.num_nonconf
+                  item.num_observation === action.payload.num_observation
                     ? { ...action.payload, is_archived: true }
                     : item,
                 )
               : [...state.archivedItems, { ...action.payload, is_archived: true }];
           } else {
             state.archivedItems = state.archivedItems.filter(
-              (item) => item.num_nonconf !== action.payload.num_nonconf,
+              (item) => item.num_observation !== action.payload.num_observation,
             );
             state.activeItems = state.activeItems.some(
-              (item) => item.num_nonconf === action.payload.num_nonconf,
+              (item) => item.num_observation === action.payload.num_observation,
             )
               ? state.activeItems.map((item) =>
-                  item.num_nonconf === action.payload.num_nonconf
+                  item.num_observation === action.payload.num_observation
                     ? { ...action.payload, is_archived: false }
                     : item,
                 )
@@ -136,31 +136,31 @@ const inconsistenciesSlice = createSlice({
           state.itemsLoading = false;
         },
       )
-      .addCase(updateInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = (action.payload as string) || "Ошибка при обновлении несоответствия";
+      .addCase(updateObservationRequest.rejected, (state, action) => {
+        state.itemsError = (action.payload as string) || "Ошибка при обновлении наблюдения";
         state.itemsLoading = false;
       })
       .addCase(
-        restoreInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<InconsistencyResponseGET>) => {
+        restoreObservationRequest.fulfilled,
+        (state, action: PayloadAction<ObservationResponseGET>) => {
           state.archivedItems = state.archivedItems.filter(
-            (item) => item.num_nonconf !== action.payload.num_nonconf,
+            (item) => item.num_observation !== action.payload.num_observation,
           );
           state.activeItems = state.activeItems.some(
-            (item) => item.num_nonconf === action.payload.num_nonconf,
+            (item) => item.num_observation === action.payload.num_observation,
           )
             ? state.activeItems.map((item) =>
-                item.num_nonconf === action.payload.num_nonconf
+                item.num_observation === action.payload.num_observation
                   ? { ...action.payload, is_archived: false }
                   : item,
               )
             : [...state.activeItems, { ...action.payload, is_archived: false }];
         },
       )
-      .addCase(restoreInconsistencyRequest.rejected, (state, action) => {
-        state.itemsError = (action.payload as string) || "Ошибка при восстановлении несоответствия";
+      .addCase(restoreObservationRequest.rejected, (state, action) => {
+        state.itemsError = (action.payload as string) || "Ошибка при восстановлении наблюдения";
       });
   },
 });
 
-export default inconsistenciesSlice.reducer;
+export default observationsSlice.reducer;

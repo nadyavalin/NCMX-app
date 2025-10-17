@@ -6,6 +6,11 @@ interface UIState {
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
   isModalEditOpen: boolean;
+
+  currentObservationNumber: number | null;
+  isModalObservationCommentsOpen: boolean;
+  isModalObservationHistoryCommentsOpen: boolean;
+  isModalObservationEditOpen: boolean;
 }
 
 const initialState: UIState = {
@@ -14,6 +19,11 @@ const initialState: UIState = {
   isModalHistoryCommentsOpen: false,
   isModalEstimateResultOpen: false,
   isModalEditOpen: false,
+
+  currentObservationNumber: null,
+  isModalObservationCommentsOpen: false,
+  isModalObservationHistoryCommentsOpen: false,
+  isModalObservationEditOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -35,6 +45,19 @@ const uiSlice = createSlice({
     toggleModalEdit(state, action: PayloadAction<boolean>) {
       state.isModalEditOpen = action.payload;
     },
+
+    setCurrentObservationNumber(state, action: PayloadAction<number | null>) {
+      state.currentInconsistencyNumber = action.payload;
+    },
+    toggleModalObservationComments(state, action: PayloadAction<boolean>) {
+      state.isModalObservationCommentsOpen = action.payload;
+    },
+    toggleModalObservationHistoryComments(state, action: PayloadAction<boolean>) {
+      state.isModalObservationHistoryCommentsOpen = action.payload;
+    },
+    toggleModalObservationEdit(state, action: PayloadAction<boolean>) {
+      state.isModalObservationEditOpen = action.payload;
+    },
   },
 });
 
@@ -44,6 +67,11 @@ export const {
   toggleModalHistoryComments,
   toggleModalEstimateResult,
   toggleModalEdit,
+
+  setCurrentObservationNumber,
+  toggleModalObservationComments,
+  toggleModalObservationHistoryComments,
+  toggleModalObservationEdit,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

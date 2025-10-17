@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchItems, deleteInconsistencyRequest } from "@/api";
+import { fetchInconsistencies, deleteInconsistencyRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
 import InconsistencyTable from "@components/InconsistencyTable";
 
@@ -14,7 +14,7 @@ export const Inconsistencies = () => {
 
   const loadItems = useCallback(async () => {
     try {
-      await dispatch(fetchItems({ is_archived: false })).unwrap();
+      await dispatch(fetchInconsistencies({ is_archived: false })).unwrap();
     } catch (error: unknown) {
       console.log(error);
     }
@@ -34,7 +34,7 @@ export const Inconsistencies = () => {
   return (
     <InconsistencyTable
       title="Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-      items={activeItems}
+      inconsistencies={activeItems}
       isLoading={itemsLoading}
       error={itemsError}
       isArchived={false}

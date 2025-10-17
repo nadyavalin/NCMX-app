@@ -1,9 +1,9 @@
-.respCorrectArea {
+.responsibleArea {
   display: flex;
   gap: 10px;
   width: 100%;
 }
 
-.respCorrectArea select {
+.responsibleArea select {
   width: 100%;
 }

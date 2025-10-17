@@ -18,30 +18,15 @@ class CorrectionSerializer(serializers.Serializer):
     correction_date = serializers.DateField(allow_null=True)
     responsible_for_correction = ResponsibleSerializer(many=True, required=False)
 
-    def to_internal_value(self, data):
-        if data.get('correction_date') and isinstance(data['correction_date'], date):
-            data['correction_date'] = data['correction_date'].isoformat()
-        return super().to_internal_value(data)
-
 class CorrectiveActionSerializer(serializers.Serializer):
     corrective_action = serializers.CharField(max_length=1000, allow_blank=True)
     corrective_action_date = serializers.DateField(allow_null=True)
     responsible_for_corrective_action = ResponsibleSerializer(many=True, required=False)
 
-    def to_internal_value(self, data):
-        if data.get('corrective_action_date') and isinstance(data['corrective_action_date'], date):
-            data['corrective_action_date'] = data['corrective_action_date'].isoformat()
-        return super().to_internal_value(data)
-
 class SolutionSerializer(serializers.Serializer):
     solution = serializers.CharField(max_length=1000, allow_blank=True)
     solution_date = serializers.DateField(allow_null=True)
     responsible_for_solution = ResponsibleSerializer(many=True, required=False)
-
-    def to_internal_value(self, data):
-        if data.get('solution_date') and isinstance(data['solution_date'], date):
-            data['solution_date'] = data['solution_date'].isoformat()
-        return super().to_internal_value(data)
 
 class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
@@ -62,6 +47,21 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         if not data.get('num_nonconf') and not self.instance:
             raise serializers.ValidationError({"num_nonconf": "Номер несоответствия обязателен"})
         return data
+    
+    def to_internal_value(self, data):
+        validated_data = super().to_internal_value(data)
+ 
+        if 'corrections' in validated_data:
+            for correction in validated_data['corrections']:
+                if correction.get('correction_date') and isinstance(correction['correction_date'], date):
+                    correction['correction_date'] = correction['correction_date'].isoformat()
+        
+        if 'corrective_actions' in validated_data:
+            for action in validated_data['corrective_actions']:
+                if action.get('corrective_action_date') and isinstance(action['corrective_action_date'], date):
+                    action['corrective_action_date'] = action['corrective_action_date'].isoformat()
+        
+        return validated_data
 
     def create(self, validated_data):
         print("Validated data (create):", validated_data)  # Отладка
@@ -159,6 +159,16 @@ class NCMXObservationsSerializer(serializers.ModelSerializer):
         if not data.get('num_observation') and not self.instance:
             raise serializers.ValidationError({"num_observation": "Номер наблюдения обязателен"})
         return data
+    
+    def to_internal_value(self, data):
+        validated_data = super().to_internal_value(data)
+ 
+        if 'solutions' in validated_data:
+            for solution in validated_data['solutions']:
+                if solution.get('solution_date') and isinstance(solution['solution_date'], date):
+                    solution['solution_date'] = solution['solution_date'].isoformat()
+        
+        return validated_data
 
     def create(self, validated_data):
         print("Validated data (create):", validated_data)  # Отладка

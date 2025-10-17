@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
-import { handleApiError } from "@utils/handleApiError";
+import { handleApiInconsistencyError } from "@utils/handleApiInconsistencyError";
 import {
   APICommentsResponse,
   ItemCommentResponseGET,
@@ -18,7 +18,7 @@ export const createCommentInconsistencyRequest = createAsyncThunk<
     const response = await api.post<ItemCommentResponseGET>("/ncmx-comments/", formData);
     return response.data;
   } catch (error: unknown) {
-    return rejectWithValue(handleApiError(error, "Ошибка при создании комментария"));
+    return rejectWithValue(handleApiInconsistencyError(error, "Ошибка при создании комментария"));
   }
 });
 
@@ -32,7 +32,7 @@ export const updateCommentInconsistencyRequest = createAsyncThunk<
     const response = await api.patch<ItemCommentResponseGET>(`/ncmx-comments/${id}/`, data);
     return response.data;
   } catch (error: unknown) {
-    return rejectWithValue(handleApiError(error, "Ошибка при обновлении комментария"));
+    return rejectWithValue(handleApiInconsistencyError(error, "Ошибка при обновлении комментария"));
   }
 });
 
@@ -45,7 +45,7 @@ export const deleteCommentInconsistencyRequest = createAsyncThunk<
   try {
     await api.delete(`/ncmx-comments/${commentId}/`);
   } catch (error: unknown) {
-    return rejectWithValue(handleApiError(error, "Ошибка при удалении комментария"));
+    return rejectWithValue(handleApiInconsistencyError(error, "Ошибка при удалении комментария"));
   }
 });
 
@@ -64,6 +64,6 @@ export const fetchCommentsItems = createAsyncThunk<
     });
     return response.data.results || [];
   } catch (error: unknown) {
-    return rejectWithValue(handleApiError(error, "Ошибка при получении комментариев"));
+    return rejectWithValue(handleApiInconsistencyError(error, "Ошибка при получении комментариев"));
   }
 });

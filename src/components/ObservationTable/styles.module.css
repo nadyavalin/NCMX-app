@@ -21,6 +21,10 @@
   margin: 20px 0;
 }
 
+.solText {
+  padding-bottom: 10px;
+}
+
 .redText {
   color: var(--accent-red-color);
 }

@@ -44,7 +44,7 @@ class NCMXObservations(models.Model):
     analysis_start_date = models.DateField(blank=True, null=True, db_comment='Дата начала проведения анализа')
     analysis_finish_date = models.DateField(blank=True, null=True, db_comment='Дата окончания проведения анализа')
     solutions = JSONField(default=list, blank=True, db_comment='Список решений (описание, дата, ответственные)')
-    solution_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия наблюдения')
+    observation_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия наблюдения')
     resp_person_observation_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
     auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
     is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')

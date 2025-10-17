@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 
-export const handleApiError = (
+export const handleApiInconsistencyError = (
   error: unknown,
   defaultMessage: string,
   num_nonconf?: number,

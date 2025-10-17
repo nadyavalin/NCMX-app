@@ -5,12 +5,15 @@ interface ValidationErrors {
   [key: string]: string;
 }
 
-interface UseFormValidationProps {
+interface UseInconsistencyFormValidationProps {
   formData: InconsistencyRequestPOST;
   numNonconfRef: React.RefObject<HTMLInputElement | null>;
 }
 
-export const useFormValidation = ({ formData, numNonconfRef }: UseFormValidationProps) => {
+export const useInconsistencyFormValidation = ({
+  formData,
+  numNonconfRef,
+}: UseInconsistencyFormValidationProps) => {
   const validateForm = useCallback(() => {
     const newErrors: ValidationErrors = {};
     if (!formData.num_nonconf || formData.num_nonconf <= 0) {

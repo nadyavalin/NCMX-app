@@ -1,8 +1,8 @@
 import React from "react";
 import { InconsistencyRequestPOST } from "@appTypes/types";
-import { ResponsiblePairs } from "../../ResponsiblePairs";
+import { ResponsiblePairsForInconsistency } from "../../../ResponsiblePairs/forInconsistency";
 
-interface ResponsibleGroupProps {
+interface ResponsibleGroupForInconsistencyProps {
   formData: InconsistencyRequestPOST;
   setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
   createLoading: boolean;
@@ -11,14 +11,14 @@ interface ResponsibleGroupProps {
   correctionIndex: number;
 }
 
-export const ResponsibleGroup = ({
+export const ResponsibleGroupForInconsistency = ({
   formData,
   setFormData,
   createLoading,
   fieldName,
   addText,
   correctionIndex,
-}: ResponsibleGroupProps) => {
+}: ResponsibleGroupForInconsistencyProps) => {
   const items =
     fieldName === "corrections"
       ? formData.corrections?.[correctionIndex]?.responsible_for_correction || [
@@ -29,7 +29,7 @@ export const ResponsibleGroup = ({
         ];
 
   return (
-    <ResponsiblePairs
+    <ResponsiblePairsForInconsistency
       items={items}
       setFormData={setFormData}
       createLoading={createLoading}
@@ -44,4 +44,4 @@ export const ResponsibleGroup = ({
   );
 };
 
-export default React.memo(ResponsibleGroup);
+export default React.memo(ResponsibleGroupForInconsistency);

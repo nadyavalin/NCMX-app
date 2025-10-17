@@ -4,7 +4,7 @@ import styles from "../styles.module.css";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@store/store";
-import { fetchItems, restoreInconsistencyRequest } from "@/api";
+import { fetchInconsistencies, restoreInconsistencyRequest } from "@/api";
 import InconsistencyTable from "@components/InconsistencyTable";
 
 export const ArchiveInconsistencies = () => {
@@ -15,7 +15,7 @@ export const ArchiveInconsistencies = () => {
 
   const loadItems = useCallback(async () => {
     try {
-      await dispatch(fetchItems({ is_archived: true })).unwrap();
+      await dispatch(fetchInconsistencies({ is_archived: true })).unwrap();
     } catch (error: unknown) {
       console.log(error);
     }
@@ -36,7 +36,7 @@ export const ArchiveInconsistencies = () => {
     <div className={styles.archiveBlock}>
       <InconsistencyTable
         title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-        items={archivedItems}
+        inconsistencies={archivedItems}
         isLoading={itemsLoading}
         error={itemsError}
         isArchived={true}
