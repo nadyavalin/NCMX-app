@@ -59,9 +59,9 @@ export const InconsistencyTable = ({
     isModalEstimateResultOpen,
     isModalEditOpen,
   } = useSelector((state: RootState) => state.ui);
+  const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
-  const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
 
   const sortedInconsistencies = [...inconsistencies].sort((a, b) => a.num_nonconf - b.num_nonconf);
 

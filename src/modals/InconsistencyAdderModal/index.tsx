@@ -328,11 +328,10 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
         onClose();
       }, 300);
     } catch (error: unknown) {
-      console.error("Error during submit:", error);
       const errorMessage =
         isAxiosError(error) && error.response?.data
           ? Object.values(error.response.data).join(", ")
-          : "Ошибка при сохранении несоответствия";
+          : "Несоответствие с таким номером уже существует";
       setErrors({ num_nonconf: errorMessage });
       addSnackbar(SnackbarType.error, errorMessage);
       if (numNonconfRef.current) {

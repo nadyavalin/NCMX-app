@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
-import { handleApiObservationError } from "@utils/handleApiObservationError";
+import { handleApiObservationError } from "@utils/handleApiError";
 import { ObservationResponseGET, ObservationRequestPOST } from "@appTypes/types";
 
 interface ObservationAPIResponse {

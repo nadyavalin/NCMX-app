@@ -7,7 +7,9 @@ import { SearchInput } from "@components/SearchInput";
 import { formatDateTime } from "@utils/formatDateTime";
 import React, { useState } from "react";
 import ObservationAdderModal from "@modals/ObservationAdderModal";
-import { ObservationResponseGET } from "@appTypes/types";
+import { ObservationResponseGET, SnackbarType } from "@appTypes/types";
+import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
+import { useSnackbar } from "@components/Snackbar/snackbarContext";
 
 interface ObservationTableProps {
   title: string;
@@ -40,6 +42,9 @@ export const ObservationTable = ({
 }: ObservationTableProps) => {
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [editItem, setEditItem] = useState<ObservationResponseGET | null>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
+  const [deleteNumObservation, setDeleteNumNonconf] = useState<number | null>(null);
+  const addSnackbar = useSnackbar();
 
   const openModal = (item?: ObservationResponseGET) => {
     setEditItem(item || null);
@@ -55,10 +60,28 @@ export const ObservationTable = ({
     openModal(item);
   };
 
-  const handleDelete = async (num_observation: number) => {
-    if (onDelete && confirm("Вы уверены, что хотите удалить это наблюдение?")) {
-      await onDelete(num_observation);
+  const handleDelete = (num_nonconf: number) => {
+    setDeleteNumNonconf(num_nonconf);
+    setConfirmDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteNumObservation === null || !onDelete) return;
+    try {
+      await onDelete(deleteNumObservation);
+      setConfirmDeleteOpen(false);
+      setDeleteNumNonconf(null);
+      addSnackbar(SnackbarType.success, `Наблюдение № ${deleteNumObservation} успешно удалено`);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Ошибка при удалении несоответствия";
+      addSnackbar(SnackbarType.error, errorMessage);
     }
+  };
+
+  const cancelDelete = () => {
+    setConfirmDeleteOpen(false);
+    setDeleteNumNonconf(null);
   };
 
   const handleRestore = async (num_observation: number) => {
@@ -247,6 +270,13 @@ export const ObservationTable = ({
             />
           </section>
         )}
+        <ConfirmDeleteModal
+          open={confirmDeleteOpen}
+          onClose={cancelDelete}
+          onConfirm={confirmDelete}
+          title="Подтверждение удаления"
+          message={`Вы уверены, что хотите удалить наблюдение № ${deleteNumObservation}?`}
+        />
       </main>
     </>
   );

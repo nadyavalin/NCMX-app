@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
-import { handleApiInconsistencyError } from "@utils/handleApiInconsistencyError";
+import { handleApiInconsistencyError } from "@utils/handleApiError";
 import { APIResponse, InconsistencyResponseGET, InconsistencyRequestPOST } from "@appTypes/types";
 
 // Thunk для загрузки списка несоответствий

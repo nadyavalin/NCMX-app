@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@utils/api";
 import { RootState } from "@store/store";
-import { handleApiInconsistencyError } from "@utils/handleApiInconsistencyError";
 import {
   APICommentsResponse,
   ItemCommentResponseGET,
   ItemCommentRequestPOST,
 } from "@appTypes/types";
+import { handleApiInconsistencyError } from "@utils/handleApiError";
 
 // Thunk для создания комментария
 export const createCommentInconsistencyRequest = createAsyncThunk<
