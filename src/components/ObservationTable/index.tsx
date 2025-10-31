@@ -20,7 +20,6 @@ import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
 import { formatDate } from "@utils/formatDate";
-import HistoryCommentsListModal from "@modals/HistoryCommentsListModal";
 
 interface ObservationTableProps {
   title: string;
@@ -31,11 +30,10 @@ interface ObservationTableProps {
   onFetch: () => void;
   onDelete?: (num_observation: number) => Promise<void>;
   onRestore?: (num_observation: number) => Promise<void>;
-  onArchive?: (num_observation: number) => Promise<void>; // Добавляем проп для архивации
   showAddButton?: boolean;
   showEditAction?: boolean;
   showDeleteAction?: boolean;
-  showArchiveAction?: boolean; // Добавляем проп для показа действия архивации
+  showArchiveAction?: boolean;
 }
 
 export const ObservationTable = ({
@@ -47,25 +45,18 @@ export const ObservationTable = ({
   onFetch,
   onDelete,
   onRestore,
-  // onArchive,
   showAddButton = true,
   showEditAction = false,
   showDeleteAction = false,
-  // showArchiveAction = false,
 }: ObservationTableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
-  const {
-    currentObservationNumber,
-    isModalCommentsOpen,
-    isModalHistoryCommentsOpen,
-    isModalEditOpen,
-  } = useSelector((state: RootState) => state.ui);
+  const { currentObservationNumber, isModalCommentsOpen, isModalEditOpen } = useSelector(
+    (state: RootState) => state.ui,
+  );
   const [editItem, setEditItem] = useState<ObservationResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumObservation, setDeleteNumObservation] = useState<number | null>(null);
-  // const [archiveConfirmOpen, setArchiveConfirmOpen] = useState<boolean>(false);
-  // const [archiveNumObservation, setArchiveNumObservation] = useState<number | null>(null);
 
   const sortedObservations = [...observations].sort(
     (a, b) => a.num_observation - b.num_observation,
@@ -133,33 +124,6 @@ export const ObservationTable = ({
     setConfirmDeleteOpen(false);
     setDeleteNumObservation(null);
   };
-
-  const handleArchive = (num_observation: number) => {
-    setArchiveNumObservation(num_observation);
-    setArchiveConfirmOpen(true);
-  };
-
-  // const confirmArchive = async () => {
-  //   if (archiveNumObservation === null || !onArchive) return;
-  //   try {
-  //     await onArchive(archiveNumObservation);
-  //     setArchiveConfirmOpen(false);
-  //     setArchiveNumObservation(null);
-  //     addSnackbar(
-  //       SnackbarType.success,
-  //       `Наблюдение № ${archiveNumObservation} успешно перенесено в архив`,
-  //     );
-  //   } catch (error: unknown) {
-  //     const errorMessage =
-  //       error instanceof Error ? error.message : "Ошибка при архивации наблюдения";
-  //     addSnackbar(SnackbarType.error, errorMessage);
-  //   }
-  // };
-
-  // const cancelArchive = () => {
-  //   setArchiveConfirmOpen(false);
-  //   setArchiveNumObservation(null);
-  // };
 
   const openModal = (item?: ObservationResponseGET) => {
     setEditItem(item || null);
@@ -305,7 +269,6 @@ export const ObservationTable = ({
                             href="#"
                             title="Закрыть наблюдение и перенести в архив"
                             className={styles.greenText}
-                            onClick={() => handleArchive(item.num_observation)}
                           >
                             Закрыть и перенести в архив
                           </a>
@@ -361,11 +324,6 @@ export const ObservationTable = ({
           isOpen={isModalCommentsOpen}
           onClose={() => dispatch(toggleModalComments(false))}
           entityTitle="наблюдению"
-        />
-        <HistoryCommentsListModal
-          currentInconsistencyNumber={currentObservationNumber}
-          isOpen={isModalHistoryCommentsOpen}
-          onClose={() => handleCloseModal("historyComments")}
         />
 
         <ConfirmDeleteModal

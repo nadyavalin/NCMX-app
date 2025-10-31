@@ -12,7 +12,6 @@ import {
 import { formatDate } from "@utils/formatDate";
 import InconsistencyAdderModal from "@modals/InconsistencyAdderModal";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
-import HistoryCommentsListModal from "@modals/HistoryCommentsListModal";
 import EstimateModal from "@modals/EstimateModal";
 import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
@@ -55,7 +54,6 @@ export const InconsistencyTable = ({
   const {
     currentInconsistencyNumber,
     isModalCommentsOpen,
-    isModalHistoryCommentsOpen,
     isModalEstimateResultOpen,
     isModalEditOpen,
   } = useSelector((state: RootState) => state.ui);
@@ -395,11 +393,6 @@ export const InconsistencyTable = ({
         isOpen={isModalCommentsOpen}
         onClose={() => dispatch(toggleModalComments(false))}
         entityTitle="несоответствию"
-      />
-      <HistoryCommentsListModal
-        currentInconsistencyNumber={currentInconsistencyNumber}
-        isOpen={isModalHistoryCommentsOpen}
-        onClose={() => handleCloseModal("historyComments")}
       />
       <EstimateModal
         isOpen={isModalEstimateResultOpen}
