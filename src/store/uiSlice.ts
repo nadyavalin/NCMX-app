@@ -47,7 +47,7 @@ const uiSlice = createSlice({
     },
 
     setCurrentObservationNumber(state, action: PayloadAction<number | null>) {
-      state.currentInconsistencyNumber = action.payload;
+      state.currentObservationNumber = action.payload;
     },
     toggleModalObservationComments(state, action: PayloadAction<boolean>) {
       state.isModalObservationCommentsOpen = action.payload;

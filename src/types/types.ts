@@ -118,12 +118,18 @@ export interface APIResponse {
   results: InconsistencyResponseGET[];
 }
 
+export type CommentContentType = "inconsistency" | "observation" | "improvement";
+
 export interface ItemCommentResponseGET {
   id: number;
-  num_nonconf: number;
+  content_type: CommentContentType;
+  object_id: number;
   comment_author: string;
   comment_text: string;
   created_at: DateString;
+  // Поля для обратной совместимости
+  num_nonconf?: number;
+  num_observation?: number;
 }
 
 export interface APICommentsResponse {
@@ -131,13 +137,13 @@ export interface APICommentsResponse {
 }
 
 export interface ItemCommentRequestPOST {
-  num_nonconf: number | null;
+  content_type: CommentContentType;
+  object_id: number;
   comment_author: string;
   comment_text: string;
 }
 
 export interface ItemCommentRequestPATCH {
-  num_nonconf: number | null;
   comment_text: string;
 }
 

@@ -2,7 +2,7 @@ import "@/globals.css";
 import styles from "./styles.module.css";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { deleteCommentInconsistencyRequest } from "@/api";
+import { deleteCommentRequest } from "@/api";
 import { AppDispatch } from "@store/store";
 import { ItemCommentResponseGET } from "@appTypes/types";
 import { useFetchCommentsItems } from "@hooks/useComments";
@@ -60,7 +60,7 @@ const HistoryCommentsListModal = ({ currentInconsistencyNumber, isOpen, onClose 
 
   const handleDeleteClick = async (commentId: number) => {
     try {
-      await dispatch(deleteCommentInconsistencyRequest(commentId)).unwrap();
+      await dispatch(deleteCommentRequest(commentId)).unwrap();
       addSnackbar(SnackbarType.success, `Комментарий успешно удалён`);
       refetch();
     } catch (error: unknown) {

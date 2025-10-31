@@ -1,9 +1,9 @@
 import { isAxiosError } from "axios";
 
-export const createApiErrorHandler = (entityName: string, entityField: string) => {
+export const createApiErrorHandler = (entityName: string, entityField?: string) => {
   return (error: unknown, defaultMessage: string, entityNumber?: number): string => {
     if (isAxiosError(error)) {
-      if (error.response?.status === 400 && entityNumber !== undefined) {
+      if (error.response?.status === 400 && entityNumber !== undefined && entityField) {
         const serverMessage =
           error.response?.data?.[entityField]?.[0] ||
           error.response?.data?.detail ||
@@ -19,6 +19,7 @@ export const createApiErrorHandler = (entityName: string, entityField: string) =
         }
         return serverMessage;
       }
+
       return (
         error.response?.data?.detail ||
         error.response?.data?.message ||
@@ -34,3 +35,4 @@ export const createApiErrorHandler = (entityName: string, entityField: string) =
 
 export const handleApiInconsistencyError = createApiErrorHandler("несоответствие", "num_nonconf");
 export const handleApiObservationError = createApiErrorHandler("наблюдение", "num_observation");
+export const handleApiCommentError = createApiErrorHandler("комментарий");

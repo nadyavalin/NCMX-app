@@ -88,3 +88,25 @@ export const updateObservationRequest = createAsyncThunk<
     return rejectWithValue(handleApiObservationError(error, "Ошибка при обновлении наблюдения"));
   }
 });
+
+// Thunk для архивации наблюдения
+// export const archiveObservationRequest = createAsyncThunk<
+//   ObservationResponseGET,
+//   number,
+//   { state: RootState }
+// >("observations/archiveObservation", async (num_observation, { rejectWithValue }) => {
+//   try {
+//     const closureDate = new Date().toISOString();
+//     const response = await api.patch<ObservationResponseGET>(
+//       `/ncmx-table-observations/${num_observation}/`,
+//       {
+//         is_archived: true,
+//         observation_closure_date: closureDate,
+//         resp_person_observation_closure: "Система", // или можно передавать из компонента
+//       },
+//     );
+//     return response.data;
+//   } catch (error: unknown) {
+//     return rejectWithValue(handleApiObservationError(error, "Ошибка при архивации наблюдения"));
+//   }
+// });

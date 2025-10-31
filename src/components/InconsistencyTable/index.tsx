@@ -390,9 +390,11 @@ export const InconsistencyTable = ({
       )}
 
       <CommentsAdderModal
-        currentInconsistencyNumber={currentInconsistencyNumber}
+        content_type="inconsistency"
+        object_id={currentInconsistencyNumber}
         isOpen={isModalCommentsOpen}
-        onClose={() => handleCloseModal("comments")}
+        onClose={() => dispatch(toggleModalComments(false))}
+        entityTitle="несоответствию"
       />
       <HistoryCommentsListModal
         currentInconsistencyNumber={currentInconsistencyNumber}

@@ -95,3 +95,54 @@ export const updateInconsistencyRequest = createAsyncThunk<
     );
   }
 });
+
+// // Thunk для оценки результативности и архивации несоответствия
+// export const estimateAndArchiveInconsistencyRequest = createAsyncThunk<
+//   InconsistencyResponseGET,
+//   {
+//     num_nonconf: number;
+//     estimate: number;
+//     resp_person_nonconf_closure: string;
+//     is_archived: boolean;
+//     comment_text?: string;
+//   },
+//   { state: RootState }
+// >(
+//   "inconsistencies/estimateAndArchiveInconsistency",
+//   async (
+//     { num_nonconf, estimate, resp_person_nonconf_closure, is_archived, comment_text },
+//     { rejectWithValue, dispatch },
+//   ) => {
+//     try {
+//       // Сначала добавляем комментарий, если он есть
+//       if (comment_text && comment_text.trim()) {
+//         await dispatch(
+//           createCommentRequest({
+//             content_type: "inconsistency",
+//             object_id: num_nonconf,
+//             comment_author: resp_person_nonconf_closure,
+//             comment_text: comment_text,
+//           }),
+//         ).unwrap();
+//       }
+
+//       // Затем обновляем несоответствие
+//       const closureDate = new Date().toISOString();
+//       const response = await api.patch<InconsistencyResponseGET>(
+//         `/ncmx-table-inconsistencies/${num_nonconf}/`,
+//         {
+//           estimate,
+//           resp_person_nonconf_closure,
+//           is_archived,
+//           nonconf_closure_date: closureDate,
+//         },
+//       );
+
+//       return response.data;
+//     } catch (error: unknown) {
+//       return rejectWithValue(
+//         handleApiInconsistencyError(error, "Ошибка при оценке результативности несоответствия"),
+//       );
+//     }
+//   },
+// );

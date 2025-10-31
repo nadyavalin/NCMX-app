@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  fetchCommentsItems,
-  createCommentInconsistencyRequest,
-  deleteCommentInconsistencyRequest,
+  fetchComments,
+  createCommentRequest,
+  updateCommentRequest,
+  deleteCommentRequest,
 } from "@/api";
 import { ItemCommentResponseGET } from "@appTypes/types";
 
@@ -21,51 +22,77 @@ const initialState: CommentsState = {
 const commentsSlice = createSlice({
   name: "comments",
   initialState,
-  reducers: {},
+  reducers: {
+    // clearComments: (state) => {
+    //   state.comments = [];
+    // },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCommentsItems.pending, (state) => {
+
+      .addCase(fetchComments.pending, (state) => {
         state.commentLoading = true;
         state.commentError = null;
       })
       .addCase(
-        fetchCommentsItems.fulfilled,
+        fetchComments.fulfilled,
         (state, action: PayloadAction<ItemCommentResponseGET[]>) => {
           state.comments = action.payload;
           state.commentLoading = false;
         },
       )
-      .addCase(fetchCommentsItems.rejected, (state, action) => {
+      .addCase(fetchComments.rejected, (state, action) => {
         state.commentError = (action.payload as string) || "Ошибка при получении комментариев";
         state.commentLoading = false;
       })
-      .addCase(createCommentInconsistencyRequest.pending, (state) => {
+
+      .addCase(createCommentRequest.pending, (state) => {
         state.commentLoading = true;
         state.commentError = null;
       })
       .addCase(
-        createCommentInconsistencyRequest.fulfilled,
+        createCommentRequest.fulfilled,
         (state, action: PayloadAction<ItemCommentResponseGET>) => {
           state.comments = [...state.comments, action.payload];
           state.commentLoading = false;
         },
       )
-      .addCase(createCommentInconsistencyRequest.rejected, (state, action) => {
+      .addCase(createCommentRequest.rejected, (state, action) => {
         state.commentError = (action.payload as string) || "Ошибка при создании комментария";
         state.commentLoading = false;
       })
+
+      .addCase(updateCommentRequest.pending, (state) => {
+        state.commentLoading = true;
+        state.commentError = null;
+      })
       .addCase(
-        deleteCommentInconsistencyRequest.fulfilled,
+        updateCommentRequest.fulfilled,
+        (state, action: PayloadAction<ItemCommentResponseGET>) => {
+          state.comments = state.comments.map((comment) =>
+            comment.id === action.payload.id ? action.payload : comment,
+          );
+          state.commentLoading = false;
+        },
+      )
+      .addCase(updateCommentRequest.rejected, (state, action) => {
+        state.commentError = (action.payload as string) || "Ошибка при обновлении комментария";
+        state.commentLoading = false;
+      })
+
+      .addCase(
+        deleteCommentRequest.fulfilled,
         (state, action: PayloadAction<void, string, { arg: number }>) => {
           state.comments = state.comments.filter((comment) => comment.id !== action.meta.arg);
           state.commentLoading = false;
         },
       )
-      .addCase(deleteCommentInconsistencyRequest.rejected, (state, action) => {
+      .addCase(deleteCommentRequest.rejected, (state, action) => {
         state.commentError = (action.payload as string) || "Ошибка при удалении комментария";
         state.commentLoading = false;
       });
   },
 });
 
+// export const { clearComments } = commentsSlice.actions;
 export default commentsSlice.reducer;

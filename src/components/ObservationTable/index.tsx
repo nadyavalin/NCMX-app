@@ -2,66 +2,116 @@
 
 import "@/globals.css";
 import styles from "./styles.module.css";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@store/store";
+import {
+  setCurrentObservationNumber,
+  toggleModalComments,
+  toggleModalHistoryComments,
+  toggleModalEdit,
+} from "@store/uiSlice";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
 import { SearchInput } from "@components/SearchInput";
 import { formatDateTime } from "@utils/formatDateTime";
-import React, { useState } from "react";
 import ObservationAdderModal from "@modals/ObservationAdderModal";
 import { ObservationResponseGET, SnackbarType } from "@appTypes/types";
 import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
+import CommentsAdderModal from "@modals/CommentsAdderModal";
+import { formatDate } from "@utils/formatDate";
+import HistoryCommentsListModal from "@modals/HistoryCommentsListModal";
 
 interface ObservationTableProps {
   title: string;
-  observations?: ObservationResponseGET[];
-  isLoading?: boolean;
-  error?: string | null;
-  isArchived?: boolean;
-  onFetch?: () => void;
+  observations: ObservationResponseGET[];
+  isLoading: boolean;
+  error: string | null;
+  isArchived: boolean;
+  onFetch: () => void;
   onDelete?: (num_observation: number) => Promise<void>;
   onRestore?: (num_observation: number) => Promise<void>;
+  onArchive?: (num_observation: number) => Promise<void>; // Добавляем проп для архивации
   showAddButton?: boolean;
   showEditAction?: boolean;
   showDeleteAction?: boolean;
-  showIsArchivedAction?: boolean;
+  showArchiveAction?: boolean; // Добавляем проп для показа действия архивации
 }
 
 export const ObservationTable = ({
   title,
-  observations = [],
+  observations: observations,
   isLoading,
   error,
   isArchived,
   onFetch,
   onDelete,
   onRestore,
+  // onArchive,
   showAddButton = true,
   showEditAction = false,
   showDeleteAction = false,
-  showIsArchivedAction = false,
+  showArchiveAction = false,
 }: ObservationTableProps) => {
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const addSnackbar = useSnackbar();
+  const {
+    currentObservationNumber,
+    isModalCommentsOpen,
+    isModalHistoryCommentsOpen,
+    isModalEditOpen,
+  } = useSelector((state: RootState) => state.ui);
   const [editItem, setEditItem] = useState<ObservationResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
-  const [deleteNumObservation, setDeleteNumNonconf] = useState<number | null>(null);
-  const addSnackbar = useSnackbar();
+  const [deleteNumObservation, setDeleteNumObservation] = useState<number | null>(null);
+  // const [archiveConfirmOpen, setArchiveConfirmOpen] = useState<boolean>(false);
+  // const [archiveNumObservation, setArchiveNumObservation] = useState<number | null>(null);
 
-  const openModal = (item?: ObservationResponseGET) => {
-    setEditItem(item || null);
-    setIsModalEditOpen(true);
-  };
+  const sortedObservations = [...observations].sort(
+    (a, b) => a.num_observation - b.num_observation,
+  );
 
-  const handleCloseModal = () => {
-    setIsModalEditOpen(false);
-    setEditItem(null);
-  };
+  const handleOpenModal = useCallback(
+    (modalType: "comments" | "historyComments" | "edit", num: number) => {
+      dispatch(setCurrentObservationNumber(num));
+      switch (modalType) {
+        case "comments":
+          dispatch(toggleModalComments(true));
+          break;
+        case "historyComments":
+          dispatch(toggleModalHistoryComments(true));
+          break;
+        case "edit":
+          const item = observations.find((item) => item.num_observation === num);
+          if (item) {
+            setEditItem(item);
+            dispatch(toggleModalEdit(true));
+          }
+          break;
+      }
+    },
+    [dispatch, observations],
+  );
 
-  const handleEdit = (item: ObservationResponseGET) => {
-    openModal(item);
-  };
+  const handleCloseModal = useCallback(
+    (modalType: "comments" | "historyComments" | "edit") => {
+      switch (modalType) {
+        case "comments":
+          dispatch(toggleModalComments(false));
+          break;
+        case "historyComments":
+          dispatch(toggleModalHistoryComments(false));
+          break;
+        case "edit":
+          dispatch(toggleModalEdit(false));
+          break;
+      }
+    },
+    [dispatch],
+  );
 
-  const handleDelete = (num_nonconf: number) => {
-    setDeleteNumNonconf(num_nonconf);
+  const handleDelete = (num_observation: number) => {
+    setDeleteNumObservation(num_observation);
     setConfirmDeleteOpen(true);
   };
 
@@ -70,29 +120,63 @@ export const ObservationTable = ({
     try {
       await onDelete(deleteNumObservation);
       setConfirmDeleteOpen(false);
-      setDeleteNumNonconf(null);
+      setDeleteNumObservation(null);
       addSnackbar(SnackbarType.success, `Наблюдение № ${deleteNumObservation} успешно удалено`);
     } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error ? error.message : "Ошибка при удалении несоответствия";
+        error instanceof Error ? error.message : "Ошибка при удалении наблюдения";
       addSnackbar(SnackbarType.error, errorMessage);
     }
   };
 
   const cancelDelete = () => {
     setConfirmDeleteOpen(false);
-    setDeleteNumNonconf(null);
+    setDeleteNumObservation(null);
+  };
+
+  const handleArchive = (num_observation: number) => {
+    setArchiveNumObservation(num_observation);
+    setArchiveConfirmOpen(true);
+  };
+
+  // const confirmArchive = async () => {
+  //   if (archiveNumObservation === null || !onArchive) return;
+  //   try {
+  //     await onArchive(archiveNumObservation);
+  //     setArchiveConfirmOpen(false);
+  //     setArchiveNumObservation(null);
+  //     addSnackbar(
+  //       SnackbarType.success,
+  //       `Наблюдение № ${archiveNumObservation} успешно перенесено в архив`,
+  //     );
+  //   } catch (error: unknown) {
+  //     const errorMessage =
+  //       error instanceof Error ? error.message : "Ошибка при архивации наблюдения";
+  //     addSnackbar(SnackbarType.error, errorMessage);
+  //   }
+  // };
+
+  // const cancelArchive = () => {
+  //   setArchiveConfirmOpen(false);
+  //   setArchiveNumObservation(null);
+  // };
+
+  const openModal = (item?: ObservationResponseGET) => {
+    setEditItem(item || null);
+    dispatch(toggleModalEdit(true));
   };
 
   const handleRestore = async (num_observation: number) => {
-    if (onRestore && confirm("Вы уверены, что хотите восстановить это наблюдение?")) {
-      await onRestore(num_observation);
+    if (onRestore) {
+      try {
+        await onRestore(num_observation);
+        addSnackbar(SnackbarType.success, `Наблюдение № ${num_observation} успешно восстановлено`);
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Ошибка при восстановлении наблюдения";
+        addSnackbar(SnackbarType.error, errorMessage);
+      }
     }
-  };
-
-  const handleArchive = async (num_observation: number) => {
-    // Здесь будет логика архивации через API
-    console.log("Archive observation:", num_observation);
   };
 
   if (isLoading) {
@@ -116,7 +200,7 @@ export const ObservationTable = ({
               <SearchInput />
             </>
           )}
-          {onFetch && <button onClick={onFetch}>Получить данные</button>}
+          <button onClick={onFetch}>Получить данные</button>
         </section>
 
         <section>
@@ -134,41 +218,38 @@ export const ObservationTable = ({
               </tr>
             </thead>
             <tbody>
-              {observations.length === 0 ? (
+              {sortedObservations.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: "center" }}>
-                    {isArchived ? "Архив наблюдений пуст" : "Нет наблюдений"}
+                  <td colSpan={8} className="error">
+                    Нет данных для отображения.
                   </td>
                 </tr>
               ) : (
-                observations.map((observation) => (
-                  <tr key={observation.num_observation}>
-                    <td>{observation.num_observation}</td>
+                sortedObservations.map((item) => (
+                  <tr key={item.num_observation}>
+                    <td>{item.num_observation}</td>
                     <td>
-                      {observation.normative_documents?.map((doc, index) => (
-                        <p key={index}>
-                          - {doc.norm_doc || "-"} {doc.point || "-"}
-                        </p>
-                      ))}
+                      {item.normative_documents && item.normative_documents.length > 0
+                        ? item.normative_documents.map((doc, index) => (
+                            <p key={index}>
+                              - {doc.norm_doc || "-"}, {doc.point || "-"}
+                            </p>
+                          ))
+                        : "-"}
                     </td>
-                    <td>{observation.observation}</td>
+                    <td>{item.observation || "-"}</td>
                     <td>
-                      {observation.report}
-                      {observation.report_date && (
-                        <div>
-                          <small>{formatDateTime(observation.report_date)}</small>
-                        </div>
-                      )}
+                      {item.report || "-"} от {formatDate(item.report_date)}
                     </td>
                     <td>
-                      {observation.solutions?.map((sol, index) => (
+                      {item.solutions?.map((sol, index) => (
                         <p key={index} className={styles.solText}>
                           {index + 1}. {sol.solution || "-"}
                         </p>
                       ))}
                     </td>
                     <td>
-                      {observation.solutions?.map((sol, index) => (
+                      {item.solutions?.map((sol, index) => (
                         <div key={index}>
                           <p>{index + 1}.</p>
                           {sol.responsible_for_solution?.map((resp, respIndex) => (
@@ -180,18 +261,18 @@ export const ObservationTable = ({
                       ))}
                     </td>
                     <td>
-                      {observation.solutions?.map((sol, index) => (
+                      {item.solutions?.map((sol, index) => (
                         <div key={index} className={styles.solText}>
-                          {index + 1}. {sol.solution_date && formatDateTime(sol.solution_date)}
+                          {index + 1}. {sol.solution_date && formatDate(sol.solution_date)}
                         </div>
                       ))}
                     </td>
                     <td>
                       <div className={styles.observationActions}>
-                        {isArchived && observation.observation_closure_date && (
+                        {isArchived && item.observation_closure_date && (
                           <p>
                             Дата переноса в архив: <br />
-                            <b>{formatDateTime(observation.observation_closure_date)}</b>
+                            <b>{formatDateTime(item.observation_closure_date)}</b>
                           </p>
                         )}
 
@@ -199,27 +280,31 @@ export const ObservationTable = ({
                           <a
                             href="#"
                             className={styles.redText}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleEdit(observation);
-                            }}
+                            onClick={() => handleOpenModal("edit", item.num_observation)}
                           >
                             Изменить наблюдение
                           </a>
                         )}
 
-                        <a href="#">Добавить комментарий</a>
-                        <a href="#">Посмотреть историю комментариев к наблюдению</a>
+                        <a
+                          href="#"
+                          onClick={() => handleOpenModal("comments", item.num_observation)}
+                        >
+                          Добавить комментарий
+                        </a>
+                        <a
+                          href="#"
+                          onClick={() => handleOpenModal("historyComments", item.num_observation)}
+                        >
+                          Посмотреть историю комментариев к наблюдению
+                        </a>
 
-                        {showIsArchivedAction && !isArchived && (
+                        {showArchiveAction && !isArchived && (
                           <a
                             href="#"
                             title="Закрыть наблюдение и перенести в архив"
                             className={styles.greenText}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleArchive(observation.num_observation);
-                            }}
+                            onClick={() => handleArchive(item.num_observation)}
                           >
                             Закрыть наблюдение и перенести в архив
                           </a>
@@ -232,21 +317,19 @@ export const ObservationTable = ({
                             className={styles.redText}
                             onClick={(e) => {
                               e.preventDefault();
-                              handleDelete(observation.num_observation);
+                              handleDelete(item.num_observation);
                             }}
                           >
                             Удалить наблюдение
                           </a>
                         )}
 
-                        {isArchived && onRestore && (
+                        {onRestore && isArchived && (
                           <a
                             href="#"
+                            title="Восстановить наблюдение может только главный аудитор и администратор"
                             className={styles.redText}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleRestore(observation.num_observation);
-                            }}
+                            onClick={() => handleRestore(item.num_observation)}
                           >
                             Восстановить
                           </a>
@@ -265,11 +348,25 @@ export const ObservationTable = ({
             <button onClick={() => openModal()}>Добавить наблюдение</button>
             <ObservationAdderModal
               isOpen={isModalEditOpen}
-              onClose={handleCloseModal}
+              onClose={() => handleCloseModal("edit")}
               editItem={editItem}
             />
           </section>
         )}
+
+        <CommentsAdderModal
+          content_type="observation"
+          object_id={currentObservationNumber}
+          isOpen={isModalCommentsOpen}
+          onClose={() => dispatch(toggleModalComments(false))}
+          entityTitle="наблюдению"
+        />
+        <HistoryCommentsListModal
+          currentInconsistencyNumber={currentObservationNumber}
+          isOpen={isModalHistoryCommentsOpen}
+          onClose={() => handleCloseModal("historyComments")}
+        />
+
         <ConfirmDeleteModal
           open={confirmDeleteOpen}
           onClose={cancelDelete}

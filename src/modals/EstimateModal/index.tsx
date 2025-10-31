@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@/api";
+import { updateInconsistencyRequest, createCommentRequest } from "@/api";
 import { SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
@@ -74,8 +74,9 @@ const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
     try {
       if (estimate === "неудовлетворительно" && commentText.trim()) {
         await dispatch(
-          createCommentInconsistencyRequest({
-            num_nonconf: currentInconsistencyNumber,
+          createCommentRequest({
+            content_type: "inconsistency",
+            object_id: currentInconsistencyNumber,
             comment_author: respPerson,
             comment_text: commentText,
           }),

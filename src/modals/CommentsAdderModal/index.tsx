@@ -1,30 +1,40 @@
 import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCommentInconsistencyRequest, updateCommentInconsistencyRequest } from "@/api";
-import { ItemCommentRequestPOST, ItemCommentResponseGET, SnackbarType } from "@appTypes/types";
+import { createCommentRequest, updateCommentRequest } from "@/api";
+import {
+  ItemCommentRequestPOST,
+  ItemCommentResponseGET,
+  SnackbarType,
+  CommentContentType,
+} from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { ModalComponent } from "@modals/ModalComponent";
 
 interface ModalProps {
-  currentInconsistencyNumber: number | null;
+  content_type: CommentContentType;
+  object_id: number | null;
   isOpen: boolean;
   onClose: () => void;
   editComment?: ItemCommentResponseGET | null;
+  entityTitle?: string; // Необязательное поле для кастомного заголовка
 }
 
 const initialCommentFormData: ItemCommentRequestPOST = {
-  num_nonconf: null,
+  content_type: "inconsistency" as CommentContentType,
+  object_id: 0,
   comment_author: "",
   comment_text: "",
 };
 
 const CommentsAdderModal = ({
-  currentInconsistencyNumber,
+  content_type,
+  object_id,
   isOpen,
   onClose,
   editComment,
+  entityTitle,
 }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
@@ -32,24 +42,48 @@ const CommentsAdderModal = ({
   const [formData, setFormData] = useState<ItemCommentRequestPOST>(initialCommentFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // Функция для получения названия сущности
+  const getEntityName = () => {
+    const names = {
+      inconsistency: "несоответствию",
+      observation: "наблюдению",
+      improvement: "возможности улучшения",
+    };
+    return names[content_type] || "сущности";
+  };
+
+  // Функция для получения заголовка
+  const getTitle = () => {
+    if (entityTitle) return entityTitle;
+
+    const titles = {
+      inconsistency: "несоответствия",
+      observation: "наблюдения",
+      improvement: "возможности улучшения",
+    };
+    return titles[content_type] || "сущности";
+  };
+
   useEffect(() => {
     if (isOpen) {
       if (editComment) {
         setFormData({
-          num_nonconf: editComment.num_nonconf,
+          content_type: editComment.content_type,
+          object_id: editComment.object_id,
           comment_author: editComment.comment_author,
           comment_text: editComment.comment_text,
         });
       } else {
         setFormData({
-          num_nonconf: currentInconsistencyNumber,
+          content_type,
+          object_id: object_id || 0,
           comment_author: "",
           comment_text: "",
         });
       }
       setErrors({});
     }
-  }, [isOpen, currentInconsistencyNumber, editComment]);
+  }, [isOpen, content_type, object_id, editComment]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -67,8 +101,8 @@ const CommentsAdderModal = ({
     if (!formData.comment_text.trim()) {
       newErrors.comment_text = "Введите текст комментария";
     }
-    if (formData.num_nonconf === null) {
-      newErrors.num_nonconf = "Номер несоответствия обязателен";
+    if (!formData.object_id) {
+      newErrors.object_id = `Номер ${getTitle()} обязателен`;
     }
     return newErrors;
   };
@@ -85,23 +119,23 @@ const CommentsAdderModal = ({
     try {
       if (editComment) {
         const result = await dispatch(
-          updateCommentInconsistencyRequest({ id: editComment.id, data: formData }),
+          updateCommentRequest({ id: editComment.id, data: formData }),
         ).unwrap();
         setFormData(initialCommentFormData);
         setErrors({});
         onClose();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий к несоответствию № ${result.num_nonconf} успешно обновлен`,
+          `Комментарий к ${getEntityName()} № ${result.object_id} успешно обновлен`,
         );
       } else {
-        const result = await dispatch(createCommentInconsistencyRequest(formData)).unwrap();
+        const result = await dispatch(createCommentRequest(formData)).unwrap();
         setFormData(initialCommentFormData);
         setErrors({});
         onClose();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий успешно добавлен к несоответствию № ${result.num_nonconf}`,
+          `Комментарий успешно добавлен к ${getEntityName()} № ${result.object_id}`,
         );
       }
     } catch (error: unknown) {
@@ -124,15 +158,17 @@ const CommentsAdderModal = ({
         <h3>
           {editComment
             ? "Редактировать комментарий"
-            : `Добавить комментарий к несоответствию № ${currentInconsistencyNumber}`}
+            : `Добавить комментарий к ${getEntityName()} № ${object_id}`}
         </h3>
         {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
         {commentError && <p className={styles.submitError}>{commentError}</p>}
+
         <select
           name="comment_author"
           id="comment_author"
           value={formData.comment_author}
           onChange={handleChange}
+          disabled={commentLoading}
         >
           <option value="">...выбрать автора комментария из базы</option>
           <option value="Разумнева Н.П.">Разумнева Н.П.</option>
@@ -140,6 +176,7 @@ const CommentsAdderModal = ({
           <option value="Ткачук Н.С.">Ткачук Н.С.</option>
         </select>
         {errors.comment_author && <p className={styles.submitError}>{errors.comment_author}</p>}
+
         <textarea
           name="comment_text"
           id="comment_text"
@@ -148,8 +185,10 @@ const CommentsAdderModal = ({
           value={formData.comment_text}
           onChange={handleChange}
           className={styles.div_area}
+          disabled={commentLoading}
         />
         {errors.comment_text && <p className={styles.submitError}>{errors.comment_text}</p>}
+
         <div className={styles.buttonsBlock}>
           <button type="submit" disabled={commentLoading}>
             {commentLoading ? "Сохранение..." : "Сохранить и закрыть"}
