@@ -79,7 +79,7 @@ const HistoryCommentsListModal = ({ currentInconsistencyNumber, isOpen, onClose 
   const sortedComments = useMemo(
     () =>
       [...comments].sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       ),
     [comments],
   );
@@ -158,7 +158,8 @@ const HistoryCommentsListModal = ({ currentInconsistencyNumber, isOpen, onClose 
       </ModalComponent>
       {isEditModalOpen && editingComment && (
         <CommentsAdderModal
-          currentInconsistencyNumber={currentInconsistencyNumber}
+          content_type="inconsistency"
+          object_id={0}
           isOpen={isEditModalOpen}
           onClose={handleEditModalClose}
           editComment={editingComment}

@@ -326,17 +326,18 @@ export const InconsistencyTable = ({
                           className={styles.redText}
                           onClick={() => handleOpenModal("edit", item.num_nonconf)}
                         >
-                          Изменить несоответствие
+                          Изменить
                         </a>
                       )}
                       <a href="#" onClick={() => handleOpenModal("comments", item.num_nonconf)}>
-                        Добавить комментарий
+                        Комментарии
                       </a>
                       <a
                         href="#"
                         onClick={() => handleOpenModal("historyComments", item.num_nonconf)}
                       >
-                        Посмотреть историю комментариев к несоответствию
+                        История переноса сроков выполнения
+                        {/* Было - Посмотреть историю комментариев к несоответствию, необходимо сделать отдельный блок с комментариями */}
                       </a>
                       {showEstimateAction && (
                         <a
@@ -345,8 +346,7 @@ export const InconsistencyTable = ({
                           className={styles.greenText}
                           onClick={() => handleOpenModal("estimateResult", item.num_nonconf)}
                         >
-                          Провести оценку результативности для закрытия несоответствия и переноса в
-                          архив
+                          Провести оценку результативности для закрытия и переноса в архив
                         </a>
                       )}
                       {showDeleteAction && (
@@ -356,7 +356,7 @@ export const InconsistencyTable = ({
                           className={styles.redText}
                           onClick={() => handleDelete(item.num_nonconf)}
                         >
-                          Удалить несоответствие
+                          Удалить
                         </a>
                       )}
                       {onRestore && (

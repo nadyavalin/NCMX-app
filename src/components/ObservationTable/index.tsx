@@ -51,7 +51,7 @@ export const ObservationTable = ({
   showAddButton = true,
   showEditAction = false,
   showDeleteAction = false,
-  showArchiveAction = false,
+  // showArchiveAction = false,
 }: ObservationTableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
@@ -282,7 +282,7 @@ export const ObservationTable = ({
                             className={styles.redText}
                             onClick={() => handleOpenModal("edit", item.num_observation)}
                           >
-                            Изменить наблюдение
+                            Изменить
                           </a>
                         )}
 
@@ -290,23 +290,24 @@ export const ObservationTable = ({
                           href="#"
                           onClick={() => handleOpenModal("comments", item.num_observation)}
                         >
-                          Добавить комментарий
+                          Комментарии
                         </a>
                         <a
                           href="#"
                           onClick={() => handleOpenModal("historyComments", item.num_observation)}
                         >
-                          Посмотреть историю комментариев к наблюдению
+                          История переноса сроков выполнения
+                          {/* Было - Посмотреть историю комментариев к наблюдению, необходимо сделать отдельный блок с комментариями */}
                         </a>
 
-                        {showArchiveAction && !isArchived && (
+                        {!isArchived && (
                           <a
                             href="#"
                             title="Закрыть наблюдение и перенести в архив"
                             className={styles.greenText}
                             onClick={() => handleArchive(item.num_observation)}
                           >
-                            Закрыть наблюдение и перенести в архив
+                            Закрыть и перенести в архив
                           </a>
                         )}
 
@@ -320,7 +321,7 @@ export const ObservationTable = ({
                               handleDelete(item.num_observation);
                             }}
                           >
-                            Удалить наблюдение
+                            Удалить
                           </a>
                         )}
 
