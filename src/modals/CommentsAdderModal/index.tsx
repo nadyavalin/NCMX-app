@@ -52,6 +52,8 @@ const CommentsAdderModal = ({
   const [editingComment, setEditingComment] = useState<ItemCommentResponseGET | null>(null);
 
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const formSectionRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Функция для получения названия сущности
   const getEntityName = () => {
@@ -74,6 +76,31 @@ const CommentsAdderModal = ({
     };
     return titles[content_type] || "сущности";
   };
+
+  // Функция для прокрутки к форме
+  const scrollToForm = () => {
+    if (formSectionRef.current) {
+      formSectionRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  };
+
+  // Функция для фокуса на текстовом поле
+  const focusOnTextarea = () => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
+
+  // Эффект для прокрутки к форме при открытии модального окна
+  useEffect(() => {
+    if (isOpen && !editComment) {
+      // Небольшая задержка для гарантии, что DOM полностью отрендерен
+      setTimeout(() => {
+        scrollToForm();
+        focusOnTextarea();
+      }, 100);
+    }
+  }, [isOpen, editComment]);
 
   // Эффект для инициализации формы
   useEffect(() => {
@@ -99,6 +126,17 @@ const CommentsAdderModal = ({
       });
     }
   }, [editComment]);
+
+  // Эффект для прокрутки к форме после добавления комментария
+  useEffect(() => {
+    if (!commentLoading && formData.comment_text === "" && isOpen && !editComment) {
+      // Прокручиваем к форме после успешного добавления комментария
+      setTimeout(() => {
+        scrollToForm();
+        focusOnTextarea();
+      }, 100);
+    }
+  }, [commentLoading, formData.comment_text, isOpen, editComment]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -234,6 +272,7 @@ const CommentsAdderModal = ({
           {errors.comment_author && <p className={styles.submitError}>{errors.comment_author}</p>}
 
           <textarea
+            ref={textareaRef}
             name="comment_text"
             id="comment_text"
             placeholder="Оставить комментарий"
@@ -309,7 +348,7 @@ const CommentsAdderModal = ({
             )}
           </div>
 
-          <div className={styles.formSection}>
+          <div ref={formSectionRef} className={styles.formSection}>
             <form className={styles.modalForm} onSubmit={handleSubmit}>
               {errors.submit && <p className={styles.submitError}>{errors.submit}</p>}
               {commentError && <p className={styles.submitError}>{commentError}</p>}
@@ -331,6 +370,7 @@ const CommentsAdderModal = ({
               )}
 
               <textarea
+                ref={textareaRef}
                 name="comment_text"
                 id="comment_text"
                 placeholder="Оставить комментарий"

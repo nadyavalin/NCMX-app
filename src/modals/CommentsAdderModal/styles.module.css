@@ -72,3 +72,14 @@
   color: var(--accent-red-color);
   text-align: start;
 }
+
+.formSection {
+  padding-top: 15px;
+  margin-top: 10px;
+}
+
+.div_area:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color), 0.2);
+  outline: none;
+}
