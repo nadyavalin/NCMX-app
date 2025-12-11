@@ -1,5 +1,7 @@
+# ncmx_app/urls.py
 from django.urls import path
-from .views import Inconsistencies, Observations, Comments  # ← ИМПОРТИРОВАТЬ ЕДИНЫЙ Comments VIEW
+from . import views
+from .views import Inconsistencies, Observations, Comments, RescheduleComments
 
 urlpatterns = [
     # Несоответствия
@@ -15,4 +17,8 @@ urlpatterns = [
     # Комментарии
     path('ncmx-comments/', Comments.as_view(), name='comments'),
     path('ncmx-comments/<int:id>/', Comments.as_view(), name='comment_detail'),
+    
+    # Комментарии о переносе сроков
+    path('reschedule-comments/', RescheduleComments.as_view(), name='reschedule_comments'),
+    path('reschedule-comments/<int:id>/', RescheduleComments.as_view(), name='reschedule_comment_detail'),
 ]

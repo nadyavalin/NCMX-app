@@ -78,7 +78,7 @@ export const ResponsiblePairsForObservation = ({
       newItem={{ department: "", person: "" }}
       minItems={1}
       listBlockClassName={styles.responsibleArea}
-      parentFieldName={fieldName === "responsible_for_solution" ? "solutions" : undefined} // вернуться к этому полю
+      parentFieldName={fieldName === "responsible_for_solution" ? "solutions" : undefined}
       parentIndex={solutionIndex}
     />
   );

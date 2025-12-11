@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import NCMXInconsistencies, NCMXObservations, NCMXComment  # ← ИСПРАВИТЬ ИМПОРТЫ
-from .serializers import NCMXInconsistenciesSerializer, NCMXObservationsSerializer, NCMXCommentSerializer  # ← ИСПРАВИТЬ ИМПОРТЫ
+from .models import NCMXInconsistencies, NCMXObservations, NCMXComment, NCMXRescheduleComment
+from .serializers import NCMXInconsistenciesSerializer, NCMXObservationsSerializer, NCMXCommentSerializer, NCMXRescheduleCommentSerializer
 from django.utils import timezone
 import logging
 
@@ -119,7 +119,7 @@ class Observations(APIView):
         logger.debug(f"Observation deleted: {num_observation}")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# УНИВЕРСАЛЬНЫЙ VIEW ДЛЯ КОММЕНТАРИЕВ
+# УНИВЕРСАЛЬНЫЙ VIEW ДЛЯ ОБЫЧНЫХ КОММЕНТАРИЕВ
 class Comments(APIView):
     def get(self, request):
         content_type = request.query_params.get('content_type')
@@ -170,7 +170,7 @@ class Comments(APIView):
         return Response({"results": serializer.data})
 
     def post(self, request):
-        logger.debug(f"POST /ncmx_app/api/ncmx-comments/ data: {request.data}")
+        logger.debug(f"POST /ncmx-comments/ data: {request.data}")
         serializer = NCMXCommentSerializer(data=request.data)
         if serializer.is_valid():
             try:
@@ -213,5 +213,78 @@ class Comments(APIView):
             logger.error(f"Error deleting comment: {str(e)}", exc_info=True)
             return Response(
                 {"error": f"Ошибка при удалении комментария: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+# VIEW ДЛЯ КОММЕНТАРИЕВ О ПЕРЕНОСЕ СРОКОВ
+class RescheduleComments(APIView):
+    def get(self, request):
+        content_type = request.query_params.get('content_type')
+        object_id = request.query_params.get('object_id')
+        
+        comments = NCMXRescheduleComment.objects.all()
+        
+        if content_type:
+            comments = comments.filter(content_type=content_type)
+        if object_id:
+            try:
+                object_id = int(object_id)
+                comments = comments.filter(object_id=object_id)
+            except (ValueError, TypeError):
+                logger.error(f"Invalid object_id value: {object_id}")
+                return Response(
+                    {"error": "object_id должен быть числом"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        serializer = NCMXRescheduleCommentSerializer(comments, many=True)
+        return Response({"results": serializer.data})
+
+    def post(self, request):
+        logger.debug(f"POST /reschedule-comments/ data: {request.data}")
+
+        
+        serializer = NCMXRescheduleCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                comment = serializer.save()
+                logger.debug(f"Reschedule comment created: {serializer.data}")
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                logger.error(f"Error saving reschedule comment: {str(e)}", exc_info=True)
+                return Response(
+                    {"error": f"Ошибка при сохранении комментария о переносе: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        logger.error(f"Serializer validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, id):
+        comment = get_object_or_404(NCMXRescheduleComment, id=id)
+        serializer = NCMXRescheduleCommentSerializer(comment, data=request.data, partial=True)
+        if serializer.is_valid():
+            try:
+                comment = serializer.save()
+                logger.debug(f"Reschedule comment updated: {serializer.data}")
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                logger.error(f"Error updating reschedule comment: {str(e)}", exc_info=True)
+                return Response(
+                    {"error": f"Ошибка при обновлении комментария о переносе: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        logger.error(f"Serializer validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        comment = get_object_or_404(NCMXRescheduleComment, id=id)
+        try:
+            comment.delete()
+            logger.debug(f"Reschedule comment deleted: {id}")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(f"Error deleting reschedule comment: {str(e)}", exc_info=True)
+            return Response(
+                {"error": f"Ошибка при удалении комментария о переносе: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

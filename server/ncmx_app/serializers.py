@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import NCMXInconsistencies, NCMXObservations, NCMXComment
+from .models import NCMXInconsistencies, NCMXObservations, NCMXComment, NCMXRescheduleComment
 from datetime import date
 
 class NormativeDocumentSerializer(serializers.Serializer):
@@ -217,3 +217,36 @@ class NCMXCommentSerializer(serializers.ModelSerializer):
             representation['num_observation'] = instance.object_id
             
         return representation
+
+class NCMXRescheduleCommentSerializer(serializers.ModelSerializer):
+    old_date = serializers.DateTimeField(allow_null=True, required=False)
+    new_date = serializers.DateTimeField(allow_null=True, required=False)
+    action_type = serializers.CharField(allow_null=True, required=False)
+    action_index = serializers.IntegerField(allow_null=True, required=False)
+
+    class Meta:
+        model = NCMXRescheduleComment
+        fields = '__all__'
+        read_only_fields = ('id', 'created_at')
+    
+    def validate(self, data):
+        # Проверяем существование связанной сущности
+        content_type = data.get('content_type')
+        object_id = data.get('object_id')
+        
+        if content_type and object_id:
+            try:
+                if content_type == 'inconsistency':
+                    NCMXInconsistencies.objects.get(num_nonconf=object_id)
+                elif content_type == 'observation':
+                    NCMXObservations.objects.get(num_observation=object_id)
+            except NCMXInconsistencies.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"object_id": "Несоответствие с таким номером не существует"}
+                )
+            except NCMXObservations.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"object_id": "Наблюдение с таким номером не существует"}
+                )
+        
+        return data

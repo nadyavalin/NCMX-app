@@ -22,11 +22,7 @@ const initialState: CommentsState = {
 const commentsSlice = createSlice({
   name: "comments",
   initialState,
-  reducers: {
-    // clearComments: (state) => {
-    //   state.comments = [];
-    // },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
 

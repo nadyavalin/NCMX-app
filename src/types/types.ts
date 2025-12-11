@@ -147,6 +147,32 @@ export interface ItemCommentRequestPATCH {
   comment_text: string;
 }
 
+export type RescheduleCommentContentType = "inconsistency" | "observation" | "improvement";
+
+export interface RescheduleCommentResponseGET {
+  id: number;
+  content_type: RescheduleCommentContentType;
+  object_id: number;
+  comment_author: string;
+  comment_text: string;
+  old_date: string | null;
+  new_date: string | null;
+  action_type: "correction" | "corrective_action" | "solution" | null;
+  action_index: number | null;
+  created_at: string;
+}
+
+export interface RescheduleCommentRequestPOST {
+  content_type: RescheduleCommentContentType;
+  object_id: number;
+  comment_author: string;
+  comment_text: string;
+  old_date?: string | null;
+  new_date?: string | null;
+  action_type?: "correction" | "corrective_action" | "solution" | null;
+  action_index?: number | null;
+}
+
 export enum SnackbarType {
   error = "error",
   success = "success",

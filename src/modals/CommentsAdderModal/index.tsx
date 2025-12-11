@@ -1,7 +1,12 @@
 import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useState, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createCommentRequest, updateCommentRequest, deleteCommentRequest } from "@/api";
+import {
+  createCommentRequest,
+  updateCommentRequest,
+  deleteCommentRequest,
+  fetchComments,
+} from "@/api";
 import {
   ItemCommentRequestPOST,
   ItemCommentResponseGET,
@@ -137,6 +142,13 @@ const CommentsAdderModal = ({
       }, 100);
     }
   }, [commentLoading, formData.comment_text, isOpen, editComment]);
+
+  useEffect(() => {
+    if (isOpen && object_id) {
+      console.log("Загружаем комментарии для:", { content_type, object_id });
+      dispatch(fetchComments({ content_type, object_id }));
+    }
+  }, [isOpen, object_id, content_type, dispatch]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,

@@ -7,12 +7,16 @@ import {
   toggleModalComments,
   toggleModalEstimateResult,
   toggleModalHistoryComments,
+  toggleModalRescheduleComments,
   toggleModalEdit,
 } from "@store/uiSlice";
-import { formatDate } from "@utils/formatDate";
+
 import InconsistencyAdderModal from "@modals/InconsistencyAdderModal";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
+import RescheduleCommentsAdderModal from "@modals/RescheduleCommentsAdderModal";
 import EstimateModal from "@modals/EstimateModal";
+
+import { formatDate } from "@utils/formatDate";
 import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
 import { SearchInput } from "@components/SearchInput";
@@ -60,11 +64,21 @@ export const InconsistencyTable = ({
   const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
+  const [rescheduleModalData, setRescheduleModalData] = useState<{
+    isOpen: boolean;
+    objectId: number | null;
+  }>({
+    isOpen: false,
+    objectId: null,
+  });
 
   const sortedInconsistencies = [...inconsistencies].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   const handleOpenModal = useCallback(
-    (modalType: "comments" | "historyComments" | "estimateResult" | "edit", num: number) => {
+    (
+      modalType: "comments" | "historyComments" | "estimateResult" | "edit" | "rescheduleComments",
+      num: number,
+    ) => {
       dispatch(setCurrentInconsistencyNumber(num));
       switch (modalType) {
         case "comments":
@@ -72,6 +86,12 @@ export const InconsistencyTable = ({
           break;
         case "historyComments":
           dispatch(toggleModalHistoryComments(true));
+          break;
+        case "rescheduleComments":
+          setRescheduleModalData({
+            isOpen: true,
+            objectId: num,
+          });
           break;
         case "estimateResult":
           dispatch(toggleModalEstimateResult(true));
@@ -88,14 +108,26 @@ export const InconsistencyTable = ({
     [dispatch, inconsistencies],
   );
 
+  const handleCloseRescheduleModal = useCallback(() => {
+    setRescheduleModalData({
+      isOpen: false,
+      objectId: null,
+    });
+  }, []);
+
   const handleCloseModal = useCallback(
-    (modalType: "comments" | "historyComments" | "estimateResult" | "edit") => {
+    (
+      modalType: "comments" | "historyComments" | "rescheduleComments" | "estimateResult" | "edit",
+    ) => {
       switch (modalType) {
         case "comments":
           dispatch(toggleModalComments(false));
           break;
         case "historyComments":
           dispatch(toggleModalHistoryComments(false));
+          break;
+        case "rescheduleComments":
+          dispatch(toggleModalRescheduleComments(false));
           break;
         case "estimateResult":
           dispatch(toggleModalEstimateResult(false));
@@ -332,10 +364,9 @@ export const InconsistencyTable = ({
                       </a>
                       <a
                         href="#"
-                        onClick={() => handleOpenModal("historyComments", item.num_nonconf)}
+                        onClick={() => handleOpenModal("rescheduleComments", item.num_nonconf)}
                       >
                         История переноса сроков выполнения
-                        {/* Было - Посмотреть историю комментариев к несоответствию, необходимо сделать отдельный блок с комментариями */}
                       </a>
                       {showEstimateAction && (
                         <a
@@ -392,6 +423,13 @@ export const InconsistencyTable = ({
         object_id={currentInconsistencyNumber}
         isOpen={isModalCommentsOpen}
         onClose={() => dispatch(toggleModalComments(false))}
+        entityTitle="несоответствию"
+      />
+      <RescheduleCommentsAdderModal
+        content_type="inconsistency"
+        object_id={rescheduleModalData.objectId}
+        isOpen={rescheduleModalData.isOpen}
+        onClose={handleCloseRescheduleModal}
         entityTitle="несоответствию"
       />
       <EstimateModal
