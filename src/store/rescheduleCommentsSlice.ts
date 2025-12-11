@@ -3,9 +3,7 @@ import { RescheduleCommentResponseGET } from "@appTypes/types";
 import {
   createRescheduleCommentRequest,
   deleteRescheduleCommentRequest,
-  fetchRescheduleComments,
-  fetchFilteredRescheduleComments,
-  fetchInconsistencyRescheduleComments, // Добавляем этот импорт
+  fetchInconsistencyRescheduleComments,
   updateRescheduleCommentRequest,
 } from "@/api/rescheduleCommentsApi";
 
@@ -27,43 +25,7 @@ const rescheduleCommentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Обработка fetchRescheduleComments (все комментарии)
-      .addCase(fetchRescheduleComments.pending, (state) => {
-        state.rescheduleCommentLoading = true;
-        state.rescheduleCommentError = null;
-      })
-      .addCase(
-        fetchRescheduleComments.fulfilled,
-        (state, action: PayloadAction<RescheduleCommentResponseGET[]>) => {
-          state.rescheduleComments = action.payload;
-          state.rescheduleCommentLoading = false;
-        },
-      )
-      .addCase(fetchRescheduleComments.rejected, (state, action) => {
-        state.rescheduleCommentError =
-          (action.payload as string) || "Ошибка при получении комментариев о переносе";
-        state.rescheduleCommentLoading = false;
-      })
-
-      // Обработка fetchFilteredRescheduleComments (фильтрованные комментарии)
-      .addCase(fetchFilteredRescheduleComments.pending, (state) => {
-        state.rescheduleCommentLoading = true;
-        state.rescheduleCommentError = null;
-      })
-      .addCase(
-        fetchFilteredRescheduleComments.fulfilled,
-        (state, action: PayloadAction<RescheduleCommentResponseGET[]>) => {
-          state.rescheduleComments = action.payload;
-          state.rescheduleCommentLoading = false;
-        },
-      )
-      .addCase(fetchFilteredRescheduleComments.rejected, (state, action) => {
-        state.rescheduleCommentError =
-          (action.payload as string) || "Ошибка при получении комментариев о переносе";
-        state.rescheduleCommentLoading = false;
-      })
-
-      // Обработка fetchInconsistencyRescheduleComments (удобная обертка)
+      // Обработка fetchInconsistencyRescheduleComments
       .addCase(fetchInconsistencyRescheduleComments.pending, (state) => {
         state.rescheduleCommentLoading = true;
         state.rescheduleCommentError = null;
@@ -77,8 +39,7 @@ const rescheduleCommentsSlice = createSlice({
       )
       .addCase(fetchInconsistencyRescheduleComments.rejected, (state, action) => {
         state.rescheduleCommentError =
-          (action.payload as string) ||
-          "Ошибка при получении комментариев о переносе для несоответствия";
+          (action.payload as string) || "Ошибка при получении комментариев о переносе";
         state.rescheduleCommentLoading = false;
       })
 

@@ -6,7 +6,7 @@ import { handleApiCommentError } from "@utils/handleApiError";
 
 export type RescheduleCommentContentType = "inconsistency" | "observation" | "improvement";
 
-// Интерфейс для ответа API (аналогичный APICommentsResponse)
+// Интерфейс для ответа API
 interface APIRescheduleCommentsResponse {
   results: RescheduleCommentResponseGET[];
   count?: number;
@@ -14,47 +14,7 @@ interface APIRescheduleCommentsResponse {
   previous?: string | null;
 }
 
-// Получение ВСЕХ комментариев о переносе сроков (без фильтрации)
-export const fetchRescheduleComments = createAsyncThunk<
-  RescheduleCommentResponseGET[],
-  void,
-  { state: RootState }
->("rescheduleComments/fetchRescheduleComments", async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get<APIRescheduleCommentsResponse>("/reschedule-comments/");
-    return response.data.results || [];
-  } catch (error: unknown) {
-    return rejectWithValue(
-      handleApiCommentError(error, "Ошибка при получении комментариев о переносе"),
-    );
-  }
-});
-
-// Получение комментариев с фильтрацией (основная функция, используемая в компоненте)
-export const fetchFilteredRescheduleComments = createAsyncThunk<
-  RescheduleCommentResponseGET[],
-  { content_type: RescheduleCommentContentType; object_id: number } | null,
-  { state: RootState }
->("rescheduleComments/fetchFilteredRescheduleComments", async (params, { rejectWithValue }) => {
-  if (params === null) {
-    return [];
-  }
-  try {
-    const response = await api.get<APIRescheduleCommentsResponse>("/reschedule-comments/", {
-      params: {
-        content_type: params.content_type,
-        object_id: params.object_id,
-      },
-    });
-    return response.data.results || [];
-  } catch (error: unknown) {
-    return rejectWithValue(
-      handleApiCommentError(error, "Ошибка при получении комментариев о переносе"),
-    );
-  }
-});
-
-// Получение комментариев для несоответствия (удобная обертка)
+// Получение комментариев для несоответствия
 export const fetchInconsistencyRescheduleComments = createAsyncThunk<
   RescheduleCommentResponseGET[],
   number | null,
