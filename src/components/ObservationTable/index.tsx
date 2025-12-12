@@ -20,6 +20,7 @@ import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
 import { formatDate } from "@utils/formatDate";
+import { updateObservationRequest } from "@/api";
 
 interface ObservationTableProps {
   title: string;
@@ -30,6 +31,7 @@ interface ObservationTableProps {
   onFetch: () => void;
   onDelete?: (num_observation: number) => Promise<void>;
   onRestore?: (num_observation: number) => Promise<void>;
+  onArchive?: (num_observation: number) => Promise<void>;
   showAddButton?: boolean;
   showEditAction?: boolean;
   showDeleteAction?: boolean;
@@ -48,6 +50,7 @@ export const ObservationTable = ({
   showAddButton = true,
   showEditAction = false,
   showDeleteAction = false,
+  showArchiveAction = true,
 }: ObservationTableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
@@ -142,6 +145,33 @@ export const ObservationTable = ({
       }
     }
   };
+
+  const handleArchive = useCallback(
+    async (num_observation: number) => {
+      try {
+        await dispatch(
+          updateObservationRequest({
+            num_observation,
+            data: {
+              is_archived: true,
+              observation_closure_date: new Date().toISOString(),
+              resp_person_observation_closure: "Текущий пользователь",
+            },
+          }),
+        ).unwrap();
+
+        addSnackbar(
+          SnackbarType.success,
+          `Наблюдение № ${num_observation} успешно перенесено в архив`,
+        );
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Ошибка при архивации наблюдения";
+        addSnackbar(SnackbarType.error, errorMessage);
+      }
+    },
+    [dispatch, addSnackbar],
+  );
 
   if (isLoading) {
     return <div>{`Загрузка ${isArchived ? "архива" : "таблицы"} наблюдений...`}</div>;
@@ -264,16 +294,19 @@ export const ObservationTable = ({
                           {/* Было - Посмотреть историю комментариев к наблюдению, необходимо сделать отдельный блок с комментариями */}
                         </a>
 
-                        {!isArchived && (
+                        {!isArchived && showArchiveAction && (
                           <a
                             href="#"
                             title="Закрыть наблюдение и перенести в архив"
                             className={styles.greenText}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleArchive(item.num_observation);
+                            }}
                           >
                             Закрыть и перенести в архив
                           </a>
                         )}
-
                         {showDeleteAction && (
                           <a
                             href="#"

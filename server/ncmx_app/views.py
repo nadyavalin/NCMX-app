@@ -107,6 +107,14 @@ class Observations(APIView):
         serializer = NCMXObservationsSerializer(observation, data=request.data, partial=True)
         if serializer.is_valid():
             logger.debug(f"Validated data for patch: {serializer.validated_data}")
+            
+            if serializer.validated_data.get('is_archived') == True:
+                serializer.validated_data['observation_closure_date'] = timezone.now()
+                # !пока не используется возможность отображения ответственного за закрытие
+                if not serializer.validated_data.get('resp_person_observation_closure'):
+                    serializer.validated_data['resp_person_observation_closure'] = request.data.get(
+                        'resp_person_observation_closure', 'Система'
+                    )
             serializer.save()
             logger.debug(f"Observation updated: {num_observation}, is_archived: {observation.is_archived}")
             return Response(serializer.data, status=status.HTTP_200_OK)
