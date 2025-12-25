@@ -10,6 +10,7 @@ import {
   toggleModalComments,
   toggleModalHistoryComments,
   toggleModalEdit,
+  toggleModalRescheduleComments,
 } from "@store/uiSlice";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
 import { SearchInput } from "@components/SearchInput";
@@ -21,6 +22,7 @@ import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
 import { formatDate } from "@utils/formatDate";
 import { updateObservationRequest } from "@/api";
+import RescheduleCommentsAdderModal from "@modals/RescheduleCommentsAdderModal";
 
 interface ObservationTableProps {
   title: string;
@@ -57,6 +59,13 @@ export const ObservationTable = ({
   const { currentObservationNumber, isModalCommentsOpen, isModalEditOpen } = useSelector(
     (state: RootState) => state.ui,
   );
+  const [rescheduleModalData, setRescheduleModalData] = useState<{
+    isOpen: boolean;
+    objectId: number | null;
+  }>({
+    isOpen: false,
+    objectId: null,
+  });
   const [editItem, setEditItem] = useState<ObservationResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumObservation, setDeleteNumObservation] = useState<number | null>(null);
@@ -66,7 +75,7 @@ export const ObservationTable = ({
   );
 
   const handleOpenModal = useCallback(
-    (modalType: "comments" | "historyComments" | "edit", num: number) => {
+    (modalType: "comments" | "historyComments" | "edit" | "rescheduleComments", num: number) => {
       dispatch(setCurrentObservationNumber(num));
       switch (modalType) {
         case "comments":
@@ -74,6 +83,12 @@ export const ObservationTable = ({
           break;
         case "historyComments":
           dispatch(toggleModalHistoryComments(true));
+          break;
+        case "rescheduleComments":
+          setRescheduleModalData({
+            isOpen: true,
+            objectId: num,
+          });
           break;
         case "edit":
           const item = observations.find((item) => item.num_observation === num);
@@ -88,13 +103,16 @@ export const ObservationTable = ({
   );
 
   const handleCloseModal = useCallback(
-    (modalType: "comments" | "historyComments" | "edit") => {
+    (modalType: "comments" | "historyComments" | "rescheduleComments" | "edit") => {
       switch (modalType) {
         case "comments":
           dispatch(toggleModalComments(false));
           break;
         case "historyComments":
           dispatch(toggleModalHistoryComments(false));
+          break;
+        case "rescheduleComments":
+          dispatch(toggleModalRescheduleComments(false));
           break;
         case "edit":
           dispatch(toggleModalEdit(false));
@@ -103,6 +121,13 @@ export const ObservationTable = ({
     },
     [dispatch],
   );
+
+  const handleCloseRescheduleModal = useCallback(() => {
+    setRescheduleModalData({
+      isOpen: false,
+      objectId: null,
+    });
+  }, []);
 
   const handleDelete = (num_observation: number) => {
     setDeleteNumObservation(num_observation);
@@ -288,10 +313,11 @@ export const ObservationTable = ({
                         </a>
                         <a
                           href="#"
-                          onClick={() => handleOpenModal("historyComments", item.num_observation)}
+                          onClick={() =>
+                            handleOpenModal("rescheduleComments", item.num_observation)
+                          }
                         >
                           История переноса сроков выполнения
-                          {/* Было - Посмотреть историю комментариев к наблюдению, необходимо сделать отдельный блок с комментариями */}
                         </a>
 
                         {!isArchived && showArchiveAction && (
@@ -356,6 +382,14 @@ export const ObservationTable = ({
           object_id={currentObservationNumber}
           isOpen={isModalCommentsOpen}
           onClose={() => dispatch(toggleModalComments(false))}
+          entityTitle="наблюдению"
+        />
+
+        <RescheduleCommentsAdderModal
+          content_type="observation"
+          object_id={rescheduleModalData.objectId}
+          isOpen={rescheduleModalData.isOpen}
+          onClose={handleCloseRescheduleModal}
           entityTitle="наблюдению"
         />
 

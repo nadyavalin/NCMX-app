@@ -129,7 +129,7 @@ class NCMXRescheduleCommentManager(models.Manager):
         return self.filter(
             content_type=RescheduleCommentType.INCONSISTENCY, 
             object_id=num_nonconf
-        ).order_by('created_at')  # Для истории сроков обычно сортируем по возрастанию
+        ).order_by('created_at')  # Для истории сроков сортируем по возрастанию
     
     def for_observation(self, num_observation):
         return self.filter(

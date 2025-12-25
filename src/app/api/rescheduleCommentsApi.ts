@@ -14,35 +14,29 @@ interface APIRescheduleCommentsResponse {
   previous?: string | null;
 }
 
-// Получение комментариев для несоответствия
-export const fetchInconsistencyRescheduleComments = createAsyncThunk<
+// Универсальная функция загрузки комментариев о переносе сроков
+export const fetchRescheduleComments = createAsyncThunk<
   RescheduleCommentResponseGET[],
-  number | null,
+  { content_type: RescheduleCommentContentType; object_id: number } | null,
   { state: RootState }
->(
-  "rescheduleComments/fetchInconsistencyRescheduleComments",
-  async (num_nonconf, { rejectWithValue }) => {
-    if (num_nonconf === null) {
-      return [];
-    }
-    try {
-      const response = await api.get<APIRescheduleCommentsResponse>("/reschedule-comments/", {
-        params: {
-          content_type: "inconsistency",
-          object_id: num_nonconf,
-        },
-      });
-      return response.data.results || [];
-    } catch (error: unknown) {
-      return rejectWithValue(
-        handleApiCommentError(
-          error,
-          "Ошибка при получении комментариев о переносе для несоответствия",
-        ),
-      );
-    }
-  },
-);
+>("rescheduleComments/fetchRescheduleComments", async (params, { rejectWithValue }) => {
+  if (params === null) {
+    return [];
+  }
+  try {
+    const response = await api.get<APIRescheduleCommentsResponse>("/reschedule-comments/", {
+      params: {
+        content_type: params.content_type,
+        object_id: params.object_id,
+      },
+    });
+    return response.data.results || [];
+  } catch (error: unknown) {
+    return rejectWithValue(
+      handleApiCommentError(error, "Ошибка при получении комментариев о переносе"),
+    );
+  }
+});
 
 // Создание комментария о переносе сроков
 export const createRescheduleCommentRequest = createAsyncThunk<
@@ -95,14 +89,3 @@ export const deleteRescheduleCommentRequest = createAsyncThunk<void, number, { s
     }
   },
 );
-
-// Вспомогательные функции для удобства
-export const createInconsistencyRescheduleComment = (
-  num_nonconf: number,
-  data: Omit<RescheduleCommentRequestPOST, "content_type" | "object_id">,
-) =>
-  createRescheduleCommentRequest({
-    ...data,
-    content_type: "inconsistency",
-    object_id: num_nonconf,
-  });

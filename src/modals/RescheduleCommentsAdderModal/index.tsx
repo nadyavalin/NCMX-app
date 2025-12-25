@@ -5,7 +5,7 @@ import {
   createRescheduleCommentRequest,
   updateRescheduleCommentRequest,
   deleteRescheduleCommentRequest,
-  fetchInconsistencyRescheduleComments,
+  fetchRescheduleComments,
 } from "@/api/rescheduleCommentsApi";
 import {
   RescheduleCommentRequestPOST,
@@ -90,9 +90,9 @@ const RescheduleCommentsAdderModal = ({
   // Эффект для загрузки комментариев при открытии модального окна
   useEffect(() => {
     if (isOpen && object_id) {
-      dispatch(fetchInconsistencyRescheduleComments(object_id));
+      dispatch(fetchRescheduleComments({ content_type, object_id }));
     }
-  }, [isOpen, object_id, dispatch]);
+  }, [isOpen, object_id, content_type, dispatch]);
 
   // Эффект для инициализации формы
   useEffect(() => {
@@ -192,7 +192,7 @@ const RescheduleCommentsAdderModal = ({
 
         // Обновляем список комментариев после успешного создания
         if (object_id) {
-          dispatch(fetchInconsistencyRescheduleComments(object_id));
+          dispatch(fetchRescheduleComments({ content_type, object_id }));
         }
 
         setFormData({
@@ -225,7 +225,7 @@ const RescheduleCommentsAdderModal = ({
       addSnackbar(SnackbarType.success, `Комментарий о переносе срока успешно удалён`);
       // Перезагружаем комментарии после удаления
       if (object_id) {
-        dispatch(fetchInconsistencyRescheduleComments(object_id));
+        dispatch(fetchRescheduleComments({ content_type, object_id }));
       }
     } catch (error: unknown) {
       const errorMessage =
