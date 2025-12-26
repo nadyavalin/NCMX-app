@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import inconsistenciesReducer from "./inconsistenciesSlice";
 import observationsReducer from "./observationsSlice";
+import improvementsReducer from "./improvementsSlice";
 import commentsReducer from "./commentsSlice";
 import rescheduleCommentsReducer from "./rescheduleCommentsSlice";
 import uiReducer from "./uiSlice";
@@ -10,6 +11,7 @@ export const store = configureStore({
   reducer: {
     inconsistencies: inconsistenciesReducer,
     observations: observationsReducer,
+    improvements: improvementsReducer,
     comments: commentsReducer,
     rescheduleComments: rescheduleCommentsReducer,
     ui: uiReducer,

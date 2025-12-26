@@ -118,6 +118,31 @@ export interface APIResponse {
   results: InconsistencyResponseGET[];
 }
 
+export interface ImprovementRequestPOST {
+  num_improvement: number;
+  improvement: string;
+  report: string;
+  report_date: string | null;
+  resp_person_for_improvement_implementation: Responsible[];
+  date_implementation_for_improvement: string | null;
+  improvement_closure_date: string | null;
+  resp_person_improvement_closure: string;
+  is_archived?: boolean;
+}
+
+export interface ImprovementResponseGET {
+  num_improvement: number;
+  improvement: string;
+  report: string;
+  report_date: string | null;
+  resp_person_for_improvement_implementation: Responsible[];
+  date_implementation_for_improvement: string | null;
+  improvement_closure_date: string | null;
+  resp_person_improvement_closure: string;
+  auto_data: string;
+  is_archived: boolean;
+}
+
 export type CommentContentType = "inconsistency" | "observation" | "improvement";
 
 export interface ItemCommentResponseGET {

@@ -13,11 +13,11 @@ import {
 } from "@appTypes/types";
 import { useInconsistencyFormValidation } from "@hooks/useInconsistencyFormValidation";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { Auditors } from "@components/lists/listsForInconsistencyAdder/Auditors";
-import { NormativeDocumentsForInconsistency } from "@components/lists/listsForInconsistencyAdder/NormativeDocuments/forInconsistency";
+import { Auditors } from "@components/lists/listsForModals/Auditors";
+import { NormativeDocumentsForInconsistency } from "@components/lists/listsForModals/NormativeDocuments/forInconsistency";
 import { ModalComponent } from "@modals/ModalComponent";
-import { ResponsibleGroupForInconsistency } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroups/forInconsistency";
-import { DynamicListForInconsistency } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicList/forInconsistency";
+import { ResponsibleGroupForInconsistency } from "@components/lists/listsForModals/helpers/ResponsibleGroups/forInconsistency";
+import { DynamicListForInconsistency } from "@components/lists/listsForModals/helpers/DynamicList/forInconsistency";
 
 type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
 
@@ -193,7 +193,8 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={(e) => handleChange(e, index, fieldName)}
             disabled={createLoading}
           />
-          <div className={styles.oneLineText}>
+          <div className={styles.dateLine}>
+            <label htmlFor="correction_date">Срок выполнения:</label>
             <input
               type="date"
               name="correction_date"
@@ -244,7 +245,8 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={(e) => handleChange(e, index, fieldName)}
             disabled={createLoading}
           />
-          <div className={styles.oneLineText}>
+          <div className={styles.dateLine}>
+            <label htmlFor="corrective_action_date">Срок выполнения:</label>
             <input
               type="date"
               name="corrective_action_date"
@@ -357,10 +359,10 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     >
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.modalForm}>
-          <div className={styles.nonConfNumberBlock}>
+          <div className={styles.numberBlock}>
             <h4>{editItem ? "Редактировать несоответствие" : "Добавить новое несоответствие"}</h4>
-            <div className={styles.nonConfNumberInputBlock}>
-              <label htmlFor="num_nonconf">Номер несоответствия:</label>
+            <div className={styles.numberInputBlock}>
+              <label htmlFor="num_nonconf">Номер несоответствия: </label>
               <input
                 type="number"
                 name="num_nonconf"
@@ -370,6 +372,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
                 ref={numNonconfRef}
                 className={errors.num_nonconf ? styles.inputError : ""}
                 disabled={!!editItem}
+                min="1"
               />
               {errors.num_nonconf && <p className={styles.submitError}>{errors.num_nonconf}</p>}
             </div>
@@ -391,29 +394,32 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               onChange={handleTopLevelChange}
               disabled={createLoading}
             />
-            <input
-              name="report"
-              id="report"
-              type="text"
-              value={formData.report || ""}
-              placeholder="Источник информации о несоответствии"
-              onChange={handleTopLevelChange}
-              disabled={createLoading}
-            />
-            <input
-              type="date"
-              name="report_date"
-              id="report_date"
-              title="Выберите дату утверждения источника"
-              value={formData.report_date || ""}
-              onChange={handleTopLevelChange}
-              disabled={createLoading}
-            />
+            <div className={styles.sourceLine}>
+              <input
+                name="report"
+                id="report"
+                type="text"
+                value={formData.report || ""}
+                placeholder="Источник информации о несоответствии"
+                onChange={handleTopLevelChange}
+                disabled={createLoading}
+              />
+              <input
+                type="date"
+                name="report_date"
+                id="report_date"
+                title="Выберите дату утверждения источника"
+                value={formData.report_date || ""}
+                onChange={handleTopLevelChange}
+                disabled={createLoading}
+              />
+            </div>
           </div>
 
           <div className={styles.modalInternalBlocks}>
             <p>2. Анализ причин несоответствия</p>
-            <div className={styles.oneLineText}>
+            <div className={styles.dateLine}>
+              <label htmlFor="analysis_start_date">Начало анализа:</label>
               <input
                 type="date"
                 name="analysis_start_date"
@@ -423,6 +429,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
                 onChange={handleTopLevelChange}
                 disabled={createLoading}
               />
+              <label htmlFor="analysis_finish_date">Окончание анализа:</label>
               <input
                 type="date"
                 name="analysis_finish_date"
@@ -479,6 +486,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               listBlockClassName={styles.listCorrectionBlock}
             />
           </div>
+
           <div className={styles.modalInternalBlocks}>
             <DynamicListForInconsistency
               items={formData.corrective_actions || []}
@@ -496,6 +504,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               listBlockClassName={styles.listCorrectiveActionBlock}
             />
           </div>
+
           <div className={styles.buttonsBlock}>
             <button type="submit" disabled={createLoading}>
               {createLoading ? "Сохранение..." : "Сохранить и закрыть"}

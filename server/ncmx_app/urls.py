@@ -1,7 +1,7 @@
 # ncmx_app/urls.py
 from django.urls import path
 from . import views
-from .views import Inconsistencies, Observations, Comments, RescheduleComments
+from .views import Inconsistencies, Observations, Improvements, Comments, RescheduleComments
 
 urlpatterns = [
     # Несоответствия
@@ -14,6 +14,11 @@ urlpatterns = [
     path('ncmx-table-observations/<int:num_observation>/', Observations.as_view(), name='observation_detail'),
     path('ncmx-table-observations/<int:num_observation>/restore/', Observations.as_view(), name='observation_restore'),
     
+    # Возможности улучшения (ДОБАВИТЬ!)
+    path('ncmx-table-improvements/', Improvements.as_view(), name='improvements'),
+    path('ncmx-table-improvements/<int:num_improvement>/', Improvements.as_view(), name='improvement_detail'),
+    path('ncmx-table-improvements/<int:num_improvement>/restore/', Improvements.as_view(), name='improvement_restore'),
+
     # Комментарии
     path('ncmx-comments/', Comments.as_view(), name='comments'),
     path('ncmx-comments/<int:id>/', Comments.as_view(), name='comment_detail'),

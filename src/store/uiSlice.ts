@@ -12,6 +12,10 @@ interface UIState {
   isModalObservationCommentsOpen: boolean;
   isModalObservationHistoryCommentsOpen: boolean;
   isModalObservationEditOpen: boolean;
+
+  currentImprovementNumber: number | null;
+  isModalImprovementCommentsOpen: boolean;
+  isModalImprovementEditOpen: boolean;
 }
 
 const initialState: UIState = {
@@ -26,6 +30,10 @@ const initialState: UIState = {
   isModalObservationCommentsOpen: false,
   isModalObservationHistoryCommentsOpen: false,
   isModalObservationEditOpen: false,
+
+  currentImprovementNumber: null,
+  isModalImprovementCommentsOpen: false,
+  isModalImprovementEditOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -63,6 +71,16 @@ const uiSlice = createSlice({
     toggleModalObservationEdit(state, action: PayloadAction<boolean>) {
       state.isModalObservationEditOpen = action.payload;
     },
+
+    setCurrentImprovementNumber(state, action: PayloadAction<number | null>) {
+      state.currentImprovementNumber = action.payload;
+    },
+    toggleModalImprovementComments(state, action: PayloadAction<boolean>) {
+      state.isModalImprovementCommentsOpen = action.payload;
+    },
+    toggleModalImprovementEdit(state, action: PayloadAction<boolean>) {
+      state.isModalImprovementEditOpen = action.payload;
+    },
   },
 });
 
@@ -78,6 +96,10 @@ export const {
   toggleModalObservationComments,
   toggleModalObservationHistoryComments,
   toggleModalObservationEdit,
+
+  setCurrentImprovementNumber,
+  toggleModalImprovementComments,
+  toggleModalImprovementEdit,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

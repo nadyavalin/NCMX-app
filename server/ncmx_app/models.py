@@ -40,6 +40,21 @@ class NCMXObservations(models.Model):
     class Meta:
         db_table = 'NCMX_observations'
 
+class NCMXImprovements(models.Model):
+    num_improvement = models.IntegerField(primary_key=True)
+    improvement = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание возможности улучшения')
+    report = models.CharField(max_length=100, blank=True, null=True, db_comment='Источник информации о возможности для улучшения')
+    report_date = models.DateField(blank=True, null=True, db_comment='Дата утверждения источника')
+    date_implementation_for_improvement = models.DateTimeField(blank=True, null=True, db_comment='Дата реализации возможности для улучшения')
+    resp_person_for_improvement_implementation = JSONField(default=list, blank=True, db_comment='Список ответственных за реализацию')
+    improvement_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия возможности для улучшения')
+    resp_person_improvement_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо, закрывшее возможность для улучшения')
+    auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
+    is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')
+
+    class Meta:
+        db_table = 'NCMX_improvements'
+
 class CommentType(models.TextChoices):
     INCONSISTENCY = 'inconsistency', 'Несоответствие'
     OBSERVATION = 'observation', 'Наблюдение' 
@@ -116,6 +131,12 @@ class NCMXComment(models.Model):
                 from .models import NCMXObservations
                 return NCMXObservations.objects.get(num_observation=self.object_id)
             except NCMXObservations.DoesNotExist:
+                return None
+        elif self.content_type == CommentType.IMPROVEMENT:
+            try:
+                from .models import NCMXImprovements
+                return NCMXImprovements.objects.get(num_improvement=self.object_id)
+            except NCMXImprovements.DoesNotExist:
                 return None
         return None
     

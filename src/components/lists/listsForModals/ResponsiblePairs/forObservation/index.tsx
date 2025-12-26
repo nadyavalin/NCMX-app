@@ -1,45 +1,40 @@
 import React from "react";
 import styles from "./../styles.module.css";
-import {
-  Correction,
-  CorrectiveAction,
-  InconsistencyRequestPOST,
-  Responsible,
-} from "@appTypes/types";
-import { DynamicListForInconsistency } from "../../helpers/DynamicList/forInconsistency";
+import { Solution, ObservationRequestPOST, Responsible } from "@appTypes/types";
+import { DynamicListForObservation } from "../../helpers/DynamicList/forObservation";
 import { Departments } from "@components/lists/headFilters/Departments";
-import { ResponsiblePersonsByDepartment } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment";
-import { departmentToPersonsMap } from "@components/lists/listsForInconsistencyAdder/responsiblePersonsByDepartment/departmentToPersonsMap";
+import { ResponsiblePersonsByDepartment } from "@components/lists/listsForModals/responsiblePersonsByDepartment";
+import { departmentToPersonsMap } from "@components/lists/listsForModals/responsiblePersonsByDepartment/departmentToPersonsMap";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type ResponsibleFieldName = keyof ObservationRequestPOST | keyof Solution;
 
-interface ResponsiblePairsForInconsistencyProps {
+interface ResponsiblePairsForObservationProps {
   items: Responsible[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<ObservationRequestPOST>>;
   createLoading: boolean;
-  fieldName: "responsible_for_correction" | "responsible_for_corrective_action";
+  fieldName: "responsible_for_solution";
   addText: string;
-  correctionIndex: number;
+  solutionIndex: number;
 }
 
-export const ResponsiblePairsForInconsistency = ({
+export const ResponsiblePairsForObservation = ({
   items,
   setFormData,
   createLoading,
   fieldName,
   addText,
-  correctionIndex,
-}: ResponsiblePairsForInconsistencyProps) => {
+  solutionIndex,
+}: ResponsiblePairsForObservationProps) => {
   const renderItem = (
     item: Responsible,
     index: number,
     handleChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
       index: number,
-      fieldName: FieldName,
+      fieldName: ResponsibleFieldName,
     ) => void,
     createLoading: boolean,
-    fieldName: FieldName,
+    fieldName: ResponsibleFieldName,
   ) => {
     const handleDepartmentChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
       handleChange(event, index, fieldName);
@@ -53,7 +48,7 @@ export const ResponsiblePairsForInconsistency = ({
       <div className={styles.responsibleArea}>
         <Departments
           name="department"
-          id={`department_${fieldName}_${correctionIndex}_${index}`}
+          id={`department_${fieldName}_${solutionIndex}_${index}`}
           value={item.department || ""}
           onChange={(e) => handleDepartmentChange(e, index)}
           disabled={createLoading}
@@ -61,7 +56,7 @@ export const ResponsiblePairsForInconsistency = ({
         {item.department && departmentToPersonsMap[item.department]?.length > 0 && (
           <ResponsiblePersonsByDepartment
             name="person"
-            id={`person_${fieldName}_${correctionIndex}_${index}`}
+            id={`person_${fieldName}_${solutionIndex}_${index}`}
             value={item.person || ""}
             onChange={(e) => handlePersonChange(e, index)}
             disabled={createLoading}
@@ -73,7 +68,7 @@ export const ResponsiblePairsForInconsistency = ({
   };
 
   return (
-    <DynamicListForInconsistency
+    <DynamicListForObservation
       items={items}
       setFormData={setFormData}
       createLoading={createLoading}
@@ -82,13 +77,11 @@ export const ResponsiblePairsForInconsistency = ({
       addItemText={addText}
       newItem={{ department: "", person: "" }}
       minItems={1}
-      listBlockClassName={styles.respCorrectArea}
-      parentFieldName={
-        fieldName === "responsible_for_correction" ? "corrections" : "corrective_actions"
-      }
-      parentIndex={correctionIndex}
+      listBlockClassName={styles.responsibleArea}
+      parentFieldName={fieldName === "responsible_for_solution" ? "solutions" : undefined}
+      parentIndex={solutionIndex}
     />
   );
 };
 
-export default React.memo(ResponsiblePairsForInconsistency);
+export default React.memo(ResponsiblePairsForObservation);

@@ -231,8 +231,8 @@ export const ObservationTable = ({
                 <th>Описание наблюдения</th>
                 <th>Источник информации о наблюдении</th>
                 <th>Решения</th>
-                <th>Ответственный за выполнение</th>
                 <th>Срок реализации</th>
+                <th>Ответственный за выполнение</th>
                 <th>Действия с наблюдением</th>
               </tr>
             </thead>
@@ -269,6 +269,13 @@ export const ObservationTable = ({
                     </td>
                     <td>
                       {item.solutions?.map((sol, index) => (
+                        <div key={index} className={styles.solText}>
+                          {index + 1}. {sol.solution_date && formatDate(sol.solution_date)}
+                        </div>
+                      ))}
+                    </td>
+                    <td>
+                      {item.solutions?.map((sol, index) => (
                         <div key={index}>
                           <p>{index + 1}.</p>
                           {sol.responsible_for_solution?.map((resp, respIndex) => (
@@ -276,13 +283,6 @@ export const ObservationTable = ({
                               {resp.department || "-"}: {resp.person || "-"}
                             </p>
                           ))}
-                        </div>
-                      ))}
-                    </td>
-                    <td>
-                      {item.solutions?.map((sol, index) => (
-                        <div key={index} className={styles.solText}>
-                          {index + 1}. {sol.solution_date && formatDate(sol.solution_date)}
                         </div>
                       ))}
                     </td>

@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import NCMXInconsistencies, NCMXObservations, NCMXComment, NCMXRescheduleComment
-from .serializers import NCMXInconsistenciesSerializer, NCMXObservationsSerializer, NCMXCommentSerializer, NCMXRescheduleCommentSerializer
+from .models import NCMXInconsistencies, NCMXObservations, NCMXImprovements, NCMXComment, NCMXRescheduleComment
+from .serializers import NCMXInconsistenciesSerializer, NCMXObservationsSerializer, NCMXImprovementsSerializer, NCMXCommentSerializer, NCMXRescheduleCommentSerializer
 from django.utils import timezone
 import logging
 
@@ -127,6 +127,66 @@ class Observations(APIView):
         logger.debug(f"Observation deleted: {num_observation}")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class Improvements(APIView):
+    def get(self, request):
+        is_archived = request.query_params.get('is_archived')
+        improvements = NCMXImprovements.objects.all()
+        if is_archived is not None:
+            try:
+                is_archived = is_archived.lower() == 'true'
+                improvements = improvements.filter(is_archived=is_archived)
+            except ValueError:
+                logger.error(f"Invalid is_archived value: {is_archived}")
+                return Response(
+                    {"error": "is_archived должен быть boolean"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        serializer = NCMXImprovementsSerializer(improvements, many=True)
+        return Response({"results": serializer.data})
+
+    def post(self, request, num_improvement=None):
+        if num_improvement is not None:
+            # Обработка восстановления
+            improvement = get_object_or_404(NCMXImprovements, num_improvement=num_improvement)
+            improvement.is_archived = False
+            improvement.save()
+            serializer = NCMXImprovementsSerializer(improvement)
+            logger.debug(f"Improvement restored: {num_improvement}")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Обработка создания новой возможности улучшения
+        serializer = NCMXImprovementsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            logger.debug(f"Improvement created: {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.error(f"Serializer validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, num_improvement):
+        improvement = get_object_or_404(NCMXImprovements, num_improvement=num_improvement)
+        serializer = NCMXImprovementsSerializer(improvement, data=request.data, partial=True)
+        if serializer.is_valid():
+            logger.debug(f"Validated data for patch: {serializer.validated_data}")
+            
+            if serializer.validated_data.get('is_archived') == True:
+                serializer.validated_data['improvement_closure_date'] = timezone.now()
+                if not serializer.validated_data.get('resp_person_improvement_closure'):
+                    serializer.validated_data['resp_person_improvement_closure'] = request.data.get(
+                        'resp_person_improvement_closure', 'Система'
+                    )
+            serializer.save()
+            logger.debug(f"Improvement updated: {num_improvement}, is_archived: {improvement.is_archived}")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        logger.error(f"Serializer validation errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, num_improvement):
+        improvement = get_object_or_404(NCMXImprovements, num_improvement=num_improvement)
+        improvement.delete()
+        logger.debug(f"Improvement deleted: {num_improvement}")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 # УНИВЕРСАЛЬНЫЙ VIEW ДЛЯ ОБЫЧНЫХ КОММЕНТАРИЕВ
 class Comments(APIView):
     def get(self, request):
@@ -171,6 +231,18 @@ class Comments(APIView):
                 logger.error(f"Invalid num_observation value: {num_observation}")
                 return Response(
                     {"error": "num_observation должен быть числом"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        num_improvement = request.query_params.get('num_improvement')
+        if num_improvement and not content_type:
+            try:
+                num_improvement = int(num_improvement)
+                comments = comments.filter(content_type='improvement', object_id=num_improvement)
+            except (ValueError, TypeError):
+                logger.error(f"Invalid num_improvement value: {num_improvement}")
+                return Response(
+                    {"error": "num_improvement должен быть числом"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
         

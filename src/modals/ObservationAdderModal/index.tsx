@@ -13,9 +13,9 @@ import {
 import { useObservationFormValidation } from "@hooks/useObservationFormValidation";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { ModalComponent } from "@modals/ModalComponent";
-import { DynamicListForObservation } from "@components/lists/listsForInconsistencyAdder/helpers/DynamicList/forObservation";
-import { ResponsibleGroupForObservation } from "@components/lists/listsForInconsistencyAdder/helpers/ResponsibleGroups/forObservation";
-import { NormativeDocumentsForObservation } from "@components/lists/listsForInconsistencyAdder/NormativeDocuments/forObservation";
+import { DynamicListForObservation } from "@components/lists/listsForModals/helpers/DynamicList/forObservation";
+import { ResponsibleGroupForObservation } from "@components/lists/listsForModals/helpers/ResponsibleGroups/forObservation";
+import { NormativeDocumentsForObservation } from "@components/lists/listsForModals/NormativeDocuments/forObservation";
 
 type FieldName = keyof ObservationRequestPOST | keyof Solution;
 
@@ -151,7 +151,8 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             onChange={(e) => handleChange(e, index, fieldName)}
             disabled={createLoading}
           />
-          <div className={styles.oneLineText}>
+          <div className={styles.dateLine}>
+            <label htmlFor="solution_date">Срок выполнения:</label>
             <input
               type="date"
               name="solution_date"
@@ -254,10 +255,10 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
     >
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.modalForm}>
-          <div className={styles.nonConfNumberBlock}>
+          <div className={styles.numberBlock}>
             <h4>{editItem ? "Редактировать наблюдение" : "Добавить новое наблюдение"}</h4>
-            <div className={styles.nonConfNumberInputBlock}>
-              <label htmlFor="num_observation">Номер наблюдения:</label>
+            <div className={styles.numberInputBlock}>
+              <label htmlFor="num_observation">Номер наблюдения: </label>
               <input
                 type="number"
                 name="num_observation"
@@ -267,6 +268,7 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
                 ref={numObservationRef}
                 className={errors.num_observation ? styles.inputError : ""}
                 disabled={!!editItem}
+                min="1"
               />
               {errors.num_observation && (
                 <p className={styles.submitError}>{errors.num_observation}</p>
@@ -289,25 +291,30 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               rows={10}
               onChange={handleTopLevelChange}
               disabled={createLoading}
+              className={errors.observation ? styles.inputError : ""}
             />
-            <input
-              name="report"
-              id="report"
-              type="text"
-              value={formData.report || ""}
-              placeholder="Источник информации о наблюдении"
-              onChange={handleTopLevelChange}
-              disabled={createLoading}
-            />
-            <input
-              type="date"
-              name="report_date"
-              id="report_date"
-              title="Выберите дату утверждения источника"
-              value={formData.report_date || ""}
-              onChange={handleTopLevelChange}
-              disabled={createLoading}
-            />
+            {errors.observation && <p className={styles.submitError}>{errors.observation}</p>}
+
+            <div className={styles.sourceLine}>
+              <input
+                name="report"
+                id="report"
+                type="text"
+                value={formData.report || ""}
+                placeholder="Источник информации о наблюдении"
+                onChange={handleTopLevelChange}
+                disabled={createLoading}
+              />
+              <input
+                type="date"
+                name="report_date"
+                id="report_date"
+                title="Выберите дату утверждения источника"
+                value={formData.report_date || ""}
+                onChange={handleTopLevelChange}
+                disabled={createLoading}
+              />
+            </div>
           </div>
 
           <div className={styles.modalInternalBlocks}>
@@ -326,6 +333,7 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               minItems={1}
               listBlockClassName={styles.listSolutionBlock}
             />
+            {errors.solutions && <p className={styles.submitError}>{errors.solutions}</p>}
           </div>
 
           <div className={styles.buttonsBlock}>
