@@ -6,7 +6,7 @@ interface ResponsibleGroupForImprovementProps {
   formData: ImprovementRequestPOST;
   setFormData: React.Dispatch<React.SetStateAction<ImprovementRequestPOST>>;
   createLoading: boolean;
-  fieldName: "resp_person_for_improvement_implementation";
+  fieldName: "resp_persons_for_improvement_implementation";
   addText: string;
   responsibleIndex: number;
 }
@@ -17,7 +17,7 @@ export const ResponsibleGroupForImprovement = ({
   createLoading,
   addText,
 }: ResponsibleGroupForImprovementProps) => {
-  const items = formData.resp_person_for_improvement_implementation || [
+  const items = formData.resp_persons_for_improvement_implementation || [
     { department: "", person: "" },
   ];
 
@@ -26,7 +26,7 @@ export const ResponsibleGroupForImprovement = ({
       items={items}
       setFormData={setFormData}
       createLoading={createLoading}
-      fieldName="resp_person_for_improvement_implementation"
+      fieldName="resp_persons_for_improvement_implementation"
       addText={addText}
     />
   );

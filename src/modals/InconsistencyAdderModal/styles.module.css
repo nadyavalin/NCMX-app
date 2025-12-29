@@ -42,6 +42,12 @@
   box-shadow: 0 0 3px var(--modal-shadow);
 }
 
+.dateLine {
+  display: flex;
+  align-items: center;
+  gap: 10;
+}
+
 .internalBlocks {
   display: flex;
   flex-direction: column;
@@ -54,6 +60,17 @@
   gap: 5px;
   justify-content: left;
   align-items: center;
+}
+
+.sourceLine {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.sourceLine input {
+  width: 100%;
 }
 
 .analysisDateBlock {

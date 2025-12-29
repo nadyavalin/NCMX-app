@@ -21,7 +21,7 @@ const initialFormData: ImprovementRequestPOST = {
   improvement: "",
   report: "",
   report_date: null,
-  resp_person_for_improvement_implementation: [{ department: "", person: "" }],
+  resp_persons_for_improvement_implementation: [{ department: "", person: "" }],
   date_implementation_for_improvement: null,
   improvement_closure_date: null,
   resp_person_improvement_closure: "",
@@ -69,10 +69,10 @@ const ImprovementAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           improvement: editItem.improvement || "",
           report: editItem.report || "",
           report_date: formatDateForInput(editItem.report_date),
-          resp_person_for_improvement_implementation:
-            editItem.resp_person_for_improvement_implementation &&
-            editItem.resp_person_for_improvement_implementation.length > 0
-              ? editItem.resp_person_for_improvement_implementation
+          resp_persons_for_improvement_implementation:
+            editItem.resp_persons_for_improvement_implementation &&
+            editItem.resp_persons_for_improvement_implementation.length > 0
+              ? editItem.resp_persons_for_improvement_implementation
               : [{ department: "", person: "" }],
           date_implementation_for_improvement: formatDateForInput(
             editItem.date_implementation_for_improvement,
@@ -123,8 +123,8 @@ const ImprovementAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
       report: formData.report?.trim() || "",
       report_date: formData.report_date || null,
       date_implementation_for_improvement: formData.date_implementation_for_improvement || null,
-      resp_person_for_improvement_implementation:
-        formData.resp_person_for_improvement_implementation?.filter(
+      resp_persons_for_improvement_implementation:
+        formData.resp_persons_for_improvement_implementation?.filter(
           (r) => r.department && r.person,
         ) || [],
       is_archived: false,
@@ -201,7 +201,13 @@ const ImprovementAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
                 ref={numImprovementRef}
                 className={errors.num_improvement ? styles.inputError : ""}
                 disabled={!!editItem}
+                onKeyDown={(e) => {
+                  if (["-", ".", "e", "E", "0"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 min="1"
+                step="1"
               />
               {errors.num_improvement && (
                 <p className={styles.submitError}>{errors.num_improvement}</p>
@@ -270,18 +276,18 @@ const ImprovementAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             </div>
             <ResponsiblePairsForImprovement
               items={
-                formData.resp_person_for_improvement_implementation || [
+                formData.resp_persons_for_improvement_implementation || [
                   { department: "", person: "" },
                 ]
               }
               setFormData={setFormData}
               createLoading={createLoading}
-              fieldName="resp_person_for_improvement_implementation"
+              fieldName="resp_persons_for_improvement_implementation"
               addText="Добавить ответственного"
             />
-            {errors.resp_person_for_improvement_implementation && (
+            {errors.resp_persons_for_improvement_implementation && (
               <p className={styles.submitError}>
-                {errors.resp_person_for_improvement_implementation}
+                {errors.resp_persons_for_improvement_implementation}
               </p>
             )}
           </div>

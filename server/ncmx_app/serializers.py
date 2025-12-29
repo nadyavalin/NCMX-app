@@ -141,13 +141,13 @@ class NCMXObservationsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": f"Ошибка при обновлении наблюдения: {str(e)}"})
 
 class NCMXImprovementsSerializer(serializers.ModelSerializer):
-    resp_person_for_improvement_implementation = ResponsibleSerializer(many=True, required=False)
+    resp_persons_for_improvement_implementation = ResponsibleSerializer(many=True, required=False)
 
     class Meta:
         model = NCMXImprovements
         fields = [
             'num_improvement', 'improvement', 'report', 'report_date',
-            'date_implementation_for_improvement', 'resp_person_for_improvement_implementation',
+            'date_implementation_for_improvement', 'resp_persons_for_improvement_implementation',
             'improvement_closure_date', 'resp_person_improvement_closure','auto_data', 'is_archived'
         ]
 

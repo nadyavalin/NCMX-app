@@ -123,7 +123,7 @@ export interface ImprovementRequestPOST {
   improvement: string;
   report: string;
   report_date: string | null;
-  resp_person_for_improvement_implementation: Responsible[];
+  resp_persons_for_improvement_implementation: Responsible[];
   date_implementation_for_improvement: string | null;
   improvement_closure_date: string | null;
   resp_person_improvement_closure: string;
@@ -135,7 +135,7 @@ export interface ImprovementResponseGET {
   improvement: string;
   report: string;
   report_date: string | null;
-  resp_person_for_improvement_implementation: Responsible[];
+  resp_persons_for_improvement_implementation: Responsible[];
   date_implementation_for_improvement: string | null;
   improvement_closure_date: string | null;
   resp_person_improvement_closure: string;

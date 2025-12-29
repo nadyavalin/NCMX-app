@@ -372,7 +372,13 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
                 ref={numNonconfRef}
                 className={errors.num_nonconf ? styles.inputError : ""}
                 disabled={!!editItem}
+                onKeyDown={(e) => {
+                  if (["-", ".", "e", "E", "0"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
                 min="1"
+                step="1"
               />
               {errors.num_nonconf && <p className={styles.submitError}>{errors.num_nonconf}</p>}
             </div>

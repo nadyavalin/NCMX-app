@@ -12,7 +12,7 @@ export const Footer = () => {
               </a>
             </p>
             <p>
-              &copy;&nbsp;<b>Optosense</b> 2025
+              &copy;&nbsp;<b>Optosense</b> 2026
             </p>
             <p>
               <em>v1.0.0</em>

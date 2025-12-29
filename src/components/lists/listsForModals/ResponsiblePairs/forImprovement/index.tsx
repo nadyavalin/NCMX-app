@@ -12,7 +12,7 @@ interface ResponsiblePairsForImprovementProps {
   items: Responsible[];
   setFormData: React.Dispatch<React.SetStateAction<ImprovementRequestPOST>>;
   createLoading: boolean;
-  fieldName: "resp_person_for_improvement_implementation";
+  fieldName: "resp_persons_for_improvement_implementation";
   addText: string;
 }
 

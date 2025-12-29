@@ -16,7 +16,7 @@ class NCMXInconsistencies(models.Model):
     corrective_actions = JSONField(default=list, blank=True, db_comment='Список корректирующих действий (описание, дата, ответственные)')
     estimate = models.IntegerField(blank=True, null=True, db_comment='Оценка')
     nonconf_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия несоответствия')
-    resp_person_nonconf_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
+    resp_person_nonconf_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо, закрывшее несоответствие') # пока не реализовано
     auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
     is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')
 
@@ -33,7 +33,7 @@ class NCMXObservations(models.Model):
     analysis_finish_date = models.DateField(blank=True, null=True, db_comment='Дата окончания проведения анализа')
     solutions = JSONField(default=list, blank=True, db_comment='Список решений (описание, дата, ответственные)')
     observation_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия наблюдения')
-    resp_person_observation_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо')
+    resp_person_observation_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо, закрывшее наблюдение') # пока не реализовано
     auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
     is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')
 
@@ -46,9 +46,9 @@ class NCMXImprovements(models.Model):
     report = models.CharField(max_length=100, blank=True, null=True, db_comment='Источник информации о возможности для улучшения')
     report_date = models.DateField(blank=True, null=True, db_comment='Дата утверждения источника')
     date_implementation_for_improvement = models.DateTimeField(blank=True, null=True, db_comment='Дата реализации возможности для улучшения')
-    resp_person_for_improvement_implementation = JSONField(default=list, blank=True, db_comment='Список ответственных за реализацию')
+    resp_persons_for_improvement_implementation = JSONField(default=list, blank=True, db_comment='Список ответственных за реализацию')
     improvement_closure_date = models.DateTimeField(blank=True, null=True, db_comment='Дата закрытия возможности для улучшения')
-    resp_person_improvement_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо, закрывшее возможность для улучшения')
+    resp_person_improvement_closure = models.CharField(max_length=50, blank=True, null=True, db_comment='Ответственное лицо, закрывшее возможность для улучшения') # пока не реализовано
     auto_data = models.DateTimeField(auto_now=True, db_comment='Дата изменения строки')
     is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')
 
@@ -79,12 +79,6 @@ class NCMXCommentManager(models.Manager):
             object_id=num_improvement
         ).order_by('-created_at')
     
-    def for_entity(self, content_type, object_id):
-        return self.filter(
-            content_type=content_type,
-            object_id=object_id
-        ).order_by('-created_at')
-
 class NCMXComment(models.Model):
     content_type = models.CharField(
         max_length=20, 
@@ -92,7 +86,7 @@ class NCMXComment(models.Model):
         db_comment='Тип комментируемой сущности'
     )
     object_id = models.IntegerField(
-        db_comment='ID сущности (num_nonconf, num_observation, etc)'
+        db_comment='ID сущности (num_nonconf, num_observation, num_improvement)'
     )
     comment_author = models.CharField(
         max_length=50, 
@@ -162,12 +156,6 @@ class NCMXRescheduleCommentManager(models.Manager):
         return self.filter(
             content_type=RescheduleCommentType.IMPROVEMENT, 
             object_id=improvement_id
-        ).order_by('created_at')
-    
-    def for_entity(self, content_type, object_id):
-        return self.filter(
-            content_type=content_type,
-            object_id=object_id
         ).order_by('created_at')
 
 class NCMXRescheduleComment(models.Model):

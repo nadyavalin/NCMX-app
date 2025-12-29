@@ -235,7 +235,7 @@ export const ImprovementTable = ({
                       {item.report_date ? `от ${formatDate(item.report_date)}` : ""}
                     </td>
                     <td>
-                      {formatResponsibleList(item.resp_person_for_improvement_implementation)}
+                      {formatResponsibleList(item.resp_persons_for_improvement_implementation)}
                     </td>
                     <td>
                       {item.date_implementation_for_improvement
