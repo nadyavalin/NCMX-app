@@ -231,7 +231,7 @@ const ImprovementAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               {errors.improvement && <p className={styles.submitError}>{errors.improvement}</p>}
 
               <div className={styles.dateLine}>
-                <label htmlFor="date_implementation_for_improvement">Срок реализации:</label>
+                <label htmlFor="date_implementation_for_improvement">Срок выполнения:</label>
                 <input
                   type="date"
                   name="date_implementation_for_improvement"

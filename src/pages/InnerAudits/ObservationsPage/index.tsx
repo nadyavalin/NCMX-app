@@ -35,7 +35,7 @@ export const Observations = () => {
   return (
     <div>
       <ObservationTable
-        title="Наблюдения по результатам внутренних аудитов СМК и внутренних технологических аудитов"
+        title="Наблюдения по результатам внутренних аудитов СМК и внутренних технологических аудитов (в процессе выполнения)"
         observations={activeItems}
         isLoading={itemsLoading}
         error={itemsError}

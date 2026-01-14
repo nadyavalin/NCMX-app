@@ -36,6 +36,10 @@
   color: var(--accent-green-color);
 }
 
+.blueText {
+  color: var(--accent-blue-color);
+}
+
 .estimateSatisfactory {
   color: var(--accent-green-color);
 }

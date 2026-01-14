@@ -33,7 +33,7 @@ export const Inconsistencies = () => {
 
   return (
     <InconsistencyTable
-      title="Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
+      title="Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов (в процессе выполнения)"
       inconsistencies={activeItems}
       isLoading={itemsLoading}
       error={itemsError}

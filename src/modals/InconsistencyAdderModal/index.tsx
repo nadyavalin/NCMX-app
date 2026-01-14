@@ -194,7 +194,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             disabled={createLoading}
           />
           <div className={styles.dateLine}>
-            <label htmlFor="correction_date">Срок выполнения:</label>
+            <label htmlFor="correction_date">Плановый срок выполнения:</label>
             <input
               type="date"
               name="correction_date"
@@ -246,7 +246,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             disabled={createLoading}
           />
           <div className={styles.dateLine}>
-            <label htmlFor="corrective_action_date">Срок выполнения:</label>
+            <label htmlFor="corrective_action_date">Плановый срок выполнения:</label>
             <input
               type="date"
               name="corrective_action_date"

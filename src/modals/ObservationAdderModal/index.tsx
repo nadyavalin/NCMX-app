@@ -152,7 +152,7 @@ const ObservationAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             disabled={createLoading}
           />
           <div className={styles.dateLine}>
-            <label htmlFor="solution_date">Срок выполнения:</label>
+            <label htmlFor="solution_date">Плановый срок выполнения:</label>
             <input
               type="date"
               name="solution_date"
