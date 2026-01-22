@@ -1,23 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
-  fetchInconsistencies,
-  createInconsistencyRequest,
-  deleteInconsistencyRequest,
-  updateInconsistencyRequest,
-  restoreInconsistencyRequest,
+  fetchNonconformities,
+  createNonconformityRequest,
+  deleteNonconformityRequest,
+  updateNonconformityRequest,
+  restoreNonconformityRequest,
 } from "@/api";
-import { InconsistencyResponseGET, InconsistencyRequestPOST } from "@appTypes/types";
+import { NonconformityResponseGET, NonconformityRequestPOST } from "@appTypes/types";
 
-interface InconsistenciesState {
-  activeItems: InconsistencyResponseGET[];
-  archivedItems: InconsistencyResponseGET[];
+interface NonconformitiesState {
+  activeItems: NonconformityResponseGET[];
+  archivedItems: NonconformityResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
   createError: string | null;
 }
 
-const initialState: InconsistenciesState = {
+const initialState: NonconformitiesState = {
   activeItems: [],
   archivedItems: [],
   itemsLoading: false,
@@ -26,22 +26,22 @@ const initialState: InconsistenciesState = {
   createError: null,
 };
 
-const inconsistenciesSlice = createSlice({
-  name: "inconsistencies",
+const nonconformitiesSlice = createSlice({
+  name: "nonconformities",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchInconsistencies.pending, (state) => {
+      .addCase(fetchNonconformities.pending, (state) => {
         state.itemsLoading = true;
         state.itemsError = null;
       })
       .addCase(
-        fetchInconsistencies.fulfilled,
+        fetchNonconformities.fulfilled,
         (
           state,
           action: PayloadAction<
-            InconsistencyResponseGET[],
+            NonconformityResponseGET[],
             string,
             { arg: { is_archived?: boolean } | void }
           >,
@@ -58,22 +58,22 @@ const inconsistenciesSlice = createSlice({
           state.itemsLoading = false;
         },
       )
-      .addCase(fetchInconsistencies.rejected, (state, action) => {
+      .addCase(fetchNonconformities.rejected, (state, action) => {
         state.itemsError = (action.payload as string) || "Ошибка при загрузке данных";
         state.itemsLoading = false;
       })
-      .addCase(createInconsistencyRequest.pending, (state) => {
+      .addCase(createNonconformityRequest.pending, (state) => {
         state.createLoading = true;
         state.createError = null;
       })
       .addCase(
-        createInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<InconsistencyResponseGET>) => {
+        createNonconformityRequest.fulfilled,
+        (state, action: PayloadAction<NonconformityResponseGET>) => {
           state.activeItems = [...state.activeItems, { ...action.payload, is_archived: false }];
           state.createLoading = false;
         },
       )
-      .addCase(createInconsistencyRequest.rejected, (state, action) => {
+      .addCase(createNonconformityRequest.rejected, (state, action) => {
         if (
           typeof action.payload === "string" &&
           action.payload.includes("Несоответствие с номером") &&
@@ -85,24 +85,24 @@ const inconsistenciesSlice = createSlice({
         state.createLoading = false;
       })
       .addCase(
-        deleteInconsistencyRequest.fulfilled,
+        deleteNonconformityRequest.fulfilled,
         (state, action: PayloadAction<void, string, { arg: number }>) => {
           state.activeItems = state.activeItems.filter(
             (item) => item.num_nonconf !== action.meta.arg,
           );
         },
       )
-      .addCase(deleteInconsistencyRequest.rejected, (state, action) => {
+      .addCase(deleteNonconformityRequest.rejected, (state, action) => {
         state.itemsError = (action.payload as string) || "Ошибка при удалении несоответствия";
       })
       .addCase(
-        updateInconsistencyRequest.fulfilled,
+        updateNonconformityRequest.fulfilled,
         (
           state,
           action: PayloadAction<
-            InconsistencyResponseGET,
+            NonconformityResponseGET,
             string,
-            { arg: { num_nonconf: number; data: Partial<InconsistencyRequestPOST> } }
+            { arg: { num_nonconf: number; data: Partial<NonconformityRequestPOST> } }
           >,
         ) => {
           const isArchived = action.meta.arg.data.is_archived ?? false;
@@ -136,13 +136,13 @@ const inconsistenciesSlice = createSlice({
           state.itemsLoading = false;
         },
       )
-      .addCase(updateInconsistencyRequest.rejected, (state, action) => {
+      .addCase(updateNonconformityRequest.rejected, (state, action) => {
         state.itemsError = (action.payload as string) || "Ошибка при обновлении несоответствия";
         state.itemsLoading = false;
       })
       .addCase(
-        restoreInconsistencyRequest.fulfilled,
-        (state, action: PayloadAction<InconsistencyResponseGET>) => {
+        restoreNonconformityRequest.fulfilled,
+        (state, action: PayloadAction<NonconformityResponseGET>) => {
           state.archivedItems = state.archivedItems.filter(
             (item) => item.num_nonconf !== action.payload.num_nonconf,
           );
@@ -157,10 +157,10 @@ const inconsistenciesSlice = createSlice({
             : [...state.activeItems, { ...action.payload, is_archived: false }];
         },
       )
-      .addCase(restoreInconsistencyRequest.rejected, (state, action) => {
+      .addCase(restoreNonconformityRequest.rejected, (state, action) => {
         state.itemsError = (action.payload as string) || "Ошибка при восстановлении несоответствия";
       });
   },
 });
 
-export default inconsistenciesSlice.reducer;
+export default nonconformitiesSlice.reducer;

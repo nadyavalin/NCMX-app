@@ -11,7 +11,7 @@ export const Header = () => {
           </Link>
           <div className={styles.auditMenuArea}>
             <p className={styles.auditTitle}>Внешние аудиты</p>
-            <Link href={`/OuterAudits/Inconsistencies`} className="menuButton">
+            <Link href={`/OuterAudits/Nonconformities`} className="menuButton">
               Несоответствия
             </Link>
             <Link href={`/OuterAudits/Observations`} className="menuButton">
@@ -26,7 +26,7 @@ export const Header = () => {
           </div>
           <div className={styles.auditMenuArea}>
             <p className={styles.auditTitle}>Внутренние аудиты</p>
-            <Link href={`/InnerAudits/Inconsistencies`} className="menuButton">
+            <Link href={`/InnerAudits/Nonconformities`} className="menuButton">
               Несоответствия
             </Link>
             <Link href={`/InnerAudits/Observations`} className="menuButton">

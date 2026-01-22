@@ -1,19 +1,19 @@
 import { useCallback } from "react";
-import { InconsistencyRequestPOST } from "@appTypes/types";
+import { NonconformityRequestPOST } from "@appTypes/types";
 
 interface ValidationErrors {
   [key: string]: string;
 }
 
-interface UseInconsistencyFormValidationProps {
-  formData: InconsistencyRequestPOST;
+interface UseNonconformityFormValidationProps {
+  formData: NonconformityRequestPOST;
   numNonconfRef: React.RefObject<HTMLInputElement | null>;
 }
 
-export const useInconsistencyFormValidation = ({
+export const useNonconformityFormValidation = ({
   formData,
   numNonconfRef,
-}: UseInconsistencyFormValidationProps) => {
+}: UseNonconformityFormValidationProps) => {
   const validateForm = useCallback(() => {
     const newErrors: ValidationErrors = {};
     if (!formData.num_nonconf || formData.num_nonconf <= 0) {

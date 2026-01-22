@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import inconsistenciesReducer from "./inconsistenciesSlice";
+import nonconformitiesReducer from "./nonconformitiesSlice";
 import observationsReducer from "./observationsSlice";
 import improvementsReducer from "./improvementsSlice";
 import commentsReducer from "./commentsSlice";
@@ -9,7 +9,7 @@ import snackbarReducer from "./snackbarSlice";
 
 export const store = configureStore({
   reducer: {
-    inconsistencies: inconsistenciesReducer,
+    nonconformities: nonconformitiesReducer,
     observations: observationsReducer,
     improvements: improvementsReducer,
     comments: commentsReducer,

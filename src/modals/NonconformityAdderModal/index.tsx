@@ -2,32 +2,32 @@ import styles from "./styles.module.css";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isAxiosError } from "axios";
-import { createInconsistencyRequest, updateInconsistencyRequest } from "@/api";
+import { createNonconformityRequest, updateNonconformityRequest } from "@/api";
 import { AppDispatch, RootState } from "@store/store";
 import {
   Correction,
   CorrectiveAction,
-  InconsistencyRequestPOST,
-  InconsistencyResponseGET,
+  NonconformityRequestPOST,
+  NonconformityResponseGET,
   SnackbarType,
 } from "@appTypes/types";
-import { useInconsistencyFormValidation } from "@hooks/useInconsistencyFormValidation";
+import { useNonconformityFormValidation } from "@hooks/useNonconformityFormValidation";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { Auditors } from "@components/lists/listsForModals/Auditors";
-import { NormativeDocumentsForInconsistency } from "@components/lists/listsForModals/NormativeDocuments/forInconsistency";
+import { NormativeDocumentsForNonconformity } from "@components/lists/listsForModals/NormativeDocuments/forNonconformity";
 import { ModalComponent } from "@modals/ModalComponent";
-import { ResponsibleGroupForInconsistency } from "@components/lists/listsForModals/helpers/ResponsibleGroups/forInconsistency";
-import { DynamicListForInconsistency } from "@components/lists/listsForModals/helpers/DynamicList/forInconsistency";
+import { ResponsibleGroupForNonconformity } from "@components/lists/listsForModals/helpers/ResponsibleGroups/forNonconformity";
+import { DynamicListForNonconformity } from "@components/lists/listsForModals/helpers/DynamicList/forNonconformity";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof NonconformityRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  editItem: InconsistencyResponseGET | null;
+  editItem: NonconformityResponseGET | null;
 }
 
-const initialFormData: InconsistencyRequestPOST = {
+const initialFormData: NonconformityRequestPOST = {
   num_nonconf: 0,
   normative_documents: [{ norm_doc: "", point: "" }],
   nonconf: "",
@@ -57,15 +57,15 @@ const initialFormData: InconsistencyRequestPOST = {
   resp_person_nonconf_closure: "",
 };
 
-const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
+const NonconformityAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
-  const { createLoading } = useSelector((state: RootState) => state.inconsistencies);
-  const [formData, setFormData] = useState<InconsistencyRequestPOST>(initialFormData);
+  const { createLoading } = useSelector((state: RootState) => state.nonconformities);
+  const [formData, setFormData] = useState<NonconformityRequestPOST>(initialFormData);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const numNonconfRef = useRef<HTMLInputElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
-  const { validateForm } = useInconsistencyFormValidation({ formData, numNonconfRef });
+  const { validateForm } = useNonconformityFormValidation({ formData, numNonconfRef });
 
   const scrollToTop = () => {
     if (modalContentRef.current) {
@@ -205,7 +205,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <ResponsibleGroupForInconsistency
+          <ResponsibleGroupForNonconformity
             formData={formData}
             setFormData={setFormData}
             createLoading={createLoading}
@@ -257,7 +257,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
               disabled={createLoading}
             />
           </div>
-          <ResponsibleGroupForInconsistency
+          <ResponsibleGroupForNonconformity
             formData={formData}
             setFormData={setFormData}
             createLoading={createLoading}
@@ -309,19 +309,19 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
             act.responsible_for_corrective_action?.filter((r) => r.department && r.person) || [],
         })) || [],
       is_archived: false,
-    } as InconsistencyRequestPOST;
+    } as NonconformityRequestPOST;
 
     try {
       if (editItem) {
         const result = await dispatch(
-          updateInconsistencyRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
+          updateNonconformityRequest({ num_nonconf: editItem.num_nonconf, data: payload }),
         ).unwrap();
         addSnackbar(
           SnackbarType.success,
           `Несоответствие № ${result.num_nonconf} успешно обновлено`,
         );
       } else {
-        const result = await dispatch(createInconsistencyRequest(payload)).unwrap();
+        const result = await dispatch(createNonconformityRequest(payload)).unwrap();
         addSnackbar(SnackbarType.success, `Несоответствие № ${result.num_nonconf} успешно создано`);
       }
       setTimeout(() => {
@@ -386,7 +386,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
 
           <div className={styles.modalInternalBlocks}>
             <p>1. Основная информация о несоответствии</p>
-            <NormativeDocumentsForInconsistency
+            <NormativeDocumentsForNonconformity
               normative_documents={formData.normative_documents || [{ norm_doc: "", point: "" }]}
               setFormData={setFormData}
               createLoading={createLoading}
@@ -476,7 +476,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           </div>
 
           <div className={styles.modalInternalBlocks}>
-            <DynamicListForInconsistency
+            <DynamicListForNonconformity
               items={formData.corrections || []}
               setFormData={setFormData}
               createLoading={createLoading}
@@ -494,7 +494,7 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
           </div>
 
           <div className={styles.modalInternalBlocks}>
-            <DynamicListForInconsistency
+            <DynamicListForNonconformity
               items={formData.corrective_actions || []}
               setFormData={setFormData}
               createLoading={createLoading}
@@ -522,4 +522,4 @@ const InconsistencyAdderModal = ({ isOpen, onClose, editItem }: ModalProps) => {
   );
 };
 
-export default React.memo(InconsistencyAdderModal);
+export default React.memo(NonconformityAdderModal);

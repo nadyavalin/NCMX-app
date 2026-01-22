@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UIState {
-  currentInconsistencyNumber: number | null;
+  currentNonconformityNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalRescheduleCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
@@ -19,7 +19,7 @@ interface UIState {
 }
 
 const initialState: UIState = {
-  currentInconsistencyNumber: null,
+  currentNonconformityNumber: null,
   isModalCommentsOpen: false,
   isModalRescheduleCommentsOpen: false,
   isModalHistoryCommentsOpen: false,
@@ -40,8 +40,8 @@ const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setCurrentInconsistencyNumber(state, action: PayloadAction<number | null>) {
-      state.currentInconsistencyNumber = action.payload;
+    setCurrentNonconformityNumber(state, action: PayloadAction<number | null>) {
+      state.currentNonconformityNumber = action.payload;
     },
     toggleModalComments(state, action: PayloadAction<boolean>) {
       state.isModalCommentsOpen = action.payload;
@@ -85,7 +85,7 @@ const uiSlice = createSlice({
 });
 
 export const {
-  setCurrentInconsistencyNumber,
+  setCurrentNonconformityNumber,
   toggleModalComments,
   toggleModalHistoryComments,
   toggleModalRescheduleComments,

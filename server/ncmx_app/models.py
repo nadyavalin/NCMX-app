@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import JSONField
 
-class NCMXInconsistencies(models.Model):
+class NCMXNonconformities(models.Model):
     num_nonconf = models.IntegerField(primary_key=True)
     normative_documents = JSONField(default=list, blank=True, db_comment='Список нормативных документов и пунктов')
     nonconf = models.CharField(max_length=1000, blank=True, null=True, db_comment='Описание несоответствия')
@@ -21,7 +21,7 @@ class NCMXInconsistencies(models.Model):
     is_archived = models.BooleanField(default=False, db_comment='Флаг архивации')
 
     class Meta:
-        db_table = 'NCMX_inconsistencies'
+        db_table = 'NCMX_nonconformities'
 
 class NCMXObservations(models.Model):
     num_observation = models.IntegerField(primary_key=True)
@@ -56,14 +56,14 @@ class NCMXImprovements(models.Model):
         db_table = 'NCMX_improvements'
 
 class CommentType(models.TextChoices):
-    INCONSISTENCY = 'inconsistency', 'Несоответствие'
+    NONCONFORMITY = 'nonconformity', 'Несоответствие'
     OBSERVATION = 'observation', 'Наблюдение' 
     IMPROVEMENT = 'improvement', 'Возможность улучшения'
 
 class NCMXCommentManager(models.Manager):
-    def for_inconsistency(self, num_nonconf):
+    def for_nonconformity(self, num_nonconf):
         return self.filter(
-            content_type=CommentType.INCONSISTENCY, 
+            content_type=CommentType.NONCONFORMITY, 
             object_id=num_nonconf
         ).order_by('-created_at')
     
@@ -114,11 +114,11 @@ class NCMXComment(models.Model):
     # Методы для удобства
     def get_related_object(self):
         """Получить связанный объект"""
-        if self.content_type == CommentType.INCONSISTENCY:
+        if self.content_type == CommentType.NONCONFORMITY:
             try:
-                from .models import NCMXInconsistencies
-                return NCMXInconsistencies.objects.get(num_nonconf=self.object_id)
-            except NCMXInconsistencies.DoesNotExist:
+                from .models import NCMXNonconformities
+                return NCMXNonconformities.objects.get(num_nonconf=self.object_id)
+            except NCMXNonconformities.DoesNotExist:
                 return None
         elif self.content_type == CommentType.OBSERVATION:
             try:
@@ -135,14 +135,14 @@ class NCMXComment(models.Model):
         return None
     
 class RescheduleCommentType(models.TextChoices):
-    INCONSISTENCY = 'inconsistency', 'Несоответствие'
+    NONCONFORMITY = 'nonconformity', 'Несоответствие'
     OBSERVATION = 'observation', 'Наблюдение' 
     IMPROVEMENT = 'improvement', 'Возможность улучшения'
 
 class NCMXRescheduleCommentManager(models.Manager):
-    def for_inconsistency(self, num_nonconf):
+    def for_nonconformity(self, num_nonconf):
         return self.filter(
-            content_type=RescheduleCommentType.INCONSISTENCY, 
+            content_type=RescheduleCommentType.NONCONFORMITY, 
             object_id=num_nonconf
         ).order_by('created_at')  # Для истории сроков сортируем по возрастанию
     
@@ -225,10 +225,10 @@ class NCMXRescheduleComment(models.Model):
 
     def get_related_object(self):
         """Получить связанный объект"""
-        if self.content_type == RescheduleCommentType.INCONSISTENCY:
+        if self.content_type == RescheduleCommentType.NONCONFORMITY:
             try:
-                return NCMXInconsistencies.objects.get(num_nonconf=self.object_id)
-            except NCMXInconsistencies.DoesNotExist:
+                return NCMXNonconformities.objects.get(num_nonconf=self.object_id)
+            except NCMXNonconformities.DoesNotExist:
                 return None
         elif self.content_type == RescheduleCommentType.OBSERVATION:
             try:

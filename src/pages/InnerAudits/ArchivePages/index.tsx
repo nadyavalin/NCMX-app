@@ -8,7 +8,7 @@ export const Archive = () => {
       <main>
         <nav className={styles.archiveList}>
           <Link
-            href={`/InnerAudits/Archive/ArchiveInconsistencies`}
+            href={`/InnerAudits/Archive/ArchiveNonconformities`}
             title="Архив несоответствий"
             className={`${styles.archiveButton} menuButton`}
           >

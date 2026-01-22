@@ -26,7 +26,7 @@ export interface CorrectiveAction {
   responsible_for_corrective_action: Responsible[];
 }
 
-export interface InconsistencyRequestPOST {
+export interface NonconformityRequestPOST {
   num_nonconf: number | undefined;
   normative_documents: NormativeDocument[] | undefined;
   nonconf: string;
@@ -45,7 +45,7 @@ export interface InconsistencyRequestPOST {
   is_archived?: boolean;
 }
 
-export interface InconsistencyResponseGET {
+export interface NonconformityResponseGET {
   num_nonconf: number;
   normative_documents: NormativeDocument[];
   nonconf: string;
@@ -64,13 +64,13 @@ export interface InconsistencyResponseGET {
   is_archived: boolean;
 }
 
-export interface InconsistencyNumberState {
-  currentInconsistencyNumber: number | null;
+export interface NonconformityNumberState {
+  currentNonconformityNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
   isModalEditOpen: boolean;
-  items: InconsistencyResponseGET[];
+  items: NonconformityResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
@@ -115,7 +115,7 @@ export interface ObservationResponseGET {
 }
 
 export interface APIResponse {
-  results: InconsistencyResponseGET[];
+  results: NonconformityResponseGET[];
 }
 
 export interface ImprovementRequestPOST {
@@ -143,7 +143,7 @@ export interface ImprovementResponseGET {
   is_archived: boolean;
 }
 
-export type CommentContentType = "inconsistency" | "observation" | "improvement";
+export type CommentContentType = "nonconformity" | "observation" | "improvement";
 
 export interface ItemCommentResponseGET {
   id: number;
@@ -172,7 +172,7 @@ export interface ItemCommentRequestPATCH {
   comment_text: string;
 }
 
-export type RescheduleCommentContentType = "inconsistency" | "observation" | "improvement";
+export type RescheduleCommentContentType = "nonconformity" | "observation" | "improvement";
 
 export interface RescheduleCommentResponseGET {
   id: number;

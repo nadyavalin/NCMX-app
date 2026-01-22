@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@store/store";
 import {
-  setCurrentInconsistencyNumber,
+  setCurrentNonconformityNumber,
   toggleModalComments,
   toggleModalEstimateResult,
   toggleModalHistoryComments,
@@ -11,7 +11,7 @@ import {
   toggleModalEdit,
 } from "@store/uiSlice";
 
-import InconsistencyAdderModal from "@modals/InconsistencyAdderModal";
+import NonconformityAdderModal from "@modals/NonconformityAdderModal";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
 import RescheduleCommentsAdderModal from "@modals/RescheduleCommentsAdderModal";
 import EstimateModal from "@modals/EstimateModal";
@@ -21,12 +21,12 @@ import { ConfirmDeleteModal } from "@modals/ConfirmDeleteModal";
 import { MainFilter } from "@components/lists/headFilters/MainFilter";
 import { SearchInput } from "@components/SearchInput";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
-import { InconsistencyResponseGET, SnackbarType } from "@appTypes/types";
+import { NonconformityResponseGET, SnackbarType } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
 
-interface InconsistencyTableProps {
+interface NonconformityTableProps {
   title: string;
-  inconsistencies: InconsistencyResponseGET[];
+  nonconformities: NonconformityResponseGET[];
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
@@ -39,9 +39,9 @@ interface InconsistencyTableProps {
   showEstimateAction?: boolean;
 }
 
-export const InconsistencyTable = ({
+export const NonconformityTable = ({
   title,
-  inconsistencies: inconsistencies,
+  nonconformities: nonconformities,
   isLoading,
   error,
   isArchived,
@@ -52,16 +52,16 @@ export const InconsistencyTable = ({
   showEditAction = false,
   showDeleteAction = false,
   showEstimateAction = false,
-}: InconsistencyTableProps) => {
+}: NonconformityTableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const addSnackbar = useSnackbar();
   const {
-    currentInconsistencyNumber,
+    currentNonconformityNumber,
     isModalCommentsOpen,
     isModalEstimateResultOpen,
     isModalEditOpen,
   } = useSelector((state: RootState) => state.ui);
-  const [editItem, setEditItem] = useState<InconsistencyResponseGET | null>(null);
+  const [editItem, setEditItem] = useState<NonconformityResponseGET | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumNonconf, setDeleteNumNonconf] = useState<number | null>(null);
   const [rescheduleModalData, setRescheduleModalData] = useState<{
@@ -72,14 +72,14 @@ export const InconsistencyTable = ({
     objectId: null,
   });
 
-  const sortedInconsistencies = [...inconsistencies].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  const sortedNonconformities = [...nonconformities].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   const handleOpenModal = useCallback(
     (
       modalType: "comments" | "historyComments" | "estimateResult" | "edit" | "rescheduleComments",
       num: number,
     ) => {
-      dispatch(setCurrentInconsistencyNumber(num));
+      dispatch(setCurrentNonconformityNumber(num));
       switch (modalType) {
         case "comments":
           dispatch(toggleModalComments(true));
@@ -97,7 +97,7 @@ export const InconsistencyTable = ({
           dispatch(toggleModalEstimateResult(true));
           break;
         case "edit":
-          const item = inconsistencies.find((item) => item.num_nonconf === num);
+          const item = nonconformities.find((item) => item.num_nonconf === num);
           if (item) {
             setEditItem(item);
             dispatch(toggleModalEdit(true));
@@ -105,7 +105,7 @@ export const InconsistencyTable = ({
           break;
       }
     },
-    [dispatch, inconsistencies],
+    [dispatch, nonconformities],
   );
 
   const handleCloseRescheduleModal = useCallback(() => {
@@ -192,8 +192,8 @@ export const InconsistencyTable = ({
         <button onClick={onFetch}>Получить данные</button>
       </section>
 
-      <section className="inconsistenciesTableSection">
-        <table className="inconsistenciesTable">
+      <section className="nonconformitiesTableSection">
+        <table className="nonconformitiesTable">
           <thead>
             <tr>
               <th rowSpan={2}>№</th>
@@ -224,14 +224,14 @@ export const InconsistencyTable = ({
             </tr>
           </thead>
           <tbody>
-            {sortedInconsistencies.length === 0 ? (
+            {sortedNonconformities.length === 0 ? (
               <tr>
                 <td colSpan={15} className="error">
                   Нет данных для отображения.
                 </td>
               </tr>
             ) : (
-              sortedInconsistencies.map((item) => (
+              sortedNonconformities.map((item) => (
                 <tr key={item.num_nonconf}>
                   <td>{item.num_nonconf}</td>
                   <td>
@@ -335,7 +335,7 @@ export const InconsistencyTable = ({
                       : "-"}
                   </td>
                   <td>
-                    <div className={styles.inconsistenciesActions}>
+                    <div className={styles.nonconformitiesActions}>
                       {isArchived && (
                         <>
                           <p>
@@ -416,7 +416,7 @@ export const InconsistencyTable = ({
       {showAddButton && (
         <section className={styles.addButton}>
           <button onClick={openModal}>Добавить несоответствие</button>
-          <InconsistencyAdderModal
+          <NonconformityAdderModal
             isOpen={isModalEditOpen}
             onClose={() => handleCloseModal("edit")}
             editItem={editItem}
@@ -425,14 +425,14 @@ export const InconsistencyTable = ({
       )}
 
       <CommentsAdderModal
-        content_type="inconsistency"
-        object_id={currentInconsistencyNumber}
+        content_type="nonconformity"
+        object_id={currentNonconformityNumber}
         isOpen={isModalCommentsOpen}
         onClose={() => dispatch(toggleModalComments(false))}
         entityTitle="несоответствию"
       />
       <RescheduleCommentsAdderModal
-        content_type="inconsistency"
+        content_type="nonconformity"
         object_id={rescheduleModalData.objectId}
         isOpen={rescheduleModalData.isOpen}
         onClose={handleCloseRescheduleModal}
@@ -453,4 +453,4 @@ export const InconsistencyTable = ({
   );
 };
 
-export default React.memo(InconsistencyTable);
+export default React.memo(NonconformityTable);

@@ -1,13 +1,13 @@
 # ncmx_app/urls.py
 from django.urls import path
 from . import views
-from .views import Inconsistencies, Observations, Improvements, Comments, RescheduleComments
+from .views import Nonconformities, Observations, Improvements, Comments, RescheduleComments
 
 urlpatterns = [
     # Несоответствия
-    path('ncmx-table-inconsistencies/', Inconsistencies.as_view(), name='inconsistencies'),
-    path('ncmx-table-inconsistencies/<int:num_nonconf>/', Inconsistencies.as_view(), name='inconsistency_detail'),
-    path('ncmx-table-inconsistencies/<int:num_nonconf>/restore/', Inconsistencies.as_view(), name='inconsistency_restore'),
+    path('ncmx-table-nonconformities/', Nonconformities.as_view(), name='nonconformities'),
+    path('ncmx-table-nonconformities/<int:num_nonconf>/', Nonconformities.as_view(), name='nonconformities_detail'),
+    path('ncmx-table-nonconformities/<int:num_nonconf>/restore/', Nonconformities.as_view(), name='nonconformities_restore'),
     
     # Наблюдения
     path('ncmx-table-observations/', Observations.as_view(), name='observations'),

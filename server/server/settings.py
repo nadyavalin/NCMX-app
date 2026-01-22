@@ -152,7 +152,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'inconsistencies.views': {
+        'nonconformities.views': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,

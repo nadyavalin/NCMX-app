@@ -4,7 +4,7 @@ import { RootState } from "@store/store";
 import { RescheduleCommentRequestPOST, RescheduleCommentResponseGET } from "@appTypes/types";
 import { handleApiCommentError } from "@utils/handleApiError";
 
-export type RescheduleCommentContentType = "inconsistency" | "observation" | "improvement";
+export type RescheduleCommentContentType = "nonconformity" | "observation" | "improvement";
 
 // Интерфейс для ответа API
 interface APIRescheduleCommentsResponse {

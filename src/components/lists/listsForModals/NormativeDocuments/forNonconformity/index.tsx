@@ -2,21 +2,21 @@ import React from "react";
 import {
   Correction,
   CorrectiveAction,
-  InconsistencyRequestPOST,
+  NonconformityRequestPOST,
   NormativeDocument,
 } from "@appTypes/types";
-import { DynamicListForInconsistency } from "../../helpers/DynamicList/forInconsistency";
+import { DynamicListForNonconformity } from "../../helpers/DynamicList/forNonconformity";
 import { NormativeDocumentsList } from "../NDList";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof NonconformityRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface NormativeDocumentsProps {
   normative_documents: NormativeDocument[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<NonconformityRequestPOST>>;
   createLoading: boolean;
 }
 
-export const NormativeDocumentsForInconsistency = ({
+export const NormativeDocumentsForNonconformity = ({
   normative_documents,
   setFormData,
   createLoading,
@@ -56,7 +56,7 @@ export const NormativeDocumentsForInconsistency = ({
   );
 
   return (
-    <DynamicListForInconsistency<NormativeDocument>
+    <DynamicListForNonconformity<NormativeDocument>
       items={normative_documents}
       setFormData={setFormData}
       createLoading={createLoading}
@@ -69,4 +69,4 @@ export const NormativeDocumentsForInconsistency = ({
   );
 };
 
-export default React.memo(NormativeDocumentsForInconsistency);
+export default React.memo(NormativeDocumentsForNonconformity);

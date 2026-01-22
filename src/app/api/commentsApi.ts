@@ -8,7 +8,7 @@ import {
 } from "@appTypes/types";
 import { handleApiCommentError } from "@utils/handleApiError";
 
-export type CommentContentType = "inconsistency" | "observation" | "improvement";
+export type CommentContentType = "nonconformity" | "observation" | "improvement";
 
 // Универсальный Thunk для создания комментария
 export const createCommentRequest = createAsyncThunk<
@@ -73,13 +73,13 @@ export const fetchComments = createAsyncThunk<
 });
 
 // Вспомогательные функции для обратной совместимости
-export const createInconsistencyComment = (
+export const createNonconformityComment = (
   num_nonconf: number,
   data: Omit<ItemCommentRequestPOST, "content_type" | "object_id">,
 ) =>
   createCommentRequest({
     ...data,
-    content_type: "inconsistency",
+    content_type: "nonconformity",
     object_id: num_nonconf,
   });
 
@@ -93,8 +93,8 @@ export const createObservationComment = (
     object_id: num_observation,
   });
 
-export const fetchInconsistencyComments = (num_nonconf: number) =>
-  fetchComments({ content_type: "inconsistency", object_id: num_nonconf });
+export const fetchNonconformityComments = (num_nonconf: number) =>
+  fetchComments({ content_type: "nonconformity", object_id: num_nonconf });
 
 export const fetchObservationComments = (num_observation: number) =>
   fetchComments({ content_type: "observation", object_id: num_observation });

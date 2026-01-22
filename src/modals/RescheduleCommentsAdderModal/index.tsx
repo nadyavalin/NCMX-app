@@ -28,7 +28,7 @@ interface ModalProps {
 }
 
 const initialCommentFormData: RescheduleCommentRequestPOST = {
-  content_type: "inconsistency" as RescheduleCommentContentType,
+  content_type: "nonconformity" as RescheduleCommentContentType,
   object_id: 0,
   comment_author: "",
   comment_text: "",
@@ -68,7 +68,7 @@ const RescheduleCommentsAdderModal = ({
   // Функция для получения названия сущности
   const getEntityName = () => {
     const names = {
-      inconsistency: "несоответствию",
+      nonconformity: "несоответствию",
       observation: "наблюдению",
       improvement: "возможности улучшения",
     };
@@ -80,7 +80,7 @@ const RescheduleCommentsAdderModal = ({
     if (entityTitle) return entityTitle;
 
     const titles = {
-      inconsistency: "несоответствия",
+      nonconformity: "несоответствия",
       observation: "наблюдения",
       improvement: "возможности улучшения",
     };

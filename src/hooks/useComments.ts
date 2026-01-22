@@ -3,7 +3,7 @@
 import { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@store/store";
-import { fetchComments, fetchCommentsByNumNonconf } from "@/api"; // ← ОБНОВИТЬ ИМПОРТЫ
+import { fetchComments, fetchCommentsByNumNonconf } from "@/api";
 import { CommentContentType } from "@appTypes/types";
 
 interface UseFetchCommentsOptions {
@@ -45,14 +45,14 @@ export const useFetchComments = (options: UseFetchCommentsOptions) => {
 };
 
 // Хук для обратной совместимости (можно удалить после обновления всех компонентов)
-export const useFetchCommentsItems = (currentInconsistencyNumber: number | null) => {
-  return useFetchComments({ num_nonconf: currentInconsistencyNumber });
+export const useFetchCommentsItems = (currentNonconformityNumber: number | null) => {
+  return useFetchComments({ num_nonconf: currentNonconformityNumber });
 };
 
 // Специализированные хуки для удобства
-export const useFetchInconsistencyComments = (num_nonconf: number | null) => {
+export const useFetchNonconformityComments = (num_nonconf: number | null) => {
   return useFetchComments({
-    content_type: "inconsistency",
+    content_type: "nonconformity",
     object_id: num_nonconf,
   });
 };

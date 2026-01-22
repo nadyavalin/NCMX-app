@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import NCMXInconsistencies, NCMXObservations, NCMXImprovements, NCMXComment, NCMXRescheduleComment
+from .models import NCMXNonconformities, NCMXObservations, NCMXImprovements, NCMXComment, NCMXRescheduleComment
 from datetime import date
 
 class NormativeDocumentSerializer(serializers.Serializer):
@@ -28,14 +28,14 @@ class SolutionSerializer(serializers.Serializer):
     solution_date = serializers.DateField(allow_null=True)
     responsible_for_solution = ResponsibleSerializer(many=True, required=False)
 
-class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
+class NCMXNonconformitiesSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
     auditors = AuditorsSerializer(many=True, required=False)
     corrections = CorrectionSerializer(many=True, required=False)
     corrective_actions = CorrectiveActionSerializer(many=True, required=False)
 
     class Meta:
-        model = NCMXInconsistencies
+        model = NCMXNonconformities
         fields = [
             'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditors',
@@ -71,7 +71,7 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print("Validated data (create):", validated_data)
         try:
-            if NCMXInconsistencies.objects.filter(num_nonconf=validated_data['num_nonconf']).exists():
+            if NCMXNonconformities.objects.filter(num_nonconf=validated_data['num_nonconf']).exists():
                 raise serializers.ValidationError({"num_nonconf": f"Несоответствие с номером {validated_data['num_nonconf']} уже существует"})
             return super().create(validated_data)
         except Exception as e:
@@ -82,7 +82,7 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         print("Validated data (update):", validated_data)
         try:
             instance = super().update(instance, validated_data)
-            print("Inconsistency updated:", instance.num_nonconf, "is_archived:", instance.is_archived)
+            print("Nonconformity updated:", instance.num_nonconf, "is_archived:", instance.is_archived)
             return instance
         except Exception as e:
             print("Update error:", str(e))
@@ -198,7 +198,7 @@ class NCMXCommentSerializer(serializers.ModelSerializer):
         
         # Обратная совместимость: если переданы старые поля
         if not content_type and data.get('num_nonconf'):
-            content_type = 'inconsistency'
+            content_type = 'nonconformity'
             object_id = data['num_nonconf']
         elif not content_type and data.get('num_observation'):
             content_type = 'observation' 
@@ -218,14 +218,14 @@ class NCMXCommentSerializer(serializers.ModelSerializer):
         
         # Проверяем существование связанной сущности
         try:
-            if content_type == 'inconsistency':
-                NCMXInconsistencies.objects.get(num_nonconf=object_id)
+            if content_type == 'nonconformity':
+                NCMXNonconformities.objects.get(num_nonconf=object_id)
             elif content_type == 'observation':
                 NCMXObservations.objects.get(num_observation=object_id)
             elif content_type == 'improvement':
                 NCMXImprovements.objects.get(num_improvement=object_id)
             # Для improvement можно добавить позже
-        except NCMXInconsistencies.DoesNotExist:
+        except NCMXNonconformities.DoesNotExist:
             raise serializers.ValidationError({"object_id": "Несоответствие с таким номером не существует"})
         except NCMXObservations.DoesNotExist:
             raise serializers.ValidationError({"object_id": "Наблюдение с таким номером не существует"})
@@ -271,7 +271,7 @@ class NCMXCommentSerializer(serializers.ModelSerializer):
         }
         
         # Обратная совместимость: добавляем старые поля
-        if instance.content_type == 'inconsistency':
+        if instance.content_type == 'nonconformity':
             representation['num_nonconf'] = instance.object_id
         elif instance.content_type == 'observation':
             representation['num_observation'] = instance.object_id
@@ -298,11 +298,11 @@ class NCMXRescheduleCommentSerializer(serializers.ModelSerializer):
         
         if content_type and object_id:
             try:
-                if content_type == 'inconsistency':
-                    NCMXInconsistencies.objects.get(num_nonconf=object_id)
+                if content_type == 'nonconformity':
+                    NCMXNonconformities.objects.get(num_nonconf=object_id)
                 elif content_type == 'observation':
                     NCMXObservations.objects.get(num_observation=object_id)
-            except NCMXInconsistencies.DoesNotExist:
+            except NCMXNonconformities.DoesNotExist:
                 raise serializers.ValidationError(
                     {"object_id": "Несоответствие с таким номером не существует"}
                 )

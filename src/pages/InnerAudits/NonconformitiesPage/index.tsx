@@ -2,19 +2,19 @@
 
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchInconsistencies, deleteInconsistencyRequest } from "@/api";
+import { fetchNonconformities, deleteNonconformityRequest } from "@/api";
 import { RootState, AppDispatch } from "@store/store";
-import InconsistencyTable from "@components/InconsistencyTable";
+import NonconformityTable from "@components/NonconformityTable";
 
-export const Inconsistencies = () => {
+export const Nonconformities = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { activeItems, itemsLoading, itemsError } = useSelector(
-    (state: RootState) => state.inconsistencies,
+    (state: RootState) => state.nonconformities,
   );
 
   const loadItems = useCallback(async () => {
     try {
-      await dispatch(fetchInconsistencies({ is_archived: false })).unwrap();
+      await dispatch(fetchNonconformities({ is_archived: false })).unwrap();
     } catch (error: unknown) {
       console.log(error);
     }
@@ -22,7 +22,7 @@ export const Inconsistencies = () => {
 
   const handleDelete = useCallback(
     async (num_nonconf: number) => {
-      await dispatch(deleteInconsistencyRequest(num_nonconf)).unwrap();
+      await dispatch(deleteNonconformityRequest(num_nonconf)).unwrap();
     },
     [dispatch],
   );
@@ -32,9 +32,9 @@ export const Inconsistencies = () => {
   }, [loadItems]);
 
   return (
-    <InconsistencyTable
+    <NonconformityTable
       title="Реестр несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов (в процессе выполнения)"
-      inconsistencies={activeItems}
+      nonconformities={activeItems}
       isLoading={itemsLoading}
       error={itemsError}
       isArchived={false}
@@ -48,4 +48,4 @@ export const Inconsistencies = () => {
   );
 };
 
-export default Inconsistencies;
+export default Nonconformities;

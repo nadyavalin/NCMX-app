@@ -1,15 +1,15 @@
 import React from "react";
 import styles from "./styles.module.css";
-import { InconsistencyRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
-import { DynamicListForInconsistency } from "../helpers/DynamicList/forInconsistency";
+import { NonconformityRequestPOST, IAuditors, Correction, CorrectiveAction } from "@appTypes/types";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { SnackbarType } from "@appTypes/types";
+import { DynamicListForNonconformity } from "../helpers/DynamicList/forNonconformity";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof NonconformityRequestPOST | keyof Correction | keyof CorrectiveAction;
 
 interface AuditorProps {
   auditors: IAuditors[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<NonconformityRequestPOST>>;
   createLoading: boolean;
 }
 
@@ -62,7 +62,7 @@ export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps)
   };
 
   return (
-    <DynamicListForInconsistency<IAuditors>
+    <DynamicListForNonconformity<IAuditors>
       items={auditors}
       setFormData={setFormData}
       createLoading={createLoading}

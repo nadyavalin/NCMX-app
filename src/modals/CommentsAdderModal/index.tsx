@@ -28,7 +28,7 @@ interface ModalProps {
 }
 
 const initialCommentFormData: ItemCommentRequestPOST = {
-  content_type: "inconsistency" as CommentContentType,
+  content_type: "nonconformity" as CommentContentType,
   object_id: 0,
   comment_author: "",
   comment_text: "",
@@ -63,7 +63,7 @@ const CommentsAdderModal = ({
   // Функция для получения названия сущности
   const getEntityName = () => {
     const names = {
-      inconsistency: "несоответствию",
+      nonconformity: "несоответствию",
       observation: "наблюдению",
       improvement: "возможности улучшения",
     };
@@ -75,7 +75,7 @@ const CommentsAdderModal = ({
     if (entityTitle) return entityTitle;
 
     const titles = {
-      inconsistency: "несоответствия",
+      nonconformity: "несоответствия",
       observation: "наблюдения",
       improvement: "возможности улучшения",
     };

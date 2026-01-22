@@ -1,13 +1,13 @@
 from django.contrib import admin
 from ncmx_app.models import (
-    NCMXInconsistencies, 
+    NCMXNonconformities, 
     NCMXObservations,
     NCMXImprovements,
     NCMXComment,
     NCMXRescheduleComment
 )
 
-admin.site.register(NCMXInconsistencies)
+admin.site.register(NCMXNonconformities)
 admin.site.register(NCMXObservations)
 admin.site.register(NCMXImprovements)
 admin.site.register(NCMXComment)

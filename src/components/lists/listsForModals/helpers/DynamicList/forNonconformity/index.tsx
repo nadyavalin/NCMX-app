@@ -1,16 +1,16 @@
 import React, { JSX } from "react";
 import {
-  InconsistencyRequestPOST,
+  NonconformityRequestPOST,
   Correction,
   CorrectiveAction,
   Responsible,
 } from "@appTypes/types";
 import styles from "./../styles.module.css";
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof NonconformityRequestPOST | keyof Correction | keyof CorrectiveAction;
 
-interface DynamicListForInconsistencyProps<T extends object> {
+interface DynamicListForNonconformityProps<T extends object> {
   items: T[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<NonconformityRequestPOST>>;
   createLoading: boolean;
   fieldName: FieldName;
   renderItem: (
@@ -32,7 +32,7 @@ interface DynamicListForInconsistencyProps<T extends object> {
   parentIndex?: number;
 }
 
-export const DynamicListForInconsistency = <T extends object>({
+export const DynamicListForNonconformity = <T extends object>({
   items,
   setFormData,
   createLoading,
@@ -44,7 +44,7 @@ export const DynamicListForInconsistency = <T extends object>({
   listBlockClassName = styles.selectInputButtonBlock,
   parentFieldName,
   parentIndex,
-}: DynamicListForInconsistencyProps<T>) => {
+}: DynamicListForNonconformityProps<T>) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
     index: number,
@@ -70,14 +70,14 @@ export const DynamicListForInconsistency = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[])]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof NonconformityRequestPOST])
+          ? [...(prevData[fieldName as keyof NonconformityRequestPOST]! as T[])]
           : [];
         updatedItems[index] = {
           ...updatedItems[index],
           [name]: name.includes("date") ? value || null : value,
         };
-        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof NonconformityRequestPOST]: updatedItems };
       }
     });
   };
@@ -99,10 +99,10 @@ export const DynamicListForInconsistency = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? [...(prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]), newItem]
+        const updatedItems = Array.isArray(prevData[fieldName as keyof NonconformityRequestPOST])
+          ? [...(prevData[fieldName as keyof NonconformityRequestPOST]! as T[]), newItem]
           : [newItem];
-        return { ...prevData, [fieldName as keyof InconsistencyRequestPOST]: updatedItems };
+        return { ...prevData, [fieldName as keyof NonconformityRequestPOST]: updatedItems };
       }
     });
   };
@@ -126,14 +126,14 @@ export const DynamicListForInconsistency = <T extends object>({
         };
         return { ...prevData, [parentFieldName]: parentItems };
       } else {
-        const updatedItems = Array.isArray(prevData[fieldName as keyof InconsistencyRequestPOST])
-          ? (prevData[fieldName as keyof InconsistencyRequestPOST]! as T[]).filter(
+        const updatedItems = Array.isArray(prevData[fieldName as keyof NonconformityRequestPOST])
+          ? (prevData[fieldName as keyof NonconformityRequestPOST]! as T[]).filter(
               (_: unknown, i: number) => i !== index,
             )
           : [];
         return {
           ...prevData,
-          [fieldName as keyof InconsistencyRequestPOST]:
+          [fieldName as keyof NonconformityRequestPOST]:
             updatedItems.length >= minItems ? updatedItems : [newItem],
         };
       }
@@ -170,4 +170,4 @@ export const DynamicListForInconsistency = <T extends object>({
   );
 };
 
-export default React.memo(DynamicListForInconsistency);
+export default React.memo(DynamicListForNonconformity);

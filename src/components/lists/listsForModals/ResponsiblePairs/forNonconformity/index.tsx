@@ -3,33 +3,33 @@ import styles from "./../styles.module.css";
 import {
   Correction,
   CorrectiveAction,
-  InconsistencyRequestPOST,
+  NonconformityRequestPOST,
   Responsible,
 } from "@appTypes/types";
-import { DynamicListForInconsistency } from "../../helpers/DynamicList/forInconsistency";
+import { DynamicListForNonconformity } from "../../helpers/DynamicList/forNonconformity";
 import { Departments } from "@components/lists/headFilters/Departments";
 import { ResponsiblePersonsByDepartment } from "@components/lists/listsForModals/responsiblePersonsByDepartment";
 import { departmentToPersonsMap } from "@components/lists/listsForModals/responsiblePersonsByDepartment/departmentToPersonsMap";
 
-type FieldName = keyof InconsistencyRequestPOST | keyof Correction | keyof CorrectiveAction;
+type FieldName = keyof NonconformityRequestPOST | keyof Correction | keyof CorrectiveAction;
 
-interface ResponsiblePairsForInconsistencyProps {
+interface ResponsiblePairsForNonconformityProps {
   items: Responsible[];
-  setFormData: React.Dispatch<React.SetStateAction<InconsistencyRequestPOST>>;
+  setFormData: React.Dispatch<React.SetStateAction<NonconformityRequestPOST>>;
   createLoading: boolean;
   fieldName: "responsible_for_correction" | "responsible_for_corrective_action";
   addText: string;
   correctionIndex: number;
 }
 
-export const ResponsiblePairsForInconsistency = ({
+export const ResponsiblePairsForNonconformity = ({
   items,
   setFormData,
   createLoading,
   fieldName,
   addText,
   correctionIndex,
-}: ResponsiblePairsForInconsistencyProps) => {
+}: ResponsiblePairsForNonconformityProps) => {
   const renderItem = (
     item: Responsible,
     index: number,
@@ -73,7 +73,7 @@ export const ResponsiblePairsForInconsistency = ({
   };
 
   return (
-    <DynamicListForInconsistency
+    <DynamicListForNonconformity
       items={items}
       setFormData={setFormData}
       createLoading={createLoading}
@@ -91,4 +91,4 @@ export const ResponsiblePairsForInconsistency = ({
   );
 };
 
-export default React.memo(ResponsiblePairsForInconsistency);
+export default React.memo(ResponsiblePairsForNonconformity);

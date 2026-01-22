@@ -33,7 +33,7 @@ export const createApiErrorHandler = (entityName: string, entityField?: string) 
   };
 };
 
-export const handleApiInconsistencyError = createApiErrorHandler("несоответствие", "num_nonconf");
+export const handleApiNonconformityError = createApiErrorHandler("несоответствие", "num_nonconf");
 export const handleApiObservationError = createApiErrorHandler("наблюдение", "num_observation");
 export const handleApiImprovementError = createApiErrorHandler(
   "возможность для улучшения",

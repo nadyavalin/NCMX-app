@@ -4,18 +4,18 @@ import styles from "../styles.module.css";
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@store/store";
-import { fetchInconsistencies, restoreInconsistencyRequest } from "@/api";
-import InconsistencyTable from "@components/InconsistencyTable";
+import { fetchNonconformities, restoreNonconformityRequest } from "@/api";
+import NonconformityTable from "@components/NonconformityTable";
 
-export const ArchiveInconsistencies = () => {
+export const ArchiveNonconformities = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { archivedItems, itemsLoading, itemsError } = useSelector(
-    (state: RootState) => state.inconsistencies,
+    (state: RootState) => state.nonconformities,
   );
 
   const loadItems = useCallback(async () => {
     try {
-      await dispatch(fetchInconsistencies({ is_archived: true })).unwrap();
+      await dispatch(fetchNonconformities({ is_archived: true })).unwrap();
     } catch (error: unknown) {
       console.log(error);
     }
@@ -23,7 +23,7 @@ export const ArchiveInconsistencies = () => {
 
   const handleRestore = useCallback(
     async (num_nonconf: number) => {
-      await dispatch(restoreInconsistencyRequest(num_nonconf)).unwrap();
+      await dispatch(restoreNonconformityRequest(num_nonconf)).unwrap();
     },
     [dispatch],
   );
@@ -34,9 +34,9 @@ export const ArchiveInconsistencies = () => {
 
   return (
     <div className={styles.archiveBlock}>
-      <InconsistencyTable
+      <NonconformityTable
         title="Архив несоответствий по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-        inconsistencies={archivedItems}
+        nonconformities={archivedItems}
         isLoading={itemsLoading}
         error={itemsError}
         isArchived={true}
@@ -47,4 +47,4 @@ export const ArchiveInconsistencies = () => {
   );
 };
 
-export default ArchiveInconsistencies;
+export default ArchiveNonconformities;
