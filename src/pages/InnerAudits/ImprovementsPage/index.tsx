@@ -1,65 +1,50 @@
 "use client";
 
-import "@/globals.css";
-import styles from "./styles.module.css";
-import { MainFilter } from "@components/lists/headFilters/MainFilter";
-import { SearchInput } from "@components/SearchInput";
+import { useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchImprovements, deleteImprovementRequest } from "@/api/improvementsApi";
+import { AppDispatch, RootState } from "@store/store";
+import ImprovementTable from "@components/ImprovementTable";
 
 export const Improvements = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { improvements, loading, error } = useSelector((state: RootState) => state.improvements);
+  const activeItems = improvements.filter((item) => !item.is_archived);
+
+  const loadItems = useCallback(async () => {
+    try {
+      await dispatch(fetchImprovements()).unwrap();
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  }, [dispatch]);
+
+  const handleDelete = useCallback(
+    async (num_improvement: number) => {
+      await dispatch(deleteImprovementRequest(num_improvement)).unwrap();
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
+
   return (
-    <>
-      <main>
-        <h3>
-          Реестр возможностей для улучшения по результатам внутренних аудитов СМК и внутренних
-          технологических аудитов
-        </h3>
-        <section className={styles.filterSection}>
-          <MainFilter />
-          <SearchInput />
-          <button>Получить данные</button>
-        </section>
-
-        <section className="improvementsTableSection">
-          <table className="improvementsTable">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>№</th>
-                <th>Ссылки на пункты ISO 9001 / 80079-34 / НД</th>
-                <th>Описание возможности для улучшения</th>
-                <th>Источник информации о несоответствии</th>
-                <th>Ответственный за реализацию</th>
-                <th>Срок реализации</th>
-                <th>Действия с возможностью для улучшения</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>
-                  <div className={styles.observationActions}>
-                    <a href="#">Добавить комментарий</a>
-                    <a href="#">Посмотреть историю комментариев к возможности для улучшения</a>
-                    <a href="#" className={styles.close}>
-                      Закрыть возможность для улучшения и перенести в архив
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section className={styles.addButton}>
-          <button>Добавить возможность для улучшения</button>
-        </section>
-      </main>
-    </>
+    <div>
+      <ImprovementTable
+        title="Реестр возможностей для улучшения по результатам внутренних аудитов СМК и внутренних технологических аудитов (в процессе выполнения)"
+        improvements={activeItems}
+        isLoading={loading}
+        error={error}
+        isArchived={false}
+        onFetch={loadItems}
+        onDelete={handleDelete}
+        showAddButton={true}
+        showEditAction={true}
+        showDeleteAction={true}
+        showArchiveAction={true}
+      />
+    </div>
   );
 };

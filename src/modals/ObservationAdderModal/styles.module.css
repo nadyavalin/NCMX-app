@@ -5,17 +5,17 @@
   overflow-y: auto;
 }
 
-.nonConfNumberBlock {
+.numberBlock {
   width: 100%;
 }
 
-.nonConfNumberInputBlock {
+.numberInputBlock {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.nonConfNumberBlock h4 {
+.numberBlock h4 {
   margin-bottom: 15px;
   text-align: left;
 }
@@ -49,11 +49,23 @@
   width: 100%;
 }
 
-.oneLineText {
+.sourceLine {
   display: flex;
-  gap: 5px;
-  justify-content: left;
-  width: 215px; /* !временное решение, не видит global.css */
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.sourceLine input {
+  width: 100%;
+}
+
+.dateLine {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
 }
 
 .analysisDateBlock {

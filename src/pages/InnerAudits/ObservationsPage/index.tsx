@@ -33,21 +33,20 @@ export const Observations = () => {
   }, [loadItems]);
 
   return (
-    <>
-      <main>
-        <ObservationTable
-          title="Реестр наблюдений по результатам внутренних аудитов СМК и внутренних технологических аудитов"
-          observations={activeItems}
-          isLoading={itemsLoading}
-          error={itemsError}
-          onFetch={loadItems}
-          onDelete={handleDelete}
-          showAddButton={true}
-          showEditAction={true}
-          showDeleteAction={true}
-          showIsArchivedAction={true}
-        />
-      </main>
-    </>
+    <div>
+      <ObservationTable
+        title="Наблюдения по результатам внутренних аудитов СМК и внутренних технологических аудитов (в процессе выполнения)"
+        observations={activeItems}
+        isLoading={itemsLoading}
+        error={itemsError}
+        isArchived={false}
+        onFetch={loadItems}
+        onDelete={handleDelete}
+        showAddButton={true}
+        showEditAction={true}
+        showDeleteAction={true}
+        showArchiveAction={true}
+      />
+    </div>
   );
 };
