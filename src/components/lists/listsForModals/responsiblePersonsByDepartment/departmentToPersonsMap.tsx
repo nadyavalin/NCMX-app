@@ -50,7 +50,6 @@ export const departmentToPersonsMap: { [key: string]: { value: string; label: st
     { value: "Разумнева Н.П.", label: "Разумнева Н.П." },
     { value: "Зюзева Е.А.", label: "Зюзева Е.А." },
     { value: "Бутина С.С.", label: "Бутина С.С." },
-    { value: "Алтаева О.Ю.", label: "Алтаева О.Ю." },
     { value: "Ткачук Н.С.", label: "Ткачук Н.С." },
     { value: "Морозова Е.А.", label: "Морозова Е.А." },
   ],

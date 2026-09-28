@@ -52,7 +52,6 @@ export const Auditors = ({ auditors, setFormData, createLoading }: AuditorProps)
           title="Аудитор"
         >
           <option value="">...выбрать аудитора</option>
-          <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
           <option value="Ткачук Н.С.">Ткачук Н.С.</option>
           <option value="Морозова Е.А.">Морозова Е.А.</option>
           <option value="Зюзева Е.А.">Зюзева Е.А.</option>

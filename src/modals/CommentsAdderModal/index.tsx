@@ -278,7 +278,6 @@ const CommentsAdderModal = ({
           >
             <option value="">...выбрать автора комментария из базы</option>
             <option value="Разумнева Н.П.">Разумнева Н.П.</option>
-            <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
             <option value="Ткачук Н.С.">Ткачук Н.С.</option>
           </select>
           {errors.comment_author && <p className={styles.submitError}>{errors.comment_author}</p>}
@@ -374,7 +373,6 @@ const CommentsAdderModal = ({
               >
                 <option value="">...выбрать автора комментария из базы</option>
                 <option value="Разумнева Н.П.">Разумнева Н.П.</option>
-                <option value="Алтаева О.Ю.">Алтаева О.Ю.</option>
                 <option value="Ткачук Н.С.">Ткачук Н.С.</option>
               </select>
               {errors.comment_author && (

@@ -241,46 +241,83 @@ export const NonconformityTable = ({
                             - {doc.norm_doc || "-"}, {doc.point || "-"}
                           </p>
                         ))
-                      : "-"}
+                      : " "}
                   </td>
-                  <td>{item.nonconf || "-"}</td>
+                  <td>{item.nonconf || " "}</td>
                   <td>
-                    {item.report || "-"} от {formatDate(item.report_date)}
-                  </td>
-                  <td>
-                    {formatDate(item.analysis_start_date) || "-"} -{" "}
-                    {formatDate(item.analysis_finish_date) || "-"}
+                    {item.report
+                      ? `${item.report}${item.report_date ? ` от ${formatDate(item.report_date)}` : ""}`
+                      : " "}
                   </td>
                   <td>
-                    <p>{item.head_auditor || "-"}</p>
+                    {item.analysis_start_date && item.analysis_finish_date
+                      ? `${formatDate(item.analysis_start_date)} – ${formatDate(item.analysis_finish_date)}`
+                      : item.analysis_start_date
+                        ? formatDate(item.analysis_start_date)
+                        : item.analysis_finish_date
+                          ? formatDate(item.analysis_finish_date)
+                          : " "}
+                  </td>
+                  <td>
+                    <p>{item.head_auditor || " "}</p>
                     {item.auditors && item.auditors.length > 0
                       ? item.auditors.map((person, index) => (
                           <p key={index}> {person.auditor || "-"}</p>
                         ))
-                      : "-"}
+                      : " "}
                   </td>
-                  <td>{item.reason || "-"}</td>
+                  <td>{item.reason || " "}</td>
                   <td>
-                    {item.corrections && item.corrections.length > 0
-                      ? item.corrections.map((corr, index) => (
+                    {item.corrections && item.corrections.length > 0 ? (
+                      item.corrections.length === 1 ? (
+                        <p className={styles.corrText}>{item.corrections[0].correction || " "}</p>
+                      ) : (
+                        item.corrections.map((corr, index) => (
                           <p key={index} className={styles.corrText}>
-                            {index + 1}. {corr.correction || "-"}
+                            {index + 1}. {corr.correction || " "}
                           </p>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
-                    {item.corrections && item.corrections.length > 0
-                      ? item.corrections.map((corr, index) => (
+                    {item.corrections && item.corrections.length > 0 ? (
+                      item.corrections.length === 1 ? (
+                        <p className={styles.corrText}>
+                          {formatDate(item.corrections[0].correction_date) || "-"}
+                        </p>
+                      ) : (
+                        item.corrections.map((corr, index) => (
                           <p key={index} className={styles.corrText}>
                             {index + 1}. {formatDate(corr.correction_date) || "-"}
                           </p>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
-                    {item.corrections && item.corrections.length > 0
-                      ? item.corrections.map((corr, index) => (
+                    {item.corrections && item.corrections.length > 0 ? (
+                      item.corrections.length === 1 ? (
+                        <div>
+                          {item.corrections[0].responsible_for_correction &&
+                          item.corrections[0].responsible_for_correction.length > 0 ? (
+                            item.corrections[0].responsible_for_correction.map(
+                              (resp, respIndex) => (
+                                <p key={respIndex} className={styles.corrText}>
+                                  {resp.department || "-"}: {resp.person || "-"}
+                                </p>
+                              ),
+                            )
+                          ) : (
+                            <p className={styles.corrText}> </p>
+                          )}
+                        </div>
+                      ) : (
+                        item.corrections.map((corr, index) => (
                           <div key={index}>
                             <p>{index + 1}.</p>
                             {corr.responsible_for_correction &&
@@ -291,33 +328,69 @@ export const NonconformityTable = ({
                                 </p>
                               ))
                             ) : (
-                              <p className={styles.corrText}>-</p>
+                              <p className={styles.corrText}> </p>
                             )}
                           </div>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
-                    {item.corrective_actions && item.corrective_actions.length > 0
-                      ? item.corrective_actions.map((act, index) => (
+                    {item.corrective_actions && item.corrective_actions.length > 0 ? (
+                      item.corrective_actions.length === 1 ? (
+                        <p className={styles.corrText}>
+                          {item.corrective_actions[0].corrective_action || " "}
+                        </p>
+                      ) : (
+                        item.corrective_actions.map((act, index) => (
                           <p key={index} className={styles.corrText}>
-                            {index + 1}. {act.corrective_action || "-"}
+                            {index + 1}. {act.corrective_action || " "}
                           </p>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
-                    {item.corrective_actions && item.corrective_actions.length > 0
-                      ? item.corrective_actions.map((act, index) => (
+                    {item.corrective_actions && item.corrective_actions.length > 0 ? (
+                      item.corrective_actions.length === 1 ? (
+                        <p className={styles.corrText}>
+                          {item.corrective_actions[0].corrective_action || " "}
+                        </p>
+                      ) : (
+                        item.corrective_actions.map((act, index) => (
                           <p key={index} className={styles.corrText}>
-                            {index + 1}. {formatDate(act.corrective_action_date) || "-"}
+                            {index + 1}. {formatDate(act.corrective_action_date) || " "}
                           </p>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
-                    {item.corrective_actions && item.corrective_actions.length > 0
-                      ? item.corrective_actions.map((act, index) => (
+                    {item.corrective_actions && item.corrective_actions.length > 0 ? (
+                      item.corrective_actions.length === 1 ? (
+                        <div>
+                          {item.corrective_actions[0].responsible_for_corrective_action &&
+                          item.corrective_actions[0].responsible_for_corrective_action.length >
+                            0 ? (
+                            item.corrective_actions[0].responsible_for_corrective_action.map(
+                              (resp, respIndex) => (
+                                <p key={respIndex} className={styles.corrText}>
+                                  {resp.department || "-"}: {resp.person || "-"}
+                                </p>
+                              ),
+                            )
+                          ) : (
+                            <p className={styles.corrText}> </p>
+                          )}
+                        </div>
+                      ) : (
+                        item.corrective_actions.map((act, index) => (
                           <div key={index}>
                             <p>{index + 1}.</p>
                             {act.responsible_for_corrective_action &&
@@ -328,11 +401,14 @@ export const NonconformityTable = ({
                                 </p>
                               ))
                             ) : (
-                              <p className={styles.corrText}>-</p>
+                              <p className={styles.corrText}> </p>
                             )}
                           </div>
                         ))
-                      : "-"}
+                      )
+                    ) : (
+                      " "
+                    )}
                   </td>
                   <td>
                     <div className={styles.nonconformitiesActions}>

@@ -229,9 +229,9 @@ export const ImprovementTable = ({
                 sortedImprovements.map((item) => (
                   <tr key={item.num_improvement}>
                     <td>{item.num_improvement}</td>
-                    <td>{item.improvement || "-"}</td>
+                    <td>{item.improvement || " "}</td>
                     <td>
-                      {item.report || "-"}{" "}
+                      {item.report || " "}{" "}
                       {item.report_date ? `от ${formatDate(item.report_date)}` : ""}
                     </td>
                     <td>

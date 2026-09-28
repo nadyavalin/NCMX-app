@@ -257,37 +257,83 @@ export const ObservationTable = ({
                               - {doc.norm_doc || "-"}, {doc.point || "-"}
                             </p>
                           ))
-                        : "-"}
+                        : " "}
                     </td>
-                    <td>{item.observation || "-"}</td>
+                    <td>{item.observation || " "}</td>
                     <td>
-                      {item.report || "-"} от {formatDate(item.report_date)}
-                    </td>
-                    <td>
-                      {item.solutions?.map((sol, index) => (
-                        <p key={index} className={styles.solText}>
-                          {index + 1}. {sol.solution || "-"}
-                        </p>
-                      ))}
+                      {item.report
+                        ? `${item.report}${item.report_date ? ` от ${formatDate(item.report_date)}` : ""}`
+                        : " "}
                     </td>
                     <td>
-                      {item.solutions?.map((sol, index) => (
-                        <div key={index} className={styles.solText}>
-                          {index + 1}. {sol.solution_date && formatDate(sol.solution_date)}
-                        </div>
-                      ))}
-                    </td>
-                    <td>
-                      {item.solutions?.map((sol, index) => (
-                        <div key={index}>
-                          <p>{index + 1}.</p>
-                          {sol.responsible_for_solution?.map((resp, respIndex) => (
-                            <p key={respIndex} className={styles.solText}>
-                              {resp.department || "-"}: {resp.person || "-"}
+                      {item.solutions && item.solutions.length > 0 ? (
+                        item.solutions.length === 1 ? (
+                          <p className={styles.solText}>{item.solutions[0].solution || " "}</p>
+                        ) : (
+                          item.solutions.map((sol, index) => (
+                            <p key={index} className={styles.solText}>
+                              {index + 1}. {sol.solution || " "}
                             </p>
-                          ))}
-                        </div>
-                      ))}
+                          ))
+                        )
+                      ) : (
+                        " "
+                      )}
+                    </td>
+                    <td>
+                      {item.solutions && item.solutions.length > 0 ? (
+                        item.solutions.length === 1 ? (
+                          <p className={styles.solText}>
+                            {item.solutions[0].solution_date
+                              ? formatDate(item.solutions[0].solution_date)
+                              : " "}
+                          </p>
+                        ) : (
+                          item.solutions.map((sol, index) => (
+                            <p key={index} className={styles.solText}>
+                              {index + 1}. {sol.solution_date ? formatDate(sol.solution_date) : " "}
+                            </p>
+                          ))
+                        )
+                      ) : (
+                        " "
+                      )}
+                    </td>
+                    <td>
+                      {item.solutions && item.solutions.length > 0 ? (
+                        item.solutions.length === 1 ? (
+                          <div>
+                            {item.solutions[0].responsible_for_solution &&
+                            item.solutions[0].responsible_for_solution.length > 0 ? (
+                              item.solutions[0].responsible_for_solution.map((resp, respIndex) => (
+                                <p key={respIndex} className={styles.solText}>
+                                  {resp.department || "-"}: {resp.person || "-"}
+                                </p>
+                              ))
+                            ) : (
+                              <p className={styles.solText}> </p>
+                            )}
+                          </div>
+                        ) : (
+                          item.solutions.map((sol, index) => (
+                            <div key={index}>
+                              <p>{index + 1}.</p>
+                              {sol.responsible_for_solution &&
+                              sol.responsible_for_solution.length > 0 ? (
+                                sol.responsible_for_solution.map((resp, respIndex) => (
+                                  <p key={respIndex} className={styles.solText}>
+                                    {resp.department || "-"}: {resp.person || "-"}
+                                  </p>
+                                ))
+                              ) : (
+                                <p className={styles.solText}> </p>
+                              )}
+                            </div>
+                          ))
+                        )
+                      ) : (
+                        " "
+                      )}
                     </td>
                     <td>
                       <div className={styles.observationActions}>
