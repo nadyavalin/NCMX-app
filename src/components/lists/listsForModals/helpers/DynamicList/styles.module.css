@@ -1,0 +1,31 @@
+.selectInputButtonBlock {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.selectInputButtonBlock input {
+  width: 205px;
+}
+
+.selectInputBlock {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.removeButton {
+  min-width: 100px;
+}
+
+.activeLink {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.disabledLink {
+  color: var(--link-disabled-color);
+  white-space: nowrap;
+  pointer-events: none;
+  cursor: not-allowed;
+}

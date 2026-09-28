@@ -23,7 +23,7 @@
 
 #### Что планируется реализовать:
 
-- система оповещения в случае, если срок реализации коррекции/корректирующего действия подходит к концу;
+- система оповещения в случае, если плановый срок выполнения коррекции/корректирующего действия подходит к концу;
 - дашборд с визуализацией количества несоответствий, наблюдений и предложений по подразделениям и статусам;
 - Журнал событий (логирование действий пользователей);
 - статистика (например, среднее время закрытия несоответствия);
@@ -214,7 +214,7 @@ cd NCMX-app
   ```bash
   curl -X POST http://localhost:8000/ncmx_app/api/ncmx-table/ \
   -H "Content-Type: application/json" \
-  -d '{"num_nonconf": 1, "nonconf": "Test Inconsistency", "norm_doc": "ISO 9001"}'
+  -d '{"num_nonconf": 1, "nonconf": "Test Nonconformity", "norm_doc": "ISO 9001"}'
   ```
   ```bash
   curl -X POST http://localhost:8000/ncmx_app/api/ncmx-comments/ \
@@ -226,9 +226,9 @@ cd NCMX-app
   python manage.py shell
   ```
   ```python
-  from inconsistencies.models import NCMXInconsistencies, NCMXInconsistencyComments
-  NCMXInconsistencies.objects.create(num_nonconf=1, nonconf="Test Inconsistency", norm_doc="ISO 9001")
-  NCMXInconsistencyComments.objects.create(num_nonconf_id=1, comment_author="Алтаева О.Ю.", comment_text="Тестовый комментарий")
+  from nonconformities.models import NCMXNonconformities, NCMXNonconformityComments
+  NCMXNonconformities.objects.create(num_nonconf=1, nonconf="Test Nonconformity", norm_doc="ISO 9001")
+  NCMXNonconformityComments.objects.create(num_nonconf_id=1, comment_author="Алтаева О.Ю.", comment_text="Тестовый комментарий")
   ```
 
 ### 7. Работа с PostgreSQL
@@ -240,8 +240,8 @@ cd NCMX-app
 - **Просмотр таблиц**:
   ```sql
   \dt
-  \d NCMX_inconsistency_comments
-  SELECT * FROM NCMX_inconsistency_comments;
+  \d NCMX_nonconformity_comments
+  SELECT * FROM NCMX_nonconformity_comments;
   ```
 - **Резервное копирование**:
   ```bash

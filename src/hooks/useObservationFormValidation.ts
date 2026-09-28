@@ -5,7 +5,7 @@ interface ValidationErrors {
   [key: string]: string;
 }
 
-interface UseInconsistencyFormValidationProps {
+interface UseNonconformityFormValidationProps {
   formData: ObservationRequestPOST;
   numObservationRef: React.RefObject<HTMLInputElement | null>;
 }
@@ -13,7 +13,7 @@ interface UseInconsistencyFormValidationProps {
 export const useObservationFormValidation = ({
   formData,
   numObservationRef,
-}: UseInconsistencyFormValidationProps) => {
+}: UseNonconformityFormValidationProps) => {
   const validateForm = useCallback(() => {
     const newErrors: ValidationErrors = {};
     if (!formData.num_observation || formData.num_observation <= 0) {

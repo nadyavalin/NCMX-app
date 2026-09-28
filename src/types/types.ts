@@ -26,7 +26,7 @@ export interface CorrectiveAction {
   responsible_for_corrective_action: Responsible[];
 }
 
-export interface InconsistencyRequestPOST {
+export interface NonconformityRequestPOST {
   num_nonconf: number | undefined;
   normative_documents: NormativeDocument[] | undefined;
   nonconf: string;
@@ -45,7 +45,7 @@ export interface InconsistencyRequestPOST {
   is_archived?: boolean;
 }
 
-export interface InconsistencyResponseGET {
+export interface NonconformityResponseGET {
   num_nonconf: number;
   normative_documents: NormativeDocument[];
   nonconf: string;
@@ -64,13 +64,13 @@ export interface InconsistencyResponseGET {
   is_archived: boolean;
 }
 
-export interface InconsistencyNumberState {
-  currentInconsistencyNumber: number | null;
+export interface NonconformityNumberState {
+  currentNonconformityNumber: number | null;
   isModalCommentsOpen: boolean;
   isModalHistoryCommentsOpen: boolean;
   isModalEstimateResultOpen: boolean;
   isModalEditOpen: boolean;
-  items: InconsistencyResponseGET[];
+  items: NonconformityResponseGET[];
   itemsLoading: boolean;
   itemsError: string | null;
   createLoading: boolean;
@@ -115,15 +115,46 @@ export interface ObservationResponseGET {
 }
 
 export interface APIResponse {
-  results: InconsistencyResponseGET[];
+  results: NonconformityResponseGET[];
 }
+
+export interface ImprovementRequestPOST {
+  num_improvement: number;
+  improvement: string;
+  report: string;
+  report_date: string | null;
+  resp_persons_for_improvement_implementation: Responsible[];
+  date_implementation_for_improvement: string | null;
+  improvement_closure_date: string | null;
+  resp_person_improvement_closure: string;
+  is_archived?: boolean;
+}
+
+export interface ImprovementResponseGET {
+  num_improvement: number;
+  improvement: string;
+  report: string;
+  report_date: string | null;
+  resp_persons_for_improvement_implementation: Responsible[];
+  date_implementation_for_improvement: string | null;
+  improvement_closure_date: string | null;
+  resp_person_improvement_closure: string;
+  auto_data: string;
+  is_archived: boolean;
+}
+
+export type CommentContentType = "nonconformity" | "observation" | "improvement";
 
 export interface ItemCommentResponseGET {
   id: number;
-  num_nonconf: number;
+  content_type: CommentContentType;
+  object_id: number;
   comment_author: string;
   comment_text: string;
   created_at: DateString;
+  // Поля для обратной совместимости
+  num_nonconf?: number;
+  num_observation?: number;
 }
 
 export interface APICommentsResponse {
@@ -131,14 +162,40 @@ export interface APICommentsResponse {
 }
 
 export interface ItemCommentRequestPOST {
-  num_nonconf: number | null;
+  content_type: CommentContentType;
+  object_id: number;
   comment_author: string;
   comment_text: string;
 }
 
 export interface ItemCommentRequestPATCH {
-  num_nonconf: number | null;
   comment_text: string;
+}
+
+export type RescheduleCommentContentType = "nonconformity" | "observation" | "improvement";
+
+export interface RescheduleCommentResponseGET {
+  id: number;
+  content_type: RescheduleCommentContentType;
+  object_id: number;
+  comment_author: string;
+  comment_text: string;
+  old_date: string | null;
+  new_date: string | null;
+  action_type: "correction" | "corrective_action" | "solution" | null;
+  action_index: number | null;
+  created_at: string;
+}
+
+export interface RescheduleCommentRequestPOST {
+  content_type: RescheduleCommentContentType;
+  object_id: number;
+  comment_author: string;
+  comment_text: string;
+  old_date?: string | null;
+  new_date?: string | null;
+  action_type?: "correction" | "corrective_action" | "solution" | null;
+  action_index?: number | null;
 }
 
 export enum SnackbarType {

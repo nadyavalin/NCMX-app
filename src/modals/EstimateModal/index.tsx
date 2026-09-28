@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateInconsistencyRequest, createCommentInconsistencyRequest } from "@/api";
+import { updateNonconformityRequest, createCommentRequest } from "@/api";
 import { SnackbarType } from "@appTypes/types";
 import { RootState, AppDispatch } from "@store/store";
 import { toggleModalEstimateResult } from "@store/uiSlice";
@@ -15,9 +15,9 @@ interface ModalProps {
 
 const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentInconsistencyNumber } = useSelector((state: RootState) => state.ui);
+  const { currentNonconformityNumber } = useSelector((state: RootState) => state.ui);
   const { commentLoading, commentError } = useSelector((state: RootState) => state.comments);
-  const { itemsLoading, itemsError } = useSelector((state: RootState) => state.inconsistencies);
+  const { itemsLoading, itemsError } = useSelector((state: RootState) => state.nonconformities);
   const addSnackbar = useSnackbar();
   const [estimate, setEstimate] = useState<string>("удовлетворительно");
   const [respPerson, setRespPerson] = useState<string>("");
@@ -61,7 +61,7 @@ const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
   };
 
   const handleSubmit = async (isArchived: boolean) => {
-    if (!currentInconsistencyNumber) {
+    if (!currentNonconformityNumber) {
       addSnackbar(SnackbarType.error, "Номер несоответствия не указан");
       return;
     }
@@ -74,22 +74,23 @@ const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
     try {
       if (estimate === "неудовлетворительно" && commentText.trim()) {
         await dispatch(
-          createCommentInconsistencyRequest({
-            num_nonconf: currentInconsistencyNumber,
+          createCommentRequest({
+            content_type: "nonconformity",
+            object_id: currentNonconformityNumber,
             comment_author: respPerson,
             comment_text: commentText,
           }),
         ).unwrap();
         addSnackbar(
           SnackbarType.success,
-          `Комментарий успешно добавлен к несоответствию № ${currentInconsistencyNumber}`,
+          `Комментарий успешно добавлен к несоответствию № ${currentNonconformityNumber}`,
         );
       }
 
       const closureDate = new Date().toISOString();
       await dispatch(
-        updateInconsistencyRequest({
-          num_nonconf: currentInconsistencyNumber,
+        updateNonconformityRequest({
+          num_nonconf: currentNonconformityNumber,
           data: {
             estimate: estimate === "удовлетворительно" ? 1 : 0,
             resp_person_nonconf_closure: respPerson,
@@ -102,8 +103,8 @@ const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
       addSnackbar(
         SnackbarType.success,
         isArchived
-          ? `Несоответствие № ${currentInconsistencyNumber} успешно перенесено в архив`
-          : `Несоответствие № ${currentInconsistencyNumber} оставлено в таблице`,
+          ? `Несоответствие № ${currentNonconformityNumber} успешно перенесено в архив`
+          : `Несоответствие № ${currentNonconformityNumber} оставлено в таблице`,
       );
 
       setTimeout(() => {
@@ -132,7 +133,7 @@ const EstimateModal = ({ isOpen, onClose }: ModalProps) => {
   return (
     <ModalComponent isOpen={isOpen} onClose={handleClose}>
       <form className={styles.modalForm}>
-        <h3>Выберите оценку результативности несоответствия № {currentInconsistencyNumber}</h3>
+        <h3>Выберите оценку результативности несоответствия № {currentNonconformityNumber}</h3>
         {commentError && <p className={styles.submitError}>{commentError}</p>}
         {itemsError && <p className={styles.submitError}>{itemsError}</p>}
         <select

@@ -1,60 +1,62 @@
-import "@/globals.css";
-import styles from "./styles.module.css";
-import { SearchInput } from "@components/SearchInput";
+"use client";
+
+import { useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchImprovements,
+  deleteImprovementRequest,
+  restoreImprovementRequest,
+} from "@/api/improvementsApi";
+import { AppDispatch, RootState } from "@store/store";
+import ImprovementTable from "@components/ImprovementTable";
 
 export const ArchiveImprovements = () => {
-  return (
-    <>
-      <main className={styles.main}>
-        <h3>
-          Архив возможностей для улучшения по результатам внутренних аудитов СМК и внутренних
-          технологических аудитов
-        </h3>
-        <section className={styles.filterSection}>
-          <SearchInput />
-          <button>Получить данные</button>
-        </section>
+  const dispatch = useDispatch<AppDispatch>();
+  const { improvements, loading, error } = useSelector((state: RootState) => state.improvements);
+  const archivedItems = improvements.filter((item) => item.is_archived);
 
-        <section className="improvementsTableSection">
-          <table className="improvementsTable">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>№</th>
-                <th>Ссылки на пункты ISO 9001 / 80079-34 / НД</th>
-                <th>Описание возможности для улучшения</th>
-                <th>Источник информации о несоответствии</th>
-                <th>Ответственный за реализацию</th>
-                <th>Срок реализации</th>
-                <th>Действия с возможностью для улучшения</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>
-                  <div className={styles.observationActions}>
-                    <a href="#">Посмотреть историю комментариев к возможности для улучшения</a>
-                    <a
-                      href="#"
-                      title="Восстановить возможность для улучшения может только администратор"
-                      className={styles.redText}
-                    >
-                      Восстановить
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </main>
-    </>
+  const loadItems = useCallback(async () => {
+    try {
+      await dispatch(fetchImprovements()).unwrap();
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  }, [dispatch]);
+
+  const handleDelete = useCallback(
+    async (num_improvement: number) => {
+      await dispatch(deleteImprovementRequest(num_improvement)).unwrap();
+    },
+    [dispatch],
+  );
+
+  const handleRestore = useCallback(
+    async (num_improvement: number) => {
+      await dispatch(restoreImprovementRequest(num_improvement)).unwrap();
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    loadItems();
+  }, [loadItems]);
+
+  return (
+    <div>
+      <ImprovementTable
+        title="Архив возможностей для улучшения"
+        improvements={archivedItems}
+        isLoading={loading}
+        error={error}
+        isArchived={true}
+        onFetch={loadItems}
+        onDelete={handleDelete}
+        onRestore={handleRestore}
+        showAddButton={false}
+        showEditAction={false}
+        showDeleteAction={false}
+        showArchiveAction={false}
+      />
+    </div>
   );
 };

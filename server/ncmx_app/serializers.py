@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import NCMXInconsistencies, NCMXInconsistencyComments, NCMXObservations, NCMXObservationComments
+from .models import NCMXNonconformities, NCMXObservations, NCMXImprovements, NCMXComment, NCMXRescheduleComment
 from datetime import date
 
 class NormativeDocumentSerializer(serializers.Serializer):
@@ -28,14 +28,14 @@ class SolutionSerializer(serializers.Serializer):
     solution_date = serializers.DateField(allow_null=True)
     responsible_for_solution = ResponsibleSerializer(many=True, required=False)
 
-class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
+class NCMXNonconformitiesSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
     auditors = AuditorsSerializer(many=True, required=False)
     corrections = CorrectionSerializer(many=True, required=False)
     corrective_actions = CorrectiveActionSerializer(many=True, required=False)
 
     class Meta:
-        model = NCMXInconsistencies
+        model = NCMXNonconformities
         fields = [
             'num_nonconf', 'normative_documents', 'nonconf', 'report', 'report_date',
             'analysis_start_date', 'analysis_finish_date', 'head_auditor', 'auditors',
@@ -47,6 +47,11 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         if not data.get('num_nonconf') and not self.instance:
             raise serializers.ValidationError({"num_nonconf": "Номер несоответствия обязателен"})
         return data
+    
+    def validate_num_nonconf(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Номер несоответствия должен быть положительным числом")
+        return value
     
     def to_internal_value(self, data):
         validated_data = super().to_internal_value(data)
@@ -64,85 +69,25 @@ class NCMXInconsistenciesSerializer(serializers.ModelSerializer):
         return validated_data
 
     def create(self, validated_data):
-        print("Validated data (create):", validated_data)  # Отладка
+        print("Validated data (create):", validated_data)
         try:
-            if NCMXInconsistencies.objects.filter(num_nonconf=validated_data['num_nonconf']).exists():
+            if NCMXNonconformities.objects.filter(num_nonconf=validated_data['num_nonconf']).exists():
                 raise serializers.ValidationError({"num_nonconf": f"Несоответствие с номером {validated_data['num_nonconf']} уже существует"})
             return super().create(validated_data)
         except Exception as e:
-            print("Create error:", str(e))  # Отладка
+            print("Create error:", str(e))
             raise serializers.ValidationError({"error": f"Ошибка при создании несоответствия: {str(e)}"})
 
     def update(self, instance, validated_data):
-        print("Validated data (update):", validated_data)  # Отладка
+        print("Validated data (update):", validated_data)
         try:
             instance = super().update(instance, validated_data)
-            print("Inconsistency updated:", instance.num_nonconf, "is_archived:", instance.is_archived)
+            print("Nonconformity updated:", instance.num_nonconf, "is_archived:", instance.is_archived)
             return instance
         except Exception as e:
-            print("Update error:", str(e))  # Отладка
+            print("Update error:", str(e))
             raise serializers.ValidationError({"error": f"Ошибка при обновлении несоответствия: {str(e)}"})
 
-class NCMXInconsistencyCommentsSerializer(serializers.ModelSerializer):
-    num_nonconf = serializers.IntegerField()
-
-    class Meta:
-        model = NCMXInconsistencyComments
-        fields = ['id', 'num_nonconf', 'comment_author', 'comment_text', 'created_at']
-
-    def validate(self, data):
-        if not data.get('num_nonconf'):
-            raise serializers.ValidationError({"num_nonconf": "Номер несоответствия обязателен"})
-        if not data.get('comment_author'):
-            raise serializers.ValidationError({"comment_author": "Автор комментария обязателен"})
-        if not data.get('comment_text'):
-            raise serializers.ValidationError({"comment_text": "Текст комментария обязателен"})
-        
-        try:
-            NCMXInconsistencies.objects.get(num_nonconf=data['num_nonconf'])
-        except NCMXInconsistencies.DoesNotExist:
-            raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
-        return data
-
-    def create(self, validated_data):
-        try:
-            num_nonconf_value = validated_data.pop('num_nonconf')
-            num_nonconf_instance = NCMXInconsistencies.objects.get(num_nonconf=num_nonconf_value)
-            comment = NCMXInconsistencyComments.objects.create(
-                num_nonconf=num_nonconf_instance,
-                comment_author=validated_data['comment_author'],
-                comment_text=validated_data['comment_text']
-            )
-            return comment
-        except NCMXInconsistencies.DoesNotExist:
-            raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
-        except Exception as e:
-            raise serializers.ValidationError({"error": f"Ошибка при создании комментария: {str(e)}"})
-
-    def update(self, instance, validated_data):
-        try:
-            num_nonconf_value = validated_data.pop('num_nonconf')
-            num_nonconf_instance = NCMXInconsistencies.objects.get(num_nonconf=num_nonconf_value)
-            instance.num_nonconf = num_nonconf_instance
-            instance.comment_author = validated_data.get('comment_author', instance.comment_author)
-            instance.comment_text = validated_data.get('comment_text', instance.comment_text)
-            instance.save()
-            return instance
-        except NCMXInconsistencies.DoesNotExist:
-            raise serializers.ValidationError({"num_nonconf": "Несоответствие с таким номером не существует"})
-        except Exception as e:
-            raise serializers.ValidationError({"error": f"Ошибка при обновлении комментария: {str(e)}"})
-
-    def to_representation(self, instance):
-        representation = {
-            'id': instance.id,
-            'num_nonconf': instance.num_nonconf.num_nonconf,
-            'comment_author': instance.comment_author,
-            'comment_text': instance.comment_text,
-            'created_at': instance.created_at
-        }
-        return representation
-    
 class NCMXObservationsSerializer(serializers.ModelSerializer):
     normative_documents = NormativeDocumentSerializer(many=True, required=False)
     solutions = SolutionSerializer(many=True, required=False)
@@ -160,6 +105,11 @@ class NCMXObservationsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"num_observation": "Номер наблюдения обязателен"})
         return data
     
+    def validate_num_observation(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Номер наблюдения должен быть положительным числом")
+        return value
+
     def to_internal_value(self, data):
         validated_data = super().to_internal_value(data)
  
@@ -171,81 +121,194 @@ class NCMXObservationsSerializer(serializers.ModelSerializer):
         return validated_data
 
     def create(self, validated_data):
-        print("Validated data (create):", validated_data)  # Отладка
+        print("Validated data (create):", validated_data)
         try:
             if NCMXObservations.objects.filter(num_observation=validated_data['num_observation']).exists():
                 raise serializers.ValidationError({"num_observation": f"Наблюдение с номером {validated_data['num_observation']} уже существует"})
             return super().create(validated_data)
         except Exception as e:
-            print("Create error:", str(e))  # Отладка
+            print("Create error:", str(e))
             raise serializers.ValidationError({"error": f"Ошибка при создании наблюдения: {str(e)}"})
 
     def update(self, instance, validated_data):
-        print("Validated data (update):", validated_data)  # Отладка
+        print("Validated data (update):", validated_data)
         try:
             instance = super().update(instance, validated_data)
             print("Observation updated:", instance.num_observation, "is_archived:", instance.is_archived)
             return instance
         except Exception as e:
-            print("Update error:", str(e))  # Отладка
+            print("Update error:", str(e))
             raise serializers.ValidationError({"error": f"Ошибка при обновлении наблюдения: {str(e)}"})
-        
-class NCMXObservationCommentsSerializer(serializers.ModelSerializer):
-    num_observation = serializers.IntegerField()
+
+class NCMXImprovementsSerializer(serializers.ModelSerializer):
+    resp_persons_for_improvement_implementation = ResponsibleSerializer(many=True, required=False)
 
     class Meta:
-        model = NCMXObservationComments
-        fields = ['id', 'num_observation', 'comment_author', 'comment_text', 'created_at']
+        model = NCMXImprovements
+        fields = [
+            'num_improvement', 'improvement', 'report', 'report_date',
+            'date_implementation_for_improvement', 'resp_persons_for_improvement_implementation',
+            'improvement_closure_date', 'resp_person_improvement_closure','auto_data', 'is_archived'
+        ]
 
     def validate(self, data):
-        if not data.get('num_observation'):
-            raise serializers.ValidationError({"num_observation": "Номер наблюдения обязателен"})
+        if not data.get('num_improvement') and not self.instance:
+            raise serializers.ValidationError({"num_improvement": "Номер возможности для улучшения обязателен"})
+        return data
+
+    def validate_num_improvement(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Номер возможности улучшения должен быть положительным числом")
+        return value
+
+    def create(self, validated_data):
+        print("Validated data (create):", validated_data)
+        try:
+            if NCMXImprovements.objects.filter(num_improvement=validated_data['num_improvement']).exists():
+                raise serializers.ValidationError({"num_improvement": f"Возможность улучшения с номером {validated_data['num_improvement']} уже существует"})
+            return super().create(validated_data)
+        except Exception as e:
+            print("Create error:", str(e))
+            raise serializers.ValidationError({"error": f"Ошибка при создании возможности улучшения: {str(e)}"})
+
+    def update(self, instance, validated_data):
+        print("Validated data (update):", validated_data)
+        try:
+            instance = super().update(instance, validated_data)
+            print("Improvement updated:", instance.num_improvement, "is_archived:", instance.is_archived)
+            return instance
+        except Exception as e:
+            print("Update error:", str(e))
+            raise serializers.ValidationError({"error": f"Ошибка при обновлении возможности улучшения: {str(e)}"})
+        
+class NCMXCommentSerializer(serializers.ModelSerializer):
+    # Поля для обратной совместимости (опционально)
+    num_nonconf = serializers.IntegerField(write_only=True, required=False)
+    num_observation = serializers.IntegerField(write_only=True, required=False)
+
+    class Meta:
+        model = NCMXComment
+        fields = ['id', 'content_type', 'object_id', 'comment_author', 'comment_text', 'created_at', 'num_nonconf', 'num_observation']
+        read_only_fields = ['id', 'created_at']
+
+    def validate(self, data):
+        # Определяем content_type и object_id из входных данных
+        content_type = data.get('content_type')
+        object_id = data.get('object_id')
+        
+        # Обратная совместимость: если переданы старые поля
+        if not content_type and data.get('num_nonconf'):
+            content_type = 'nonconformity'
+            object_id = data['num_nonconf']
+        elif not content_type and data.get('num_observation'):
+            content_type = 'observation' 
+            object_id = data['num_observation']
+        elif not content_type and data.get('num_improvement'):
+            content_type = 'improvement'
+            object_id = data['num_improvement']
+
+        if not content_type:
+            raise serializers.ValidationError({"content_type": "Тип сущности обязателен"})
+        if not object_id:
+            raise serializers.ValidationError({"object_id": "ID сущности обязателен"})
         if not data.get('comment_author'):
             raise serializers.ValidationError({"comment_author": "Автор комментария обязателен"})
         if not data.get('comment_text'):
             raise serializers.ValidationError({"comment_text": "Текст комментария обязателен"})
         
+        # Проверяем существование связанной сущности
         try:
-            NCMXObservations.objects.get(num_observation=data['num_observation'])
+            if content_type == 'nonconformity':
+                NCMXNonconformities.objects.get(num_nonconf=object_id)
+            elif content_type == 'observation':
+                NCMXObservations.objects.get(num_observation=object_id)
+            elif content_type == 'improvement':
+                NCMXImprovements.objects.get(num_improvement=object_id)
+            # Для improvement можно добавить позже
+        except NCMXNonconformities.DoesNotExist:
+            raise serializers.ValidationError({"object_id": "Несоответствие с таким номером не существует"})
         except NCMXObservations.DoesNotExist:
-            raise serializers.ValidationError({"num_observation": "Наблюдение с таким номером не существует"})
+            raise serializers.ValidationError({"object_id": "Наблюдение с таким номером не существует"})
+        except NCMXImprovements.DoesNotExist:
+            raise serializers.ValidationError({"object_id": "Возможность улучшения с таким номером не существует"})
+    
+        # Обновляем данные для сохранения
+        data['content_type'] = content_type
+        data['object_id'] = object_id
+        
         return data
 
     def create(self, validated_data):
         try:
-            num_observation_value = validated_data.pop('num_observation')
-            num_observation_instance = NCMXObservations.objects.get(num_observation=num_observation_value)
-            comment = NCMXObservationComments.objects.create(
-                num_observation=num_observation_instance,
-                comment_author=validated_data['comment_author'],
-                comment_text=validated_data['comment_text']
-            )
-            return comment
-        except NCMXObservations.DoesNotExist:
-            raise serializers.ValidationError({"num_observation": "Наблюдение с таким номером не существует"})
+            # Удаляем временные поля обратной совместимости
+            validated_data.pop('num_nonconf', None)
+            validated_data.pop('num_observation', None)
+            validated_data.pop('num_improvement', None)
+            
+            return super().create(validated_data)
         except Exception as e:
             raise serializers.ValidationError({"error": f"Ошибка при создании комментария: {str(e)}"})
 
     def update(self, instance, validated_data):
         try:
-            num_observation_value = validated_data.pop('num_observation')
-            num_observation_instance = NCMXObservations.objects.get(num_observation=num_observation_value)
-            instance.num_observation = num_observation_instance
-            instance.comment_author = validated_data.get('comment_author', instance.comment_author)
-            instance.comment_text = validated_data.get('comment_text', instance.comment_text)
-            instance.save()
-            return instance
-        except NCMXObservations.DoesNotExist:
-            raise serializers.ValidationError({"num_observation": "Наблюдение с таким номером не существует"})
+            # Удаляем временные поля обратной совместимости
+            validated_data.pop('num_nonconf', None)
+            validated_data.pop('num_observation', None)
+            validated_data.pop('num_improvement', None)
+
+            return super().update(instance, validated_data)
         except Exception as e:
             raise serializers.ValidationError({"error": f"Ошибка при обновлении комментария: {str(e)}"})
 
     def to_representation(self, instance):
         representation = {
             'id': instance.id,
-            'num_observation': instance.num_observation.num_observation,
+            'content_type': instance.content_type,
+            'object_id': instance.object_id,
             'comment_author': instance.comment_author,
             'comment_text': instance.comment_text,
             'created_at': instance.created_at
         }
+        
+        # Обратная совместимость: добавляем старые поля
+        if instance.content_type == 'nonconformity':
+            representation['num_nonconf'] = instance.object_id
+        elif instance.content_type == 'observation':
+            representation['num_observation'] = instance.object_id
+        elif instance.content_type == 'improvement':
+            representation['num_improvement'] = instance.object_id
+
         return representation
+
+class NCMXRescheduleCommentSerializer(serializers.ModelSerializer):
+    old_date = serializers.DateTimeField(allow_null=True, required=False)
+    new_date = serializers.DateTimeField(allow_null=True, required=False)
+    action_type = serializers.CharField(allow_null=True, required=False)
+    action_index = serializers.IntegerField(allow_null=True, required=False)
+
+    class Meta:
+        model = NCMXRescheduleComment
+        fields = '__all__'
+        read_only_fields = ('id', 'created_at')
+    
+    def validate(self, data):
+        # Проверяем существование связанной сущности
+        content_type = data.get('content_type')
+        object_id = data.get('object_id')
+        
+        if content_type and object_id:
+            try:
+                if content_type == 'nonconformity':
+                    NCMXNonconformities.objects.get(num_nonconf=object_id)
+                elif content_type == 'observation':
+                    NCMXObservations.objects.get(num_observation=object_id)
+            except NCMXNonconformities.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"object_id": "Несоответствие с таким номером не существует"}
+                )
+            except NCMXObservations.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"object_id": "Наблюдение с таким номером не существует"}
+                )
+        
+        return data
