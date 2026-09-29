@@ -1,6 +1,5 @@
 "use client";
 
-import "@/globals.css";
 import styles from "./styles.module.css";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +22,7 @@ import CommentsAdderModal from "@modals/CommentsAdderModal";
 import { formatDate } from "@utils/formatDate";
 import { updateObservationRequest } from "@/api";
 import RescheduleCommentsAdderModal from "@modals/RescheduleCommentsAdderModal";
+import { useFilteredData } from "@hooks/useFilteredData";
 
 interface ObservationTableProps {
   title: string;
@@ -30,7 +30,6 @@ interface ObservationTableProps {
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
-  onFetch: () => void;
   onDelete?: (num_observation: number) => Promise<void>;
   onRestore?: (num_observation: number) => Promise<void>;
   onArchive?: (num_observation: number) => Promise<void>;
@@ -46,7 +45,6 @@ export const ObservationTable = ({
   isLoading,
   error,
   isArchived,
-  onFetch,
   onDelete,
   onRestore,
   showAddButton = true,
@@ -70,9 +68,37 @@ export const ObservationTable = ({
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumObservation, setDeleteNumObservation] = useState<number | null>(null);
 
-  const sortedObservations = [...observations].sort(
-    (a, b) => a.num_observation - b.num_observation,
-  );
+  const filteredObservations = useFilteredData<ObservationResponseGET>({
+    items: observations,
+    numField: "num_observation",
+    getSearchable: (item) => [
+      String(item.num_observation),
+      item.observation,
+      item.report,
+      item.report_date,
+      ...(item.solutions || []).map((s) => s.solution || ""),
+      ...(item.solutions || []).flatMap((s) =>
+        (s.responsible_for_solution || []).flatMap((r) => [r.department, r.person]),
+      ),
+      ...(item.normative_documents || []).flatMap((d) => [d.norm_doc, d.point]),
+    ],
+    getResponsibles: (item) =>
+      (item.solutions || []).flatMap((sol) =>
+        (sol.responsible_for_solution || []).map((r) => ({
+          department: r.department,
+          person: r.person,
+        })),
+      ),
+    getNormDocs: (item) =>
+      (item.normative_documents || []).map((d) => ({
+        norm_doc: d.norm_doc,
+        point: d.point,
+      })),
+  });
+
+  // const sortedObservations = [...observations].sort(
+  //   (a, b) => a.num_observation - b.num_observation,
+  // );
 
   const handleOpenModal = useCallback(
     (modalType: "comments" | "historyComments" | "edit" | "rescheduleComments", num: number) => {
@@ -219,7 +245,6 @@ export const ObservationTable = ({
               <SearchInput />
             </>
           )}
-          <button onClick={onFetch}>Получить данные</button>
         </section>
 
         <section>
@@ -233,21 +258,21 @@ export const ObservationTable = ({
                 <th>Решения</th>
                 <th>
                   Плановый срок выполнения /{" "}
-                  <p className={styles.blueText}>Фактический срок выполнения</p>
+                  <p className={styles.blueText}>Новый срок выполнения</p>
                 </th>
                 <th>Ответственный за выполнение</th>
                 <th>Действия с наблюдением</th>
               </tr>
             </thead>
             <tbody>
-              {sortedObservations.length === 0 ? (
+              {filteredObservations.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="error">
                     Нет данных для отображения.
                   </td>
                 </tr>
               ) : (
-                sortedObservations.map((item) => (
+                filteredObservations.map((item) => (
                   <tr key={item.num_observation}>
                     <td>{item.num_observation}</td>
                     <td>

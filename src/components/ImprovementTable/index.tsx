@@ -1,6 +1,5 @@
 "use client";
 
-import "@/globals.css";
 import styles from "./styles.module.css";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +19,7 @@ import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import CommentsAdderModal from "@modals/CommentsAdderModal";
 import { formatDate } from "@utils/formatDate";
 import { updateImprovementRequest } from "@/api";
+import { useFilteredData } from "@hooks/useFilteredData";
 
 interface ImprovementTableProps {
   title: string;
@@ -27,7 +27,6 @@ interface ImprovementTableProps {
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
-  onFetch: () => void;
   onDelete?: (num_improvement: number) => Promise<void>;
   onRestore?: (num_improvement: number) => Promise<void>;
   showAddButton?: boolean;
@@ -52,7 +51,6 @@ export const ImprovementTable = ({
   isLoading,
   error,
   isArchived,
-  onFetch,
   onDelete,
   onRestore,
   showAddButton = true,
@@ -68,9 +66,29 @@ export const ImprovementTable = ({
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState<boolean>(false);
   const [deleteNumImprovement, setDeleteNumImprovement] = useState<number | null>(null);
 
-  const sortedImprovements = [...improvements].sort(
-    (a, b) => a.num_improvement - b.num_improvement,
-  );
+  const filteredImprovements = useFilteredData<ImprovementResponseGET>({
+    items: improvements,
+    numField: "num_improvement",
+    getSearchable: (item) => [
+      String(item.num_improvement),
+      item.improvement,
+      item.report,
+      item.report_date,
+      ...(item.resp_persons_for_improvement_implementation || []).flatMap((r) => [
+        r.department,
+        r.person,
+      ]),
+    ],
+    getResponsibles: (item) =>
+      (item.resp_persons_for_improvement_implementation || []).map((r) => ({
+        department: r.department,
+        person: r.person,
+      })),
+  });
+
+  // const sortedImprovements = [...improvements].sort(
+  //   (a, b) => a.num_improvement - b.num_improvement,
+  // );
 
   const handleOpenModal = useCallback(
     (modalType: "comments" | "edit", num: number) => {
@@ -203,7 +221,6 @@ export const ImprovementTable = ({
               <SearchInput />
             </>
           )}
-          <button onClick={onFetch}>Получить данные</button>
         </section>
 
         <section>
@@ -219,14 +236,14 @@ export const ImprovementTable = ({
               </tr>
             </thead>
             <tbody>
-              {sortedImprovements.length === 0 ? (
+              {filteredImprovements.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="error">
                     Нет данных для отображения.
                   </td>
                 </tr>
               ) : (
-                sortedImprovements.map((item) => (
+                filteredImprovements.map((item) => (
                   <tr key={item.num_improvement}>
                     <td>{item.num_improvement}</td>
                     <td>{item.improvement || " "}</td>

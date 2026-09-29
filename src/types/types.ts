@@ -198,6 +198,14 @@ export interface RescheduleCommentRequestPOST {
   action_index?: number | null;
 }
 
+export interface FiltersState {
+  search: string;
+  isoRequirement: string;
+  regulation: string;
+  department: string;
+  responsiblePerson: string;
+}
+
 export enum SnackbarType {
   error = "error",
   success = "success",

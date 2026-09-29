@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FiltersState } from "@appTypes/types";
 
 interface UIState {
   currentNonconformityNumber: number | null;
@@ -16,7 +17,17 @@ interface UIState {
   currentImprovementNumber: number | null;
   isModalImprovementCommentsOpen: boolean;
   isModalImprovementEditOpen: boolean;
+
+  filters: FiltersState;
 }
+
+const initialFilters: FiltersState = {
+  search: "",
+  isoRequirement: "",
+  regulation: "",
+  department: "",
+  responsiblePerson: "",
+};
 
 const initialState: UIState = {
   currentNonconformityNumber: null,
@@ -34,6 +45,8 @@ const initialState: UIState = {
   currentImprovementNumber: null,
   isModalImprovementCommentsOpen: false,
   isModalImprovementEditOpen: false,
+
+  filters: initialFilters,
 };
 
 const uiSlice = createSlice({
@@ -81,6 +94,13 @@ const uiSlice = createSlice({
     toggleModalImprovementEdit(state, action: PayloadAction<boolean>) {
       state.isModalImprovementEditOpen = action.payload;
     },
+
+    setFilter(state, action: PayloadAction<{ key: keyof FiltersState; value: string }>) {
+      state.filters[action.payload.key] = action.payload.value;
+    },
+    resetFilters(state) {
+      state.filters = initialFilters;
+    },
   },
 });
 
@@ -100,6 +120,8 @@ export const {
   setCurrentImprovementNumber,
   toggleModalImprovementComments,
   toggleModalImprovementEdit,
+  setFilter,
+  resetFilters,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchObservations, deleteObservationRequest } from "@/api";
 import { AppDispatch, RootState } from "@store/store";
 import ObservationTable from "@components/ObservationTable";
-import "@/globals.css";
 
 export const Observations = () => {
   const dispatch = useDispatch<AppDispatch>();

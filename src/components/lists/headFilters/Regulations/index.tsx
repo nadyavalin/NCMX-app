@@ -1,8 +1,13 @@
 import styles from "../../styles.module.css";
 
-export const Regulations = () => {
+interface Props {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export const Regulations = ({ value = "", onChange }: Props) => {
   return (
-    <select className={styles.list}>
+    <select className={styles.list} value={value} onChange={onChange}>
       <option value="">...выбрать НД</option>
       <option value="СТП01">СТП01</option>
       <option value="СТП02">СТП02</option>
@@ -21,6 +26,7 @@ export const Regulations = () => {
       <option value="A3">A3</option>
       <option value="A4">A4</option>
       <option value="A5.1">A5.1</option>
+      <option value="A5.2">A5.2</option>
       <option value="A5.3">A5.3</option>
       <option value="A6.1">A6.1</option>
       <option value="A6.2">A6.2</option>

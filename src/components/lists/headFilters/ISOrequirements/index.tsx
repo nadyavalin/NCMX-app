@@ -1,8 +1,13 @@
 import styles from "../../styles.module.css";
 
-export const ISORequirements = () => {
+interface Props {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export const ISORequirements = ({ value = "", onChange }: Props) => {
   return (
-    <select className={styles.list}>
+    <select className={styles.list} value={value} onChange={onChange}>
       <option value="">...выбрать пункт ISO</option>
       <option value="4.1">4.1</option>
       <option value="4.2">4.2</option>

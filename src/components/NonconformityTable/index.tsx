@@ -23,6 +23,7 @@ import { SearchInput } from "@components/SearchInput";
 import { useSnackbar } from "@components/Snackbar/snackbarContext";
 import { NonconformityResponseGET, SnackbarType } from "@appTypes/types";
 import { formatDateTime } from "@utils/formatDateTime";
+import { useFilteredData } from "@hooks/useFilteredData";
 
 interface NonconformityTableProps {
   title: string;
@@ -30,7 +31,6 @@ interface NonconformityTableProps {
   isLoading: boolean;
   error: string | null;
   isArchived: boolean;
-  onFetch: () => void;
   onDelete?: (num_nonconf: number) => Promise<void>;
   onRestore?: (num_nonconf: number) => Promise<void>;
   showAddButton?: boolean;
@@ -45,7 +45,6 @@ export const NonconformityTable = ({
   isLoading,
   error,
   isArchived,
-  onFetch,
   onDelete,
   onRestore,
   showAddButton = false,
@@ -72,7 +71,49 @@ export const NonconformityTable = ({
     objectId: null,
   });
 
-  const sortedNonconformities = [...nonconformities].sort((a, b) => a.num_nonconf - b.num_nonconf);
+  const filteredNonconformities = useFilteredData<NonconformityResponseGET>({
+    items: nonconformities,
+    numField: "num_nonconf",
+    getSearchable: (item) => [
+      String(item.num_nonconf),
+      item.nonconf,
+      item.report,
+      item.report_date,
+      item.reason,
+      item.head_auditor,
+      ...(item.auditors || []).map((a) => a.auditor || ""),
+      ...(item.corrections || []).map((c) => c.correction),
+      ...(item.corrections || []).flatMap((c) =>
+        (c.responsible_for_correction || []).flatMap((r) => [r.department, r.person]),
+      ),
+      ...(item.corrective_actions || []).map((a) => a.corrective_action),
+      ...(item.corrective_actions || []).flatMap((a) =>
+        (a.responsible_for_corrective_action || []).flatMap((r) => [r.department, r.person]),
+      ),
+      ...(item.normative_documents || []).flatMap((d) => [d.norm_doc, d.point]),
+    ],
+    getResponsibles: (item) => [
+      ...(item.corrections || []).flatMap((c) =>
+        (c.responsible_for_correction || []).map((r) => ({
+          department: r.department,
+          person: r.person,
+        })),
+      ),
+      ...(item.corrective_actions || []).flatMap((a) =>
+        (a.responsible_for_corrective_action || []).map((r) => ({
+          department: r.department,
+          person: r.person,
+        })),
+      ),
+    ],
+    getNormDocs: (item) =>
+      (item.normative_documents || []).map((d) => ({
+        norm_doc: d.norm_doc,
+        point: d.point,
+      })),
+  });
+
+  // const sortedNonconformities = [...nonconformities].sort((a, b) => a.num_nonconf - b.num_nonconf);
 
   const handleOpenModal = useCallback(
     (
@@ -189,7 +230,6 @@ export const NonconformityTable = ({
             <SearchInput />
           </>
         )}
-        <button onClick={onFetch}>Получить данные</button>
       </section>
 
       <section className="nonconformitiesTableSection">
@@ -211,27 +251,25 @@ export const NonconformityTable = ({
               <th>Причины несоответствия, определенные по результатам анализа</th>
               <th>Описание коррекции</th>
               <th>
-                Плановый срок выполнения /{" "}
-                <p className={styles.blueText}>Фактический срок выполнения</p>
+                Плановый срок выполнения / <p className={styles.blueText}>Новый срок выполнения</p>
               </th>
               <th>Ответственное лицо</th>
               <th>Описание корректирующего действия</th>
               <th>
-                Плановый срок выполнения /{" "}
-                <p className={styles.blueText}>Фактический срок выполнения</p>
+                Плановый срок выполнения / <p className={styles.blueText}>Новый срок выполнения</p>
               </th>
               <th>Ответственное лицо</th>
             </tr>
           </thead>
           <tbody>
-            {sortedNonconformities.length === 0 ? (
+            {filteredNonconformities.length === 0 ? (
               <tr>
                 <td colSpan={15} className="error">
                   Нет данных для отображения.
                 </td>
               </tr>
             ) : (
-              sortedNonconformities.map((item) => (
+              filteredNonconformities.map((item) => (
                 <tr key={item.num_nonconf}>
                   <td>{item.num_nonconf}</td>
                   <td>
